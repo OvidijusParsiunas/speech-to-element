@@ -21,7 +21,7 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitOverride": true,
-    "types": ["dom-speech-recognition"]
+    "types": ["vite/client", "dom-speech-recognition"]
   },
   "include": ["src/**/*.ts"],
   "exclude": []

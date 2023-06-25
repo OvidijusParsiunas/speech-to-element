@@ -4,7 +4,9 @@
   "description": "Transcribe speech and place the result text directly into a target element",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "start": "vite",
+    "build:watch": "vite build --watch"
   },
   "repository": {
     "type": "git",
@@ -22,7 +24,9 @@
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "@typescript-eslint/parser": "^5.25.0",
     "eslint": "^8.15.0",
-    "prettier": "^2.8.4"
+    "prettier": "^2.8.4",
+    "vite": "^4.1.4",
+    "vite-plugin-dts": "^2.0.2"
   },
   "files": [
     "dist/**/*"

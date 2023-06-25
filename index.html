@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>&lt;DeepChat> Demo</title>
+    <script type="module" src="src/index.ts"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" />
+    <button>Record</button>
+    <script type="module">
+      import SpeechToInput from './src/index';
+      // const speechToInput = new SpeechToInput();
+      SpeechToInput.start();
+    </script>
+  </body>
+</html>

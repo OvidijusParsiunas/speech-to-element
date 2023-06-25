@@ -32,4 +32,5 @@
     "prefer-const": "error",
     "@typescript-eslint/prefer-readonly": "error"
   },
+  "ignorePatterns": ["vite.config.ts"]
 }
