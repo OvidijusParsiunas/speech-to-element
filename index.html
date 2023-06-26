@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>&lt;DeepChat> Demo</title>
+    <title>&lt;Speech To Element> Demo</title>
     <script type="module" src="src/index.ts"></script>
     <style>
       html,
@@ -14,12 +14,16 @@
     </style>
   </head>
   <body>
-    <input type="text" />
-    <button>Record</button>
+    <div id="input-text" contenteditable="true" style="width: 300px; height: 20px; border: 1px solid grey"></div>
+    <input id="input-text-2" type="text" style="width: 300px; height: 20px; border: 1px solid grey" />
+    <button id="record-button">Record</button>
     <script type="module">
-      import SpeechToInput from './src/index';
-      // const speechToInput = new SpeechToInput();
-      SpeechToInput.start();
+      import SpeechToElement from './src/index';
+      const button = document.getElementById('record-button');
+      button.onclick = () => {
+        // const speechToInput = new SpeechToInput();
+        SpeechToElement.toggle({element: document.getElementById('input-text-2')});
+      };
     </script>
   </body>
 </html>
