@@ -3,25 +3,28 @@ import {Options} from './types/options';
 import {TextUtils} from './textUtils';
 
 export abstract class Speech {
-  private _finalTranscript = '';
-  private readonly _initialInputValue: string = '';
-  private _input?: HTMLInputElement;
+  finalTranscript = '';
+  // used for editable element
   private readonly _interimSpan: HTMLSpanElement = TextElements.createInterimSpan();
   private readonly _finalSpan: HTMLSpanElement = TextElements.createFinalSpan();
+  // used for input/textarea elements
+  private readonly _initialPrimitiveElementValue: string = '';
+  private _primitiveElement?: HTMLInputElement;
   recognizing = false;
 
   constructor(options?: Options) {
+    this.reset();
     if (options?.element) {
-      if (options.element.tagName === 'INPUT') {
+      if (options.element.tagName === 'INPUT' || options.element.tagName === 'TEXTAREA') {
         const input = options.element as HTMLInputElement;
-        this._initialInputValue = input.value;
+        this._initialPrimitiveElementValue = input.value;
         if (TextUtils.isLastCharDefined(input.value)) {
-          this._finalTranscript = ' ';
+          this.finalTranscript = ' ';
         }
-        this._input = input;
+        this._primitiveElement = input;
       } else {
         if (TextUtils.isLastCharDefined(options.element.innerText)) {
-          this._finalTranscript = ' ';
+          this.finalTranscript = ' ';
           this._finalSpan.innerHTML = ' ';
           this._interimSpan.innerHTML = ' ';
         }
@@ -32,19 +35,19 @@ export abstract class Speech {
   }
 
   updateElement(interimTranscript: string, finalStranscript: string) {
-    this._finalTranscript = TextUtils.capitalize(finalStranscript);
-    if (this._input) {
-      this._input.value = this._initialInputValue + this._finalTranscript + interimTranscript;
+    this.finalTranscript = TextUtils.capitalize(finalStranscript);
+    if (this._primitiveElement) {
+      this._primitiveElement.value = this._initialPrimitiveElementValue + this.finalTranscript + interimTranscript;
     } else {
-      this._finalSpan.innerHTML = TextUtils.lineBreak(this._finalTranscript);
+      this._finalSpan.innerHTML = TextUtils.lineBreak(this.finalTranscript);
       this._interimSpan.innerHTML = TextUtils.lineBreak(interimTranscript);
     }
   }
 
-  reset() {
+  private reset() {
     this.stop();
-    this._input = undefined;
-    this._finalTranscript = '';
+    this._primitiveElement = undefined;
+    this.finalTranscript = '';
     this._finalSpan.innerHTML = '';
     this._interimSpan.innerHTML = '';
   }

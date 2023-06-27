@@ -16,13 +16,14 @@
   <body>
     <div id="input-text" contenteditable="true" style="width: 300px; height: 20px; border: 1px solid grey"></div>
     <input id="input-text-2" type="text" style="width: 300px; height: 20px; border: 1px solid grey" />
+    <textarea id="input-text-3" type="text" style="width: 300px; height: 20px; border: 1px solid grey"></textarea>
     <button id="record-button">Record</button>
     <script type="module">
       import SpeechToElement from './src/index';
       const button = document.getElementById('record-button');
       button.onclick = () => {
         // const speechToInput = new SpeechToInput();
-        SpeechToElement.toggle({element: document.getElementById('input-text-2')});
+        SpeechToElement.toggle({element: document.getElementById('input-text-3')});
       };
     </script>
   </body>

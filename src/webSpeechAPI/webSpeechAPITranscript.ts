@@ -1,7 +1,6 @@
 export class WebSpeechAPITranscript {
-  public static get(event: SpeechRecognitionEvent) {
+  public static get(event: SpeechRecognitionEvent, finalTranscript: string) {
     let interimTranscript = '';
-    let finalTranscript = '';
     for (let i = event.resultIndex; i < event.results.length; ++i) {
       if (event.results[i].isFinal) {
         finalTranscript += event.results[i][0].transcript;

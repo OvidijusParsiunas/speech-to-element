@@ -11,7 +11,6 @@ export class WebSpeechAPI extends Speech {
     if (!speechRecognition) {
       console.error('Speech Recognition is unsupported');
     } else {
-      this.reset();
       // recognition.lang = select_dialect.value;
       this._service = new speechRecognition();
       this._service.continuous = true;
@@ -56,7 +55,7 @@ export class WebSpeechAPI extends Speech {
         this._service.onend = null;
         this._service.stop();
       } else {
-        const {interimTranscript, finalTranscript} = WebSpeechAPITranscript.get(event);
+        const {interimTranscript, finalTranscript} = WebSpeechAPITranscript.get(event, this.finalTranscript);
         this.updateElement(interimTranscript, finalTranscript);
       }
     };
