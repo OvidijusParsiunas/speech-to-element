@@ -15,6 +15,7 @@ export default class SpeechToElement {
 
   public static start(options?: Options) {
     this._service = new WebSpeechAPI(options);
+    this._service.start();
   }
 
   public static stop() {

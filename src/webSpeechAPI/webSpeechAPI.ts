@@ -1,9 +1,11 @@
-import {WebSpeechAPITranscript} from './webSpeechAPITranscript';
+import {ExtractFunc, WebSpeechAPITranscript} from './webSpeechAPITranscript';
 import {Options} from '../types/options';
+import {Browser} from '../utils/browser';
 import {Speech} from '../speech';
 
 export class WebSpeechAPI extends Speech {
   private readonly _service?: SpeechRecognition;
+  private readonly _extractText?: ExtractFunc;
 
   constructor(options?: Options) {
     super(options);
@@ -17,8 +19,8 @@ export class WebSpeechAPI extends Speech {
       this._service.interimResults = options?.displayInterimResults ?? true;
       this._service.lang = 'en-US';
       if (options?.grammar) WebSpeechAPI.setGrammar(this._service);
+      this._extractText = Browser.IS_SAFARI ? WebSpeechAPITranscript.extractSafari : WebSpeechAPITranscript.extract;
       this.setEvents();
-      this._service.start();
     }
   }
 
@@ -54,11 +56,15 @@ export class WebSpeechAPI extends Speech {
       if (typeof event.results === 'undefined' && this._service) {
         this._service.onend = null;
         this._service.stop();
-      } else {
-        const {interimTranscript, finalTranscript} = WebSpeechAPITranscript.get(event, this.finalTranscript);
+      } else if (this._extractText) {
+        const {interimTranscript, finalTranscript} = this._extractText(event, this.finalTranscript);
         this.updateElement(interimTranscript, finalTranscript);
       }
     };
+  }
+
+  start() {
+    this._service?.start();
   }
 
   stop() {

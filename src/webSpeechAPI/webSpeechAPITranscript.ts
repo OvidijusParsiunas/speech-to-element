@@ -1,5 +1,10 @@
+export type ExtractFunc = (
+  event: SpeechRecognitionEvent,
+  finalTranscript: string
+) => {interimTranscript: string; finalTranscript: string};
+
 export class WebSpeechAPITranscript {
-  public static get(event: SpeechRecognitionEvent, finalTranscript: string) {
+  public static extract(event: SpeechRecognitionEvent, finalTranscript: string) {
     let interimTranscript = '';
     for (let i = event.resultIndex; i < event.results.length; ++i) {
       if (event.results[i].isFinal) {
@@ -9,5 +14,13 @@ export class WebSpeechAPITranscript {
       }
     }
     return {interimTranscript, finalTranscript};
+  }
+
+  public static extractSafari(event: SpeechRecognitionEvent) {
+    let finalTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      finalTranscript += event.results[i][0].transcript;
+    }
+    return {interimTranscript: '', finalTranscript};
   }
 }
