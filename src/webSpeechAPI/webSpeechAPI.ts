@@ -4,11 +4,21 @@ import {Browser} from '../utils/browser';
 import {Speech} from '../speech';
 
 export class WebSpeechAPI extends Speech {
-  private readonly _service?: SpeechRecognition;
+  private _service?: SpeechRecognition;
   private readonly _extractText?: ExtractFunc;
 
-  constructor(options?: Options) {
-    super(options);
+  constructor() {
+    super();
+    this._extractText = Browser.IS_SAFARI ? WebSpeechAPITranscript.extractSafari : WebSpeechAPITranscript.extract;
+  }
+
+  start(options?: Options) {
+    this.prepareBeforeStart(options);
+    this.instantiateService(options);
+    this._service?.start();
+  }
+
+  private instantiateService(options?: Options) {
     const speechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
     if (!speechRecognition) {
       console.error('Speech Recognition is unsupported');
@@ -19,7 +29,6 @@ export class WebSpeechAPI extends Speech {
       this._service.interimResults = options?.displayInterimResults ?? true;
       this._service.lang = 'en-US';
       if (options?.grammar) WebSpeechAPI.setGrammar(this._service);
-      this._extractText = Browser.IS_SAFARI ? WebSpeechAPITranscript.extractSafari : WebSpeechAPITranscript.extract;
       this.setEvents();
     }
   }
@@ -63,11 +72,8 @@ export class WebSpeechAPI extends Speech {
     };
   }
 
-  start() {
-    this._service?.start();
-  }
-
-  stop() {
+  stop(isDuringReset?: boolean) {
     this._service?.stop();
+    this.finalise(isDuringReset);
   }
 }

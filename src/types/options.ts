@@ -5,5 +5,6 @@ export interface Options {
   stopAfterSilenceMs?: number;
   displayInterimResults?: boolean;
   insertAtSelection?: boolean;
+  textColor?: {interim?: string; final?: string};
   commands?: {[key: string]: string};
 }
