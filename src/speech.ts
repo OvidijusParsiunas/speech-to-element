@@ -1,8 +1,12 @@
+import {WindowListeners} from './utils/windowListeners';
 import {TextElements} from './textElements';
+import {Highlight} from './utils/highlight';
 import {Options} from './types/options';
 import {Padding} from './utils/padding';
 import {Text} from './utils/text';
 
+// WORK - when the user types with their keyboard - set timeout to not have to restart for every keyboard click
+// WORK - set cursor at end of the new input text
 export abstract class Speech {
   finalTranscript = '';
   // used for editable element
@@ -12,11 +16,15 @@ export abstract class Speech {
   private _primitiveElement?: HTMLInputElement;
   private _genericElement?: HTMLElement;
   private _spansPopulated = false;
-  // stored in state to detach it
-  private _resetRecordingFunc?: () => void;
+  // stored in state to detach listeners
+  mouseDownEvent?: (event: MouseEvent) => void;
+  mouseUpEvent?: (event: MouseEvent) => void;
   startPadding = '';
   endPadding = '';
+  isHighlighted = false;
+  primitiveTextRecorded = false;
   recognizing = false;
+  mouseDownElement?: HTMLElement;
 
   constructor() {
     this.resetState();
@@ -24,20 +32,19 @@ export abstract class Speech {
 
   prepareBeforeStart(options?: Options) {
     if (options?.element) {
-      this._resetRecordingFunc = this.resetRecording.bind(this, options);
-      options.element.addEventListener('click', this._resetRecordingFunc);
       Padding.setState(this, options.element);
+      Highlight.setState(this, options.element);
+      WindowListeners.add(this, options);
       if (options.element.tagName === 'INPUT' || options.element.tagName === 'TEXTAREA') {
         const input = options.element as HTMLInputElement;
         this._primitiveElement = input;
-        Padding.adjustStateForPrimitiveElement(this, input);
       } else {
         this._genericElement = options.element;
       }
     }
   }
 
-  private resetRecording(options?: Options) {
+  resetRecording(options?: Options) {
     this.stop(true);
     this.resetState();
     this.start(options);
@@ -61,12 +68,16 @@ export abstract class Speech {
     element.appendChild(this._interimSpan);
   }
 
-  updateElement(interimTranscript: string, finalStranscript: string) {
-    this.finalTranscript = Text.capitalize(finalStranscript);
+  updateElement(interimTranscript: string, finalTranscript: string) {
+    if (finalTranscript === '' && interimTranscript === '') return;
+    this.finalTranscript = Text.capitalize(finalTranscript);
     if (this._primitiveElement) {
+      if (this.isHighlighted) Highlight.removeForPrimitive(this, this._primitiveElement);
+      if (!this.primitiveTextRecorded) Padding.adjustStateForPrimitiveElement(this, this._primitiveElement);
       this._primitiveElement.value = this.startPadding + this.finalTranscript + interimTranscript + this.endPadding;
-    } else {
-      if (this._genericElement && !this._spansPopulated) this.appendSpans(this._genericElement);
+    } else if (this._genericElement) {
+      if (this.isHighlighted) Highlight.removeForGeneric(this, this._genericElement);
+      if (!this._spansPopulated) this.appendSpans(this._genericElement);
       this._finalSpan.innerHTML = this.startPadding + Text.lineBreak(this.finalTranscript);
       this._interimSpan.innerHTML = Text.lineBreak(interimTranscript) + this.endPadding;
     }
@@ -81,11 +92,9 @@ export abstract class Speech {
       } else {
         this._genericElement.textContent = this._genericElement.textContent as string;
       }
-      this._genericElement.removeEventListener('click', this._resetRecordingFunc as EventListener);
       this._spansPopulated = false;
-    } else if (this._primitiveElement) {
-      this._primitiveElement.removeEventListener('click', this._resetRecordingFunc as EventListener);
     }
+    WindowListeners.remove(this);
   }
 
   private resetState() {
@@ -96,6 +105,8 @@ export abstract class Speech {
     this._interimSpan.innerHTML = '';
     this.startPadding = '';
     this.endPadding = '';
+    this.isHighlighted = false;
+    this.primitiveTextRecorded = false;
   }
 
   abstract start(options?: Options): void;

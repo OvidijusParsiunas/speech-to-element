@@ -15,6 +15,7 @@ export class WebSpeechAPI extends Speech {
   start(options?: Options) {
     this.prepareBeforeStart(options);
     this.instantiateService(options);
+    // WORK - catch another request started error for safari
     this._service?.start();
   }
 

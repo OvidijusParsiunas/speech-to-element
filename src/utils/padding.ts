@@ -1,4 +1,5 @@
 import {Speech} from '../speech';
+import {Cursor} from './cursor';
 import {Text} from './text';
 
 export class Padding {
@@ -6,7 +7,8 @@ export class Padding {
     if (document.activeElement === element && element.selectionStart !== null) {
       const startIndex = element.selectionStart;
       const leftCharacter = element.value[startIndex - 1];
-      const rightCharacter = element.value[startIndex];
+      const endIndex = element.selectionEnd === null ? startIndex : element.selectionEnd;
+      const rightCharacter = element.value[endIndex];
       if (Text.isCharDefined(leftCharacter)) speech.startPadding = ' ';
       if (Text.isCharDefined(rightCharacter)) speech.endPadding = ' ';
       return;
@@ -19,10 +21,10 @@ export class Padding {
     if (document.activeElement === element) {
       const selection = window.getSelection();
       if (selection?.focusNode) {
-        // WORK - for highlight
-        const startIndex = selection.getRangeAt(0).startOffset;
+        const startIndex = Cursor.getGenericElementCursorPosition(element, selection, true);
         const leftCharacter = element.textContent?.[startIndex - 1];
-        const rightCharacter = element.textContent?.[startIndex];
+        const endIndex = Cursor.getGenericElementCursorPosition(element, selection, false);
+        const rightCharacter = element.textContent?.[endIndex];
         if (Text.isCharDefined(leftCharacter)) speech.startPadding = ' ';
         if (Text.isCharDefined(rightCharacter)) speech.endPadding = ' ';
         return;
@@ -41,6 +43,7 @@ export class Padding {
   }
 
   public static adjustStateForPrimitiveElement(speech: Speech, input: HTMLInputElement) {
+    speech.primitiveTextRecorded = true;
     if (document.activeElement === input) {
       if (input.selectionEnd !== null) {
         speech.endPadding = speech.endPadding + input.value.slice(input.selectionEnd);
