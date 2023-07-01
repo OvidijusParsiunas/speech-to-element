@@ -10,7 +10,10 @@ export class Padding {
       const endIndex = element.selectionEnd === null ? startIndex : element.selectionEnd;
       const rightCharacter = element.value[endIndex];
       if (Text.isCharDefined(leftCharacter)) speech.startPadding = ' ';
-      if (Text.isCharDefined(rightCharacter)) speech.endPadding = ' ';
+      if (Text.isCharDefined(rightCharacter)) {
+        speech.endPadding = ' ';
+        speech.numberOfSpacesAfterNewText = 1;
+      }
       return;
     }
     const lastCharacter = element.value[element.value.length - 1];
@@ -21,9 +24,9 @@ export class Padding {
     if (document.activeElement === element) {
       const selection = window.getSelection();
       if (selection?.focusNode) {
-        const startIndex = Cursor.getGenericElementCursorPosition(element, selection, true);
+        const startIndex = Cursor.getGenericElementCursorOffset(element, selection, true);
         const leftCharacter = element.textContent?.[startIndex - 1];
-        const endIndex = Cursor.getGenericElementCursorPosition(element, selection, false);
+        const endIndex = Cursor.getGenericElementCursorOffset(element, selection, false);
         const rightCharacter = element.textContent?.[endIndex];
         if (Text.isCharDefined(leftCharacter)) speech.startPadding = ' ';
         if (Text.isCharDefined(rightCharacter)) speech.endPadding = ' ';
