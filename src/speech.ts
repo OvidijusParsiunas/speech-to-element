@@ -1,8 +1,9 @@
-import {WindowListeners} from './utils/windowListeners';
+import {EventListeners} from './utils/eventListeners';
 import {Highlight} from './utils/highlight';
 import {Elements} from './utils/elements';
 import {Options} from './types/options';
 import {Padding} from './utils/padding';
+import {Browser} from './utils/browser';
 import {Cursor} from './utils/cursor';
 import {Text} from './utils/text';
 
@@ -20,6 +21,7 @@ export abstract class Speech {
   // stored in state to detach listeners
   mouseDownEvent?: (event: MouseEvent) => void;
   mouseUpEvent?: (event: MouseEvent) => void;
+  keyDownEvent?: (event: KeyboardEvent) => void;
   startPadding = '';
   // primitive elements use this as the right hand side text of cursor
   endPadding = '';
@@ -37,7 +39,7 @@ export abstract class Speech {
     if (options?.element) {
       Padding.setState(this, options.element);
       Highlight.setState(this, options.element);
-      WindowListeners.add(this, options);
+      EventListeners.add(this, options);
       if (options.element.tagName === 'INPUT' || options.element.tagName === 'TEXTAREA') {
         const input = options.element as HTMLInputElement;
         this._primitiveElement = input;
@@ -54,8 +56,9 @@ export abstract class Speech {
   }
 
   updateElement(interimTranscript: string, finalTranscript: string) {
-    if (finalTranscript === '' && interimTranscript === '') return;
-    this.finalTranscript = Text.capitalize(finalTranscript);
+    const newFinalText = Text.capitalize(finalTranscript);
+    if (this.finalTranscript === newFinalText && interimTranscript === '') return;
+    this.finalTranscript = newFinalText;
     if (this._primitiveElement) {
       if (this.isHighlighted) Highlight.removeForPrimitive(this, this._primitiveElement);
       if (!this.primitiveTextRecorded) Padding.adjustStateForPrimitiveElement(this, this._primitiveElement);
@@ -69,6 +72,7 @@ export abstract class Speech {
       this.finalSpan.innerHTML = finalText;
       const interimText = Text.lineBreak(interimTranscript) + this.endPadding;
       this.interimSpan.innerHTML = interimText;
+      if (Browser.IS_SAFARI) Cursor.setOffsetForSafariGeneric(this._genericElement, finalText.length + interimText.length);
     }
   }
 
@@ -83,7 +87,7 @@ export abstract class Speech {
       }
       this.spansPopulated = false;
     }
-    WindowListeners.remove(this);
+    EventListeners.remove(this, this._genericElement || this._primitiveElement);
   }
 
   private resetState() {

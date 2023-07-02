@@ -1,29 +1,36 @@
 export class Cursor {
   public static setOffsetForGeneric(element: HTMLElement, offset: number, countedText = 0) {
-    for (let i = 0; i < element.childNodes.length - 1; i += 1) {
+    let counteTextInElement = 0;
+    for (let i = 0; i < element.childNodes.length; i += 1) {
       const node = element.childNodes[i];
       if (node.childNodes.length > 0) {
         const result = Cursor.setOffsetForGeneric(node as HTMLElement, offset, countedText);
         if (result === -1) return -1;
-        countedText = result;
-      } else {
-        if (node.textContent !== null) {
-          if (countedText + node.textContent.length > offset) {
-            const range = document.createRange();
-            range.setStart(node, offset - countedText);
-            range.collapse(true);
-            const selection = window.getSelection();
-            selection?.removeAllRanges();
-            selection?.addRange(range);
-            element.focus();
-            return -1;
-          } else {
-            countedText += node.textContent.length;
-          }
+        countedText += result;
+      } else if (node.textContent !== null) {
+        if (countedText + node.textContent.length > offset) {
+          const range = document.createRange();
+          range.setStart(node, offset - countedText);
+          range.collapse(true);
+          const selection = window.getSelection();
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+          element.focus();
+          return -1;
         }
+        countedText += node.textContent.length;
+        counteTextInElement += node.textContent.length;
       }
     }
-    return countedText;
+    return counteTextInElement;
+  }
+
+  public static setOffsetForSafariGeneric(element: HTMLElement, newTextLength: number) {
+    const selection = window.getSelection();
+    if (selection) {
+      const cursorOffset = Cursor.getGenericElementCursorOffset(element, selection, true);
+      Cursor.setOffsetForGeneric(element, cursorOffset + newTextLength);
+    }
   }
 
   public static setOffsetForPrimitive(element: HTMLInputElement, offset: number) {
