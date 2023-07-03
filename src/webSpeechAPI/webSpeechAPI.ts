@@ -15,7 +15,6 @@ export class WebSpeechAPI extends Speech {
   start(options?: Options) {
     this.prepareBeforeStart(options);
     this.instantiateService(options);
-    // WORK - catch another request started error for safari
     this._service?.start();
   }
 
@@ -54,8 +53,11 @@ export class WebSpeechAPI extends Speech {
     };
 
     this._service.onerror = (event) => {
+      // this error is thrown in Safari when the service is restarted
+      if (Browser.IS_SAFARI && event.message === 'Another request is started') return;
       console.error('Speech to text error:');
       console.error(event);
+      throw event;
     };
 
     this._service.onend = () => {
