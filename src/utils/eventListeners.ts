@@ -16,19 +16,19 @@ export class EventListeners {
   }
 
   public static add(speech: Speech, options: Options) {
-    const resetOnMouseDown = options.resetOnMouseDown === undefined || options.resetOnMouseDown;
-    const resetOnKeyDown = options.resetOnKeyDown === undefined || options.resetOnKeyDown;
+    const insertOnMouseDown = options.insertOnMouseDown === undefined || options.insertOnMouseDown;
+    const insertOnKeyDown = options.insertOnKeyDown === undefined || options.insertOnKeyDown;
     if (options.element) {
-      if (resetOnMouseDown) {
+      if (insertOnMouseDown) {
         speech.mouseDownEvent = EventListeners.mouseDownWindow.bind(speech, options.element);
         document.addEventListener('mousedown', speech.mouseDownEvent);
       }
-      if (resetOnKeyDown) {
+      if (insertOnKeyDown) {
         speech.keyDownEvent = EventListeners.keyDownElement.bind(speech, options);
         options.element.addEventListener('keydown', speech.keyDownEvent);
       }
     }
-    if (resetOnMouseDown) {
+    if (insertOnMouseDown) {
       speech.mouseUpEvent = EventListeners.mouseUpWindow.bind(speech, options);
       document.addEventListener('mouseup', speech.mouseUpEvent);
     }

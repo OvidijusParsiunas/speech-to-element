@@ -14,13 +14,17 @@ export default class SpeechToElement {
   }
 
   public static start(options?: Options) {
-    this._service = new WebSpeechAPI(options);
-    this._service.start();
+    this._service = new WebSpeechAPI();
+    this._service.start(options);
   }
 
   public static stop() {
     if (this._service?.recognizing) {
       this._service.stop();
     }
+  }
+
+  public static isWebSpeechAPISupported() {
+    return WebSpeechAPI.isSupported();
   }
 }

@@ -1,4 +1,5 @@
 import {EventListeners} from './utils/eventListeners';
+import {StopTimeout} from './utils/stopTimeout';
 import {Highlight} from './utils/highlight';
 import {Elements} from './utils/elements';
 import {Options} from './types/options';
@@ -7,8 +8,6 @@ import {Browser} from './utils/browser';
 import {Cursor} from './utils/cursor';
 import {Text} from './utils/text';
 
-// WORK - when the user types with their keyboard - set timeout to not have to restart for every keyboard click
-// WORK - set cursor at end of the new input text
 export abstract class Speech {
   finalTranscript = '';
   // used for editable element
@@ -30,6 +29,10 @@ export abstract class Speech {
   primitiveTextRecorded = false;
   recognizing = false;
   mouseDownElement?: HTMLElement;
+  private _displayInterimResults = true;
+  private _finalTextColor?: string;
+  stopTimeout?: number;
+  stopTimeoutMS?: number;
 
   constructor() {
     this.resetState();
@@ -47,18 +50,26 @@ export abstract class Speech {
         this._genericElement = options.element;
       }
     }
+    if (options?.displayInterimResults !== undefined) this._displayInterimResults = options.displayInterimResults;
+    if (options?.textColor) {
+      this._finalTextColor = options?.textColor?.final;
+      Elements.applyCustomColors(this, options.textColor);
+    }
+    if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMS);
   }
 
   resetRecording(options?: Options) {
     this.stop(true);
-    this.resetState();
+    this.resetState(true);
     this.start(options);
   }
 
-  updateElement(interimTranscript: string, finalTranscript: string) {
+  updateElements(interimTranscript: string, finalTranscript: string) {
     const newFinalText = Text.capitalize(finalTranscript);
     if (this.finalTranscript === newFinalText && interimTranscript === '') return;
+    StopTimeout.reset(this, this.stopTimeoutMS);
     this.finalTranscript = newFinalText;
+    if (!this._displayInterimResults) interimTranscript = '';
     if (this._primitiveElement) {
       if (this.isHighlighted) Highlight.removeForPrimitive(this, this._primitiveElement);
       if (!this.primitiveTextRecorded) Padding.adjustStateForPrimitiveElement(this, this._primitiveElement);
@@ -68,6 +79,7 @@ export abstract class Speech {
     } else if (this._genericElement) {
       if (this.isHighlighted) Highlight.removeForGeneric(this, this._genericElement);
       if (!this.spansPopulated) Elements.appendSpans(this, this._genericElement);
+      // for web speech api - safari only returns final text - no interim
       const finalText = this.startPadding + Text.lineBreak(this.finalTranscript);
       this.finalSpan.innerHTML = finalText;
       const interimText = Text.lineBreak(interimTranscript) + this.endPadding;
@@ -80,7 +92,7 @@ export abstract class Speech {
     if (this._genericElement) {
       if (isDuringReset) {
         this.finalSpan = Elements.createFinalSpan();
-        this.interimSpan.style.color = 'black';
+        this.interimSpan.style.color = this._finalTextColor || 'black';
         this.interimSpan = Elements.createInterimSpan();
       } else {
         this._genericElement.textContent = this._genericElement.textContent as string;
@@ -90,7 +102,7 @@ export abstract class Speech {
     EventListeners.remove(this, this._genericElement || this._primitiveElement);
   }
 
-  private resetState() {
+  private resetState(isDuringReset?: boolean) {
     this._primitiveElement = undefined;
     this._genericElement = undefined;
     this.finalTranscript = '';
@@ -101,6 +113,7 @@ export abstract class Speech {
     this.isHighlighted = false;
     this.primitiveTextRecorded = false;
     this.numberOfSpacesAfterNewText = 0;
+    if (!isDuringReset) this.stopTimeout = undefined;
   }
 
   abstract start(options?: Options): void;

@@ -1,3 +1,4 @@
+import {TextColor} from '../types/options';
 import {Speech} from '../speech';
 
 export class Elements {
@@ -30,5 +31,10 @@ export class Elements {
     }
     element.appendChild(speech.finalSpan);
     element.appendChild(speech.interimSpan);
+  }
+
+  public static applyCustomColors(speech: Speech, color: TextColor) {
+    if (color.interim) speech.interimSpan.style.color = color.interim;
+    if (color.final) speech.finalSpan.style.color = color.final;
   }
 }

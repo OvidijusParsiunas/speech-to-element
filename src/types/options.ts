@@ -1,13 +1,22 @@
+export type OnError = (message: string) => void;
+
+export type OnResult = (text: string, isFinal: boolean) => void;
+
+export interface TextColor {
+  interim?: string;
+  final?: string;
+}
+
 export interface Options {
-  callback?: () => string;
   grammar?: string[];
   element?: HTMLElement;
-  stopAfterSilenceMs?: number;
+  onResult?: OnResult;
+  onError?: OnError;
   displayInterimResults?: boolean;
-  insertAtSelection?: boolean;
-  resetOnKeyDown?: boolean;
-  resetOnMouseDown?: boolean;
-  textColor?: {interim?: string; final?: string};
+  insertOnKeyDown?: boolean;
+  insertOnMouseDown?: boolean;
+  textColor?: TextColor;
+  stopAfterSilenceMS?: number;
   commands?: {[key: string]: string};
   anyElement?: boolean;
 }
