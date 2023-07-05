@@ -1,8 +1,9 @@
 import {EventListeners} from './utils/eventListeners';
+import {OnResult, Options} from './types/options';
 import {StopTimeout} from './utils/stopTimeout';
 import {Highlight} from './utils/highlight';
+import {Callbacks} from './utils/callbacks';
 import {Elements} from './utils/elements';
-import {Options} from './types/options';
 import {Padding} from './utils/padding';
 import {Browser} from './utils/browser';
 import {Cursor} from './utils/cursor';
@@ -33,6 +34,8 @@ export abstract class Speech {
   private _finalTextColor?: string;
   stopTimeout?: number;
   stopTimeoutMS?: number;
+  insertInCursorLocation = true;
+  private _onResult?: OnResult;
 
   constructor() {
     this.resetState();
@@ -56,6 +59,8 @@ export abstract class Speech {
       Elements.applyCustomColors(this, options.textColor);
     }
     if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMS);
+    this._onResult ??= options?.onResult;
+    if (options?.insertInCursorLocation !== undefined) this.insertInCursorLocation = options.insertInCursorLocation;
   }
 
   resetRecording(options?: Options) {
@@ -67,6 +72,7 @@ export abstract class Speech {
   updateElements(interimTranscript: string, finalTranscript: string) {
     const newFinalText = Text.capitalize(finalTranscript);
     if (this.finalTranscript === newFinalText && interimTranscript === '') return;
+    if (this._onResult) Callbacks.update(interimTranscript, finalTranscript, this._onResult);
     StopTimeout.reset(this, this.stopTimeoutMS);
     this.finalTranscript = newFinalText;
     if (!this._displayInterimResults) interimTranscript = '';
@@ -84,7 +90,9 @@ export abstract class Speech {
       this.finalSpan.innerHTML = finalText;
       const interimText = Text.lineBreak(interimTranscript) + this.endPadding;
       this.interimSpan.innerHTML = interimText;
-      if (Browser.IS_SAFARI) Cursor.setOffsetForSafariGeneric(this._genericElement, finalText.length + interimText.length);
+      if (Browser.IS_SAFARI && this.insertInCursorLocation) {
+        Cursor.setOffsetForSafariGeneric(this._genericElement, finalText.length + interimText.length);
+      }
     }
   }
 

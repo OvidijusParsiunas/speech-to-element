@@ -17,7 +17,7 @@ export class Elements {
 
   public static appendSpans(speech: Speech, element: HTMLElement) {
     speech.spansPopulated = true;
-    if (document.activeElement === element) {
+    if (speech.insertInCursorLocation && document.activeElement === element) {
       const selection = window.getSelection();
       if (selection?.focusNode) {
         const newRange = selection.getRangeAt(0);

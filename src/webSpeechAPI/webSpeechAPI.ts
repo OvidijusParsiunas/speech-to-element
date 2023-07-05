@@ -1,12 +1,11 @@
 import {ExtractFunc, WebSpeechAPITranscript} from './webSpeechAPITranscript';
-import {OnError, OnResult, Options} from '../types/options';
+import {OnError, Options} from '../types/options';
 import {Browser} from '../utils/browser';
 import {Speech} from '../speech';
 
 export class WebSpeechAPI extends Speech {
   private _service?: SpeechRecognition;
   private _onError?: OnError;
-  private _onResult?: OnResult;
   private readonly _extractText?: ExtractFunc;
 
   constructor() {
@@ -19,7 +18,6 @@ export class WebSpeechAPI extends Speech {
     this.instantiateService(options);
     this._service?.start();
     this._onError = options?.onError;
-    this._onResult = options?.onResult;
   }
 
   private instantiateService(options?: Options) {
@@ -72,7 +70,7 @@ export class WebSpeechAPI extends Speech {
         this._service.onend = null;
         this._service.stop();
       } else if (this._extractText) {
-        const {interimTranscript, finalTranscript} = this._extractText(event, this.finalTranscript, this._onResult);
+        const {interimTranscript, finalTranscript} = this._extractText(event, this.finalTranscript);
         this.updateElements(interimTranscript, finalTranscript);
       }
     };

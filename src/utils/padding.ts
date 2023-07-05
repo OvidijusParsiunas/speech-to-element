@@ -47,7 +47,7 @@ export class Padding {
 
   public static adjustStateForPrimitiveElement(speech: Speech, input: HTMLInputElement) {
     speech.primitiveTextRecorded = true;
-    if (document.activeElement === input) {
+    if (speech.insertInCursorLocation && document.activeElement === input) {
       if (input.selectionEnd !== null) {
         speech.endPadding = speech.endPadding + input.value.slice(input.selectionEnd);
       }
