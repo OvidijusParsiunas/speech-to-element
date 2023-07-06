@@ -1,3 +1,7 @@
+export interface Translations {
+  [key: string]: string;
+}
+
 export type OnError = (message: string) => void;
 
 // WebSpeechAPI
@@ -21,6 +25,7 @@ export interface Options {
   // only works for generic elements and not input, textarea
   textColor?: TextColor;
   stopAfterSilenceMS?: number;
-  translations?: {[key: string]: string};
+  // need to define text for lower and upper cases
+  translations?: Translations;
   anyElement?: boolean;
 }

@@ -47,8 +47,7 @@ export abstract class Speech {
       Highlight.setState(this, options.element);
       EventListeners.add(this, options);
       if (options.element.tagName === 'INPUT' || options.element.tagName === 'TEXTAREA') {
-        const input = options.element as HTMLInputElement;
-        this._primitiveElement = input;
+        this._primitiveElement = options.element as HTMLInputElement;
       } else {
         this._genericElement = options.element;
       }
