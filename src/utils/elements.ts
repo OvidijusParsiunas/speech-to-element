@@ -2,6 +2,10 @@ import {TextColor} from '../types/options';
 import {Speech} from '../speech';
 
 export class Elements {
+  public static isPrimitiveElement(element: HTMLElement) {
+    return element.tagName === 'INPUT' || element.tagName === 'TEXTAREA';
+  }
+
   public static createInterimSpan() {
     const span = document.createElement('span');
     span.style.color = 'grey';

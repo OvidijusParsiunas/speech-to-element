@@ -1,3 +1,4 @@
+import {Elements} from './elements';
 import {Speech} from '../speech';
 import {Cursor} from './cursor';
 import {Text} from './text';
@@ -38,7 +39,7 @@ export class Padding {
   }
 
   public static setState(speech: Speech, element: HTMLElement) {
-    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+    if (Elements.isPrimitiveElement(element)) {
       Padding.setStateForPrimitiveElement(speech, element as HTMLInputElement);
     } else {
       Padding.setStateForGenericElement(speech, element);

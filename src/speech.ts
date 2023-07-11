@@ -43,13 +43,15 @@ export abstract class Speech {
 
   prepareBeforeStart(options?: Options) {
     if (options?.element) {
-      Padding.setState(this, options.element);
-      Highlight.setState(this, options.element);
       EventListeners.add(this, options);
-      if (options.element.tagName === 'INPUT' || options.element.tagName === 'TEXTAREA') {
-        this._primitiveElement = options.element as HTMLInputElement;
+      if (Array.isArray(options.element)) {
+        // checks if any of available elements are currently focused, else proceeds to the first
+        const focusedElement = options.element.find((element) => element === document.activeElement);
+        const targetElement = focusedElement || options.element[0];
+        if (!targetElement) return;
+        this.prepare(targetElement);
       } else {
-        this._genericElement = options.element;
+        this.prepare(options.element);
       }
     }
     if (options?.displayInterimResults !== undefined) this._displayInterimResults = options.displayInterimResults;
@@ -60,6 +62,16 @@ export abstract class Speech {
     if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMS);
     this._onResult ??= options?.onResult;
     if (options?.insertInCursorLocation !== undefined) this.insertInCursorLocation = options.insertInCursorLocation;
+  }
+
+  private prepare(targetElement: HTMLElement) {
+    Padding.setState(this, targetElement);
+    Highlight.setState(this, targetElement);
+    if (Elements.isPrimitiveElement(targetElement)) {
+      this._primitiveElement = targetElement as HTMLInputElement;
+    } else {
+      this._genericElement = targetElement;
+    }
   }
 
   resetRecording(options?: Options) {
@@ -106,7 +118,7 @@ export abstract class Speech {
       }
       this.spansPopulated = false;
     }
-    EventListeners.remove(this, this._genericElement || this._primitiveElement);
+    EventListeners.remove(this);
   }
 
   private resetState(isDuringReset?: boolean) {

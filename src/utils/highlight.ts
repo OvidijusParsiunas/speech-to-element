@@ -1,3 +1,4 @@
+import {Elements} from './elements';
 import {Speech} from '../speech';
 import {Cursor} from './cursor';
 
@@ -21,7 +22,7 @@ export class Highlight {
 
   public static setState(speech: Speech, element: HTMLElement) {
     if (document.activeElement === element) {
-      if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+      if (Elements.isPrimitiveElement(element)) {
         Highlight.setStateForPrimitive(speech, element as HTMLInputElement);
       } else {
         Highlight.setStateForGeneric(speech, element);

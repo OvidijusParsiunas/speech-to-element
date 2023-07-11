@@ -13,9 +13,12 @@ export interface TextColor {
   final?: string;
 }
 
+export interface WebSpeechAPIOptions {
+  lang?: string;
+}
+
 export interface Options {
-  grammar?: string[];
-  element?: HTMLElement;
+  element?: HTMLElement | HTMLElement[];
   onResult?: OnResult;
   onError?: OnError;
   // WebSpeechAPI
@@ -27,5 +30,4 @@ export interface Options {
   stopAfterSilenceMS?: number;
   // need to define text for lower and upper cases
   translations?: Translations;
-  anyElement?: boolean;
 }

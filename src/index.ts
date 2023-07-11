@@ -1,5 +1,5 @@
+import {Options, WebSpeechAPIOptions} from './types/options';
 import {WebSpeechAPI} from './webSpeechAPI/webSpeechAPI';
-import {Options} from './types/options';
 import {Speech} from './speech';
 
 export default class SpeechToElement {
@@ -13,7 +13,7 @@ export default class SpeechToElement {
     }
   }
 
-  public static start(options?: Options) {
+  public static start(options?: Options & WebSpeechAPIOptions) {
     this._service = new WebSpeechAPI();
     this._service.start(options);
   }
