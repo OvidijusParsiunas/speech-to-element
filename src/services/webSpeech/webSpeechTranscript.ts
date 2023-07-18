@@ -1,5 +1,5 @@
-import {Translations} from '../types/options';
-import {Translate} from '../utils/translate';
+import {Translations} from '../../types/options';
+import {Translate} from '../../utils/translate';
 
 export type ExtractFunc = (
   event: SpeechRecognitionEvent,
@@ -7,7 +7,7 @@ export type ExtractFunc = (
   translations?: Translations
 ) => {interimTranscript: string; finalTranscript: string};
 
-export class WebSpeechAPITranscript {
+export class WebSpeechTranscript {
   public static extract(event: SpeechRecognitionEvent, finalTranscript: string, translations?: Translations) {
     let interimTranscript = '';
     for (let i = event.resultIndex; i < event.results.length; ++i) {

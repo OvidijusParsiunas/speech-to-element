@@ -1,9 +1,9 @@
-import {OnError, Options, Translations, WebSpeechAPIOptions} from '../types/options';
-import {ExtractFunc, WebSpeechAPITranscript} from './webSpeechAPITranscript';
-import {Browser} from '../utils/browser';
-import {Speech} from '../speech';
+import {OnError, Options, Translations, WebSpeechAPIOptions} from '../../types/options';
+import {ExtractFunc, WebSpeechTranscript} from './webSpeechTranscript';
+import {Browser} from '../../utils/browser';
+import {Speech} from '../../speech';
 
-export class WebSpeechAPI extends Speech {
+export class WebSpeech extends Speech {
   private _service?: SpeechRecognition;
   private _onError?: OnError;
   private _translations?: Translations;
@@ -11,7 +11,7 @@ export class WebSpeechAPI extends Speech {
 
   constructor() {
     super();
-    this._extractText = Browser.IS_SAFARI ? WebSpeechAPITranscript.extractSafari : WebSpeechAPITranscript.extract;
+    this._extractText = Browser.IS_SAFARI ? WebSpeechTranscript.extractSafari : WebSpeechTranscript.extract;
   }
 
   start(options?: Options & WebSpeechAPIOptions) {
@@ -23,7 +23,7 @@ export class WebSpeechAPI extends Speech {
   }
 
   private instantiateService(options?: Options & WebSpeechAPIOptions) {
-    const speechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+    const speechRecognition = WebSpeech.getAPI();
     if (!speechRecognition) {
       console.error('Speech Recognition is unsupported');
     } else {
@@ -68,7 +68,7 @@ export class WebSpeechAPI extends Speech {
     this.finalise(isDuringReset);
   }
 
-  static isSupported(): boolean {
-    return !!window.webkitSpeechRecognition || window.SpeechRecognition;
+  static getAPI() {
+    return window.webkitSpeechRecognition || window.SpeechRecognition;
   }
 }
