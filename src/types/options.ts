@@ -13,8 +13,20 @@ export interface TextColor {
   final?: string;
 }
 
+export interface AzureOptions {
+  retrieveToken?: () => string;
+  subscriptionKey?: string;
+  token?: string;
+  region?: string;
+  // https://docs.microsoft.com/azure/cognitive-services/speech-service/supported-languages
+  language?: string;
+}
+
 export interface WebSpeechAPIOptions {
-  lang?: string;
+  // BCP 47 language tag
+  // If not specified, this defaults to the HTML lang (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html#lang)
+  // attribute value, or the user agent's language setting if that isn't set either.
+  language?: string;
 }
 
 export interface Options {

@@ -30,7 +30,7 @@ export class WebSpeech extends Speech {
       this._service = new speechRecognition();
       this._service.continuous = true;
       this._service.interimResults = options?.displayInterimResults ?? true;
-      this._service.lang = options?.lang || 'en-US';
+      this._service.lang = options?.language || 'en-US';
       this.setEvents();
     }
   }

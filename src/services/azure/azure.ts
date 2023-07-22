@@ -1,52 +1,40 @@
-import {Recognizer, SpeechConfig, SpeechRecognitionEventArgs} from 'microsoft-cognitiveservices-speech-sdk';
-import {OnError, Options, Translations, WebSpeechAPIOptions} from '../../types/options';
+import {Recognizer, SpeechRecognitionEventArgs} from 'microsoft-cognitiveservices-speech-sdk';
+import {AzureOptions, OnError, Options, Translations} from '../../types/options';
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
+import {AzureSpeechConfig} from './azureSpeechConfig';
+import {AzureTranscript} from './azureTranscript';
 import {Speech} from '../../speech';
 
 export class Azure extends Speech {
   private _service?: sdk.SpeechRecognizer;
   private _onError?: OnError;
-  private readonly _translations?: Translations;
+  private _translations?: Translations;
 
-  constructor() {
-    super();
-  }
-
-  start(options?: Options & WebSpeechAPIOptions) {
-    console.log(sdk);
+  start(options: Options & AzureOptions) {
     this.prepareBeforeStart(options);
     this.instantiateService(options);
     this._onError = options?.onError;
     this._service?.startContinuousRecognitionAsync(() => {}, this.error);
-    // this._translations = options?.translations;
+    this._translations = options?.translations;
   }
 
-  private instantiateService(options?: Options & WebSpeechAPIOptions) {
+  private instantiateService(options: Options & AzureOptions) {
     const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
-    const speechConfig = Azure.getSpeechConfig(sdk.SpeechConfig);
+    const speechConfig = AzureSpeechConfig.get(sdk.SpeechConfig, options);
     if (!speechConfig) return;
 
-    const reco = new sdk.SpeechRecognizer(speechConfig, audioConfig);
-    this.setEvents(reco);
-    this._service = reco;
+    const recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
+    this.setEvents(recognizer);
+    this._service = recognizer;
     // const speechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
     // if (!speechRecognition) {
     //   console.error('Speech Recognition is unsupported');
     // } else {
     //   this._service = new speechRecognition();
     //   this._service.continuous = true;
-    //   this._service.interimResults = options?.displayInterimResults ?? true;
     //   this._service.lang = options?.lang || 'en-US';
     //   this.setEvents();
     // }
-  }
-
-  private static getSpeechConfig(sdkConfigType: typeof SpeechConfig) {
-    // const speechConfig = sdkConfigType.fromAuthorizationToken(authorizationToken, regionOptions.value);
-    const speechConfig = sdkConfigType.fromSubscription('', 'eastus');
-    // speechConfig.outputFormat = sdk.OutputFormat.Detailed;
-    // speechConfig.speechRecognitionLanguage = languageOptions.value;
-    return speechConfig;
   }
 
   private setEvents(recognizer: sdk.SpeechRecognizer) {
@@ -67,8 +55,11 @@ export class Azure extends Speech {
     // }
   }
 
+  // prettier-ignore
   private onRecognizing(_: Recognizer, event: SpeechRecognitionEventArgs) {
-    this.updateElements(event.result.text, this.finalTranscript);
+    const {interimTranscript, finalTranscript} = AzureTranscript.extract(
+      event.result.text, this.finalTranscript, false, this._translations);
+    this.updateElements(interimTranscript, finalTranscript);
   }
 
   // WORK - huge opportunity to fix this in the repo!!!!!
@@ -77,6 +68,7 @@ export class Azure extends Speech {
   //     onRecognizedResult(recognitionEventArgs.result);
   // }
 
+  // prettier-ignore
   private onRecognized(_: Recognizer, event: SpeechRecognitionEventArgs) {
     const result = event.result;
     switch (result.reason) {
@@ -84,7 +76,9 @@ export class Azure extends Speech {
         break;
       case sdk.ResultReason.RecognizedSpeech:
         if (result.text) {
-          this.updateElements('', `${this.finalTranscript + result.text} `);
+          const {interimTranscript, finalTranscript} = AzureTranscript.extract(
+            result.text, this.finalTranscript, true, this._translations);
+          this.updateElements(interimTranscript, finalTranscript);
         }
         break;
     }
