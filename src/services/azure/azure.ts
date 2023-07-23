@@ -6,6 +6,8 @@ import {AzureTranscript} from './azureTranscript';
 import {Speech} from '../../speech';
 
 export class Azure extends Speech {
+  // when service is manually stopped events are still fired, this is used to stop more text being added
+  private _stopping?: boolean;
   private _service?: sdk.SpeechRecognizer;
   private _onError?: OnError;
   private _translations?: Translations;
@@ -14,27 +16,18 @@ export class Azure extends Speech {
     this.prepareBeforeStart(options);
     this.instantiateService(options);
     this._onError = options?.onError;
-    this._service?.startContinuousRecognitionAsync(() => {}, this.error);
     this._translations = options?.translations;
+    this._service?.startContinuousRecognitionAsync(() => {}, this.error);
   }
 
   private instantiateService(options: Options & AzureOptions) {
     const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
     const speechConfig = AzureSpeechConfig.get(sdk.SpeechConfig, options);
-    if (!speechConfig) return;
-
-    const recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
-    this.setEvents(recognizer);
-    this._service = recognizer;
-    // const speechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
-    // if (!speechRecognition) {
-    //   console.error('Speech Recognition is unsupported');
-    // } else {
-    //   this._service = new speechRecognition();
-    //   this._service.continuous = true;
-    //   this._service.lang = options?.lang || 'en-US';
-    //   this.setEvents();
-    // }
+    if (speechConfig) {
+      const recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
+      this.setEvents(recognizer);
+      this._service = recognizer;
+    }
   }
 
   private setEvents(recognizer: sdk.SpeechRecognizer) {
@@ -57,6 +50,7 @@ export class Azure extends Speech {
 
   // prettier-ignore
   private onRecognizing(_: Recognizer, event: SpeechRecognitionEventArgs) {
+    if (this._stopping) return;
     const {interimTranscript, finalTranscript} = AzureTranscript.extract(
       event.result.text, this.finalTranscript, false, this._translations);
     this.updateElements(interimTranscript, finalTranscript);
@@ -75,7 +69,7 @@ export class Azure extends Speech {
       case sdk.ResultReason.Canceled:
         break;
       case sdk.ResultReason.RecognizedSpeech:
-        if (result.text) {
+        if (result.text && !this._stopping) {
           const {interimTranscript, finalTranscript} = AzureTranscript.extract(
             result.text, this.finalTranscript, true, this._translations);
           this.updateElements(interimTranscript, finalTranscript);
@@ -96,16 +90,17 @@ export class Azure extends Speech {
   }
 
   private onSessionStopped() {
+    this._stopping = false;
     this.recognizing = false;
   }
 
   stop(isDuringReset?: boolean) {
+    this._stopping = true;
     this._service?.stopContinuousRecognitionAsync();
     this.finalise(isDuringReset);
   }
 
   static isSupported(): boolean {
-    // WORK - check if key is valid
     return !!window.webkitSpeechRecognition || window.SpeechRecognition;
   }
 

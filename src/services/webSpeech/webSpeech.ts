@@ -4,6 +4,8 @@ import {Browser} from '../../utils/browser';
 import {Speech} from '../../speech';
 
 export class WebSpeech extends Speech {
+  // when service is manually stopped events are still fired, this is used to stop more text being added
+  private _stopping?: boolean;
   private _service?: SpeechRecognition;
   private _onError?: OnError;
   private _translations?: Translations;
@@ -44,11 +46,12 @@ export class WebSpeech extends Speech {
     this._service.onerror = (event) => {
       // this error is thrown in Safari when the service is restarted
       if (Browser.IS_SAFARI && event.message === 'Another request is started') return;
-      console.error(event.message);
+      console.error(event);
       this._onError?.(event.message);
     };
 
     this._service.onend = () => {
+      if (this._stopping) this._stopping = false;
       this.recognizing = false;
     };
 
@@ -56,7 +59,8 @@ export class WebSpeech extends Speech {
       if (typeof event.results === 'undefined' && this._service) {
         this._service.onend = null;
         this._service.stop();
-      } else if (this._extractText) {
+        // when service is manually stopped - events are still fired
+      } else if (this._extractText && !this._stopping) {
         const {interimTranscript, finalTranscript} = this._extractText(event, this.finalTranscript, this._translations);
         this.updateElements(interimTranscript, finalTranscript);
       }
@@ -64,6 +68,7 @@ export class WebSpeech extends Speech {
   }
 
   stop(isDuringReset?: boolean) {
+    this._stopping = true;
     this._service?.stop();
     this.finalise(isDuringReset);
   }

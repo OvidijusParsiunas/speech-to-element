@@ -12,7 +12,7 @@ export class AzureSpeechConfig {
       // here
       return null;
     }
-    if (!options.subscriptionKey || !options.token) {
+    if (!options.subscriptionKey && !options.token) {
       console.error(`Please define a 'subscriptionKey' or 'token' property - more info: ${README_URL}`);
       return null;
     }

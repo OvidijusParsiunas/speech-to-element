@@ -74,6 +74,9 @@ export abstract class Speech {
     }
   }
 
+  // there was an attempt to optimize this by not having to restart the service and just reset state:
+  // unfortunately it did not work because the service would still continue firing the intermediate and final results
+  // into the new position
   resetRecording(options?: Options) {
     this.stop(true);
     this.resetState(true);
