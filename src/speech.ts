@@ -2,7 +2,6 @@ import {EventListeners} from './utils/eventListeners';
 import {OnResult, Options} from './types/options';
 import {StopTimeout} from './utils/stopTimeout';
 import {Highlight} from './utils/highlight';
-import {Callbacks} from './utils/callbacks';
 import {Elements} from './utils/elements';
 import {Padding} from './utils/padding';
 import {Browser} from './utils/browser';
@@ -36,6 +35,7 @@ export abstract class Speech {
   stopTimeoutMS?: number;
   insertInCursorLocation = true;
   private _onResult?: OnResult;
+  scrollIntoView = true;
 
   constructor() {
     this.resetState();
@@ -62,6 +62,7 @@ export abstract class Speech {
     if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMS);
     this._onResult ??= options?.onResult;
     if (options?.insertInCursorLocation !== undefined) this.insertInCursorLocation = options.insertInCursorLocation;
+    if (options?.scrollIntoView !== undefined) this.scrollIntoView = options.scrollIntoView;
   }
 
   private prepare(targetElement: HTMLElement) {
@@ -83,31 +84,40 @@ export abstract class Speech {
     this.start(options);
   }
 
-  updateElements(interimTranscript: string, finalTranscript: string) {
+  updateElements(interimTranscript: string, finalTranscript: string, newText: string) {
     const newFinalText = Text.capitalize(finalTranscript);
     if (this.finalTranscript === newFinalText && interimTranscript === '') return;
-    if (this._onResult) Callbacks.update(interimTranscript, finalTranscript, this._onResult);
+    this._onResult?.(newText, interimTranscript === '');
     StopTimeout.reset(this, this.stopTimeoutMS);
     this.finalTranscript = newFinalText;
     if (!this._displayInterimResults) interimTranscript = '';
     if (this._primitiveElement) {
-      if (this.isHighlighted) Highlight.removeForPrimitive(this, this._primitiveElement);
-      if (!this.primitiveTextRecorded) Padding.adjustStateForPrimitiveElement(this, this._primitiveElement);
-      const cursorLefSideText = this.startPadding + this.finalTranscript + interimTranscript;
-      this._primitiveElement.value = cursorLefSideText + this.endPadding;
-      Cursor.setOffsetForPrimitive(this._primitiveElement, cursorLefSideText.length + this.numberOfSpacesAfterNewText);
+      this.updatePrimitiveElement(this._primitiveElement, interimTranscript);
     } else if (this._genericElement) {
-      if (this.isHighlighted) Highlight.removeForGeneric(this, this._genericElement);
-      if (!this.spansPopulated) Elements.appendSpans(this, this._genericElement);
-      // for web speech api - safari only returns final text - no interim
-      const finalText = this.startPadding + Text.lineBreak(this.finalTranscript);
-      this.finalSpan.innerHTML = finalText;
-      const interimText = Text.lineBreak(interimTranscript) + this.endPadding;
-      this.interimSpan.innerHTML = interimText;
-      if (Browser.IS_SAFARI && this.insertInCursorLocation) {
-        Cursor.setOffsetForSafariGeneric(this._genericElement, finalText.length + interimText.length);
-      }
+      this.updateGenericElement(this._genericElement, interimTranscript);
     }
+  }
+
+  private updatePrimitiveElement(element: HTMLInputElement, interimTranscript: string) {
+    if (this.isHighlighted) Highlight.removeForPrimitive(this, element);
+    if (!this.primitiveTextRecorded) Padding.adjustStateForPrimitiveElement(this, element);
+    const cursorLefSideText = this.startPadding + this.finalTranscript + interimTranscript;
+    element.value = cursorLefSideText + this.endPadding;
+    Cursor.setOffsetForPrimitive(element, cursorLefSideText.length + this.numberOfSpacesAfterNewText, this.scrollIntoView);
+  }
+
+  private updateGenericElement(element: HTMLElement, interimTranscript: string) {
+    if (this.isHighlighted) Highlight.removeForGeneric(this, element);
+    if (!this.spansPopulated) Elements.appendSpans(this, element);
+    // for web speech api - safari only returns final text - no interim
+    const finalText = this.startPadding + Text.lineBreak(this.finalTranscript);
+    this.finalSpan.innerHTML = finalText;
+    const interimText = Text.lineBreak(interimTranscript) + this.endPadding;
+    this.interimSpan.innerHTML = interimText;
+    if (Browser.IS_SAFARI && this.insertInCursorLocation) {
+      Cursor.setOffsetForSafariGeneric(element, finalText.length + interimText.length);
+    }
+    if (this.scrollIntoView) this.interimSpan.scrollIntoView();
   }
 
   finalise(isDuringReset?: boolean) {

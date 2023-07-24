@@ -31,12 +31,15 @@ export interface WebSpeechAPIOptions {
 
 export interface Options {
   element?: HTMLElement | HTMLElement[];
+  // note that results are always final in safari
   onResult?: OnResult;
   onError?: OnError;
   // WebSpeechAPI
   // does not display text in safari if this is set to false
   displayInterimResults?: boolean;
   insertInCursorLocation?: boolean;
+  // default - true
+  scrollIntoView?: boolean;
   // only works for generic elements and not input, textarea
   textColor?: TextColor;
   stopAfterSilenceMS?: number;

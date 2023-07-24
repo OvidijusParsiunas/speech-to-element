@@ -33,10 +33,34 @@ export class Cursor {
     }
   }
 
-  public static setOffsetForPrimitive(element: HTMLInputElement, offset: number) {
+  // set to automatically scroll to cursor (scroll does not work in Safari)
+  public static setOffsetForPrimitive(element: HTMLInputElement, offset: number, scroll: boolean) {
+    if (scroll) element.blur();
     element.setSelectionRange(offset, offset);
     element.focus();
   }
+
+  // Scroll Input in Safari - does not work for TextArea and uses span which can have a different style
+  // private static getCursorOffsetFromLeft(inputElement: HTMLInputElement, position: number) {
+  //   // Get the value of the input element up to the cursor position
+  //   const valueUpToCursor = inputElement.value.substring(0, position);
+
+  //   // Create a temporary span element to measure the width of the text
+  //   const tempSpan = document.createElement('span');
+  //   tempSpan.textContent = valueUpToCursor;
+  //   tempSpan.style.visibility = 'hidden';
+  //   tempSpan.style.position = 'absolute';
+  //   document.body.appendChild(tempSpan);
+
+  //   // Measure the width of the text up to the cursor position
+  //   const offsetWidth = tempSpan.offsetWidth;
+  //   const offsetHeight = tempSpan.offsetHeight;
+
+  //   // Clean up the temporary span element
+  //   document.body.removeChild(tempSpan);
+
+  //   return {left: offsetWidth, top: offsetHeight};
+  // }
 
   public static getGenericElementCursorOffset(element: HTMLElement, selection: Selection, isStart: boolean) {
     let cursorOffset = 0;

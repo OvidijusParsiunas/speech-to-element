@@ -5,7 +5,8 @@ export type ExtractFunc = (
   event: SpeechRecognitionEvent,
   finalTranscript: string,
   translations?: Translations
-) => {interimTranscript: string; finalTranscript: string};
+  // newText is used to only send new text in onResult as finalTranscript is continuously accumulated
+) => {interimTranscript: string; finalTranscript: string; newText: string};
 
 export class WebSpeechTranscript {
   public static extract(event: SpeechRecognitionEvent, finalTranscript: string, translations?: Translations) {
@@ -19,7 +20,7 @@ export class WebSpeechTranscript {
         interimTranscript += newText;
       }
     }
-    return {interimTranscript, finalTranscript};
+    return {interimTranscript, finalTranscript, newText: interimTranscript || finalTranscript};
   }
 
   public static extractSafari(event: SpeechRecognitionEvent, _: string, translations?: Translations) {
@@ -30,6 +31,6 @@ export class WebSpeechTranscript {
       if (translations) newText = Translate.translate(newText, translations);
       finalTranscript += newText;
     }
-    return {interimTranscript, finalTranscript};
+    return {interimTranscript, finalTranscript, newText: interimTranscript || finalTranscript};
   }
 }

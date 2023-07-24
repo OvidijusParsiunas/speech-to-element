@@ -47,7 +47,7 @@ export class Highlight {
     if (selectionStart && selectionEnd) {
       const newValue = currentValue.substring(0, selectionStart) + currentValue.substring(selectionEnd);
       element.value = newValue;
-      Cursor.setOffsetForPrimitive(element, selectionStart);
+      Cursor.setOffsetForPrimitive(element, selectionStart, speech.scrollIntoView);
     }
     speech.isHighlighted = false;
   }

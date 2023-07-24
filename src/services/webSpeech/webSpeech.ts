@@ -55,14 +55,16 @@ export class WebSpeech extends Speech {
       this.recognizing = false;
     };
 
+    // prettier-ignore
     this._service.onresult = (event: SpeechRecognitionEvent) => {
       if (typeof event.results === 'undefined' && this._service) {
         this._service.onend = null;
         this._service.stop();
         // when service is manually stopped - events are still fired
       } else if (this._extractText && !this._stopping) {
-        const {interimTranscript, finalTranscript} = this._extractText(event, this.finalTranscript, this._translations);
-        this.updateElements(interimTranscript, finalTranscript);
+        const {interimTranscript, finalTranscript, newText} = this._extractText(
+          event, this.finalTranscript, this._translations);
+        this.updateElements(interimTranscript, finalTranscript, newText);
       }
     };
   }

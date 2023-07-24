@@ -51,9 +51,9 @@ export class Azure extends Speech {
   // prettier-ignore
   private onRecognizing(_: Recognizer, event: SpeechRecognitionEventArgs) {
     if (this._stopping) return;
-    const {interimTranscript, finalTranscript} = AzureTranscript.extract(
+    const {interimTranscript, finalTranscript, newText} = AzureTranscript.extract(
       event.result.text, this.finalTranscript, false, this._translations);
-    this.updateElements(interimTranscript, finalTranscript);
+    this.updateElements(interimTranscript, finalTranscript, newText);
   }
 
   // WORK - huge opportunity to fix this in the repo!!!!!
@@ -70,9 +70,9 @@ export class Azure extends Speech {
         break;
       case sdk.ResultReason.RecognizedSpeech:
         if (result.text && !this._stopping) {
-          const {interimTranscript, finalTranscript} = AzureTranscript.extract(
+          const {interimTranscript, finalTranscript, newText} = AzureTranscript.extract(
             result.text, this.finalTranscript, true, this._translations);
-          this.updateElements(interimTranscript, finalTranscript);
+          this.updateElements(interimTranscript, finalTranscript, newText);
         }
         break;
     }
