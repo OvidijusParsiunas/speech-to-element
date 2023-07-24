@@ -1,4 +1,4 @@
-import {Options, WebSpeechAPIOptions} from './types/options';
+import {AzureOptions, Options, WebSpeechAPIOptions} from './types/options';
 import {WebSpeech} from './services/webSpeech/webSpeech';
 import {Azure} from './services/azure/azure';
 import {Speech} from './speech';
@@ -6,14 +6,18 @@ import {Speech} from './speech';
 export default class SpeechToElement {
   private static _service: Speech | undefined;
 
-  public static toggle(service: 'webspeech' | 'azure', options?: Options) {
+  public static toggle(service: 'webspeech', options?: Options & WebSpeechAPIOptions): void;
+  public static toggle(service: 'azure', options: Options & AzureOptions): void;
+  public static toggle(service: 'webspeech' | 'azure', options?: Options & WebSpeechAPIOptions & AzureOptions) {
     const processedServiceName = service.toLocaleLowerCase().trim();
     if (this._service?.recognizing) {
       this._service.stop();
     } else if (processedServiceName === 'webspeech') {
       SpeechToElement.startWebSpeech(options);
     } else if (processedServiceName === 'azure') {
-      SpeechToElement.startAzure(options);
+      SpeechToElement.startAzure(options as Options);
+    } else {
+      console.error("service not found - must be either 'webspeech' or 'azure'");
     }
   }
 
@@ -27,10 +31,14 @@ export default class SpeechToElement {
     return !!WebSpeech.getAPI();
   }
 
-  public static startAzure(options?: Options & WebSpeechAPIOptions) {
+  public static startAzure(options: Options & AzureOptions) {
     SpeechToElement.stop();
     this._service = new Azure();
     this._service.start(options);
+  }
+
+  public static isAzureSupported() {
+    return !!Azure.getAPI();
   }
 
   public static stop() {
@@ -39,3 +47,5 @@ export default class SpeechToElement {
     }
   }
 }
+
+module.exports = SpeechToElement;

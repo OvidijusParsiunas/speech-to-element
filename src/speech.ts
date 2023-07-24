@@ -1,5 +1,5 @@
+import {OnError, OnResult, Options} from './types/options';
 import {EventListeners} from './utils/eventListeners';
-import {OnResult, Options} from './types/options';
 import {StopTimeout} from './utils/stopTimeout';
 import {Highlight} from './utils/highlight';
 import {Elements} from './utils/elements';
@@ -28,14 +28,18 @@ export abstract class Speech {
   isHighlighted = false;
   primitiveTextRecorded = false;
   recognizing = false;
-  mouseDownElement?: HTMLElement;
+  mouseDownElement?: Element;
   private _displayInterimResults = true;
   private _finalTextColor?: string;
-  stopTimeout?: number;
+  stopTimeout?: NodeJS.Timeout;
   stopTimeoutMS?: number;
   insertInCursorLocation = true;
   private _onResult?: OnResult;
   scrollIntoView = true;
+  private _onStart?: () => void;
+  private _onStop?: () => void;
+  private _onError?: OnError;
+  private _isRestarting = false;
 
   constructor() {
     this.resetState();
@@ -49,9 +53,9 @@ export abstract class Speech {
         const focusedElement = options.element.find((element) => element === document.activeElement);
         const targetElement = focusedElement || options.element[0];
         if (!targetElement) return;
-        this.prepare(targetElement);
+        this.prepare(targetElement as HTMLElement);
       } else {
-        this.prepare(options.element);
+        this.prepare(options.element as HTMLElement);
       }
     }
     if (options?.displayInterimResults !== undefined) this._displayInterimResults = options.displayInterimResults;
@@ -63,6 +67,9 @@ export abstract class Speech {
     this._onResult ??= options?.onResult;
     if (options?.insertInCursorLocation !== undefined) this.insertInCursorLocation = options.insertInCursorLocation;
     if (options?.scrollIntoView !== undefined) this.scrollIntoView = options.scrollIntoView;
+    this._onStart = options?.onStart;
+    this._onStop = options?.onStop;
+    this._onError = options?.onError;
   }
 
   private prepare(targetElement: HTMLElement) {
@@ -79,6 +86,7 @@ export abstract class Speech {
   // unfortunately it did not work because the service would still continue firing the intermediate and final results
   // into the new position
   resetRecording(options?: Options) {
+    this._isRestarting = true;
     this.stop(true);
     this.resetState(true);
     this.start(options);
@@ -146,6 +154,29 @@ export abstract class Speech {
     this.primitiveTextRecorded = false;
     this.numberOfSpacesAfterNewText = 0;
     if (!isDuringReset) this.stopTimeout = undefined;
+  }
+
+  setStateOnStart() {
+    this.recognizing = true;
+    if (this._isRestarting) {
+      // this is the only place where this.isRestarting needs to be set to false
+      // as whn something goes wrong or the user is manually restarting - a new speech service will be initialized
+      this._isRestarting = false;
+    } else {
+      this._onStart?.();
+    }
+  }
+
+  setStateOnStop() {
+    this.recognizing = false;
+    if (!this._isRestarting) {
+      this._onStop?.();
+    }
+  }
+
+  setStateOnError(details: string) {
+    this._onError?.(details);
+    this.recognizing = false;
   }
 
   abstract start(options?: Options): void;

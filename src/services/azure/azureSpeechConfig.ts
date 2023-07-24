@@ -3,23 +3,27 @@ import {AzureOptions} from '../../types/options';
 import {README_URL} from '../../consts/readme';
 
 export class AzureSpeechConfig {
-  private static getNewSpeechConfig(sdkSpeechConfig: typeof SpeechConfig, options: AzureOptions) {
+  public static validateOptions(onError: (details: string) => void, options?: AzureOptions) {
     if (!options) {
-      console.error(`Please provide subscription details - more info: ${README_URL}`);
-      return null;
+      onError(`Please provide subscription details - more info: ${README_URL}`);
+      return false;
     }
     if (options.retrieveToken) {
       // here
-      return null;
+      return false;
     }
     if (!options.subscriptionKey && !options.token) {
-      console.error(`Please define a 'subscriptionKey' or 'token' property - more info: ${README_URL}`);
-      return null;
+      onError(`Please define a 'subscriptionKey' or 'token' property - more info: ${README_URL}`);
+      return false;
     }
     if (!options.region) {
-      console.error(`Please define a 'region' property - more info: ${README_URL}`);
-      return null;
+      onError(`Please define a 'region' property - more info: ${README_URL}`);
+      return false;
     }
+  }
+
+  private static getNewSpeechConfig(sdkSpeechConfig: typeof SpeechConfig, options: AzureOptions) {
+    if (!options.region) return;
     // WORK - error handling for incorrect key
     if (options.subscriptionKey) {
       return sdkSpeechConfig.fromSubscription(options.subscriptionKey, options.region);

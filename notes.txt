@@ -1,0 +1,17 @@
+How to run the package:
+
+npm install
+
+npm run build:watch
+
+npm run start
+
+
+How to bundle the module:
+
+npm run build:module
+
+
+How to bundle into a single file:
+
+npm run build:bundle

@@ -2,7 +2,7 @@ import {TextColor} from '../types/options';
 import {Speech} from '../speech';
 
 export class Elements {
-  public static isPrimitiveElement(element: HTMLElement) {
+  public static isPrimitiveElement(element: Element) {
     return element.tagName === 'INPUT' || element.tagName === 'TEXTAREA';
   }
 

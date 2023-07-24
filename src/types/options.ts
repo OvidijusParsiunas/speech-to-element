@@ -30,8 +30,9 @@ export interface WebSpeechAPIOptions {
 }
 
 export interface Options {
-  element?: HTMLElement | HTMLElement[];
-  // note that results are always final in safari
+  element?: Element | Element[];
+  onStart?: () => void;
+  onStop?: () => void;
   onResult?: OnResult;
   onError?: OnError;
   // WebSpeechAPI

@@ -1,30 +1,48 @@
 import {Recognizer, SpeechRecognitionEventArgs} from 'microsoft-cognitiveservices-speech-sdk';
-import {AzureOptions, OnError, Options, Translations} from '../../types/options';
+import {AzureOptions, Options, Translations} from '../../types/options';
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import {AzureSpeechConfig} from './azureSpeechConfig';
 import {AzureTranscript} from './azureTranscript';
 import {Speech} from '../../speech';
 
+declare global {
+  interface Window {
+    SpeechSDK: typeof sdk;
+  }
+}
+
 export class Azure extends Speech {
   // when service is manually stopped events are still fired, this is used to stop more text being added
   private _stopping?: boolean;
   private _service?: sdk.SpeechRecognizer;
-  private _onError?: OnError;
   private _translations?: Translations;
 
   start(options: Options & AzureOptions) {
-    this.prepareBeforeStart(options);
-    this.instantiateService(options);
-    this._onError = options?.onError;
-    this._translations = options?.translations;
-    this._service?.startContinuousRecognitionAsync(() => {}, this.error);
+    if (this.validate(options)) {
+      this.prepareBeforeStart(options);
+      this.instantiateService(options);
+      this._translations = options?.translations;
+      this._service?.startContinuousRecognitionAsync(() => {}, this.error);
+    }
+  }
+
+  private validate(options: Options & AzureOptions) {
+    if (Azure.getAPI()) {
+      this.moduleNotFound();
+      return false;
+    }
+    if (AzureSpeechConfig.validateOptions(this.error, options)) {
+      return false;
+    }
+    return true;
   }
 
   private instantiateService(options: Options & AzureOptions) {
-    const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
-    const speechConfig = AzureSpeechConfig.get(sdk.SpeechConfig, options);
+    const speechSDK = Azure.getAPI();
+    const audioConfig = speechSDK.AudioConfig.fromDefaultMicrophoneInput();
+    const speechConfig = AzureSpeechConfig.get(speechSDK.SpeechConfig, options);
     if (speechConfig) {
-      const recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
+      const recognizer = new speechSDK.SpeechRecognizer(speechConfig, audioConfig);
       this.setEvents(recognizer);
       this._service = recognizer;
     }
@@ -66,9 +84,9 @@ export class Azure extends Speech {
   private onRecognized(_: Recognizer, event: SpeechRecognitionEventArgs) {
     const result = event.result;
     switch (result.reason) {
-      case sdk.ResultReason.Canceled:
+      case window.SpeechSDK.ResultReason.Canceled:
         break;
-      case sdk.ResultReason.RecognizedSpeech:
+      case window.SpeechSDK.ResultReason.RecognizedSpeech:
         if (result.text && !this._stopping) {
           const {interimTranscript, finalTranscript, newText} = AzureTranscript.extract(
             result.text, this.finalTranscript, true, this._translations);
@@ -79,19 +97,18 @@ export class Azure extends Speech {
   }
 
   private onCanceled(_: Recognizer, event: sdk.SpeechRecognitionCanceledEventArgs) {
-    if (event.reason === sdk.CancellationReason.Error) {
+    if (event.reason === window.SpeechSDK.CancellationReason.Error) {
       this.error(event.errorDetails);
     }
   }
 
-  // WORK - include an API for when the service is loading
   private onSessionStarted() {
-    this.recognizing = true;
+    this.setStateOnStart();
   }
 
   private onSessionStopped() {
     this._stopping = false;
-    this.recognizing = false;
+    this.setStateOnStop();
   }
 
   stop(isDuringReset?: boolean) {
@@ -100,13 +117,21 @@ export class Azure extends Speech {
     this.finalise(isDuringReset);
   }
 
-  static isSupported(): boolean {
-    return !!window.webkitSpeechRecognition || window.SpeechRecognition;
+  static getAPI(): typeof sdk {
+    return window.SpeechSDK;
+  }
+
+  private moduleNotFound() {
+    console.error('speech recognition module not found:');
+    console.error(
+      "please install the 'microsoft-cognitiveservices-speech-sdk' npm package " +
+        'or add a script tag: <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>'
+    );
+    this.setStateOnError('speech recognition module not found');
   }
 
   private error(details: string) {
     console.error(details);
-    this._onError?.(details);
-    this.recognizing = false;
+    this.setStateOnError(details);
   }
 }

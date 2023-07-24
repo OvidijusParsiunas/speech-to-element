@@ -7,8 +7,11 @@ export default defineConfig({
     lib: {
       entry: 'src/index.ts',
       formats: ['es'],
-      fileName: 'speechToElement',
+      fileName: 'index',
     },
+  },
+  define: {
+    module: 'window',
   },
   plugins: [
     dts({

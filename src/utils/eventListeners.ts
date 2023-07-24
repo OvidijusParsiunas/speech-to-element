@@ -2,9 +2,9 @@ import {Options} from '../types/options';
 import {Speech} from '../speech';
 
 export class EventListeners {
-  private static KEY_DOWN_TIMEOUT: number | null = null;
+  private static KEY_DOWN_TIMEOUT: NodeJS.Timeout | null = null;
 
-  private static getElementIfFocusedOnAvailable(available: HTMLElement | HTMLElement[], focused: HTMLElement) {
+  private static getElementIfFocusedOnAvailable(available: Element | Element[], focused: Element) {
     if (Array.isArray(available)) {
       return available.find((element) => focused === element);
     }
@@ -13,7 +13,7 @@ export class EventListeners {
 
   private static keyDownWindow(this: Speech, options: Options) {
     if (!options.element) return;
-    if (EventListeners.getElementIfFocusedOnAvailable(options.element, document.activeElement as HTMLElement)) {
+    if (EventListeners.getElementIfFocusedOnAvailable(options.element, document.activeElement as Element)) {
       if (EventListeners.KEY_DOWN_TIMEOUT !== null) clearTimeout(EventListeners.KEY_DOWN_TIMEOUT);
       EventListeners.KEY_DOWN_TIMEOUT = setTimeout(() => {
         EventListeners.KEY_DOWN_TIMEOUT = null;
@@ -22,8 +22,8 @@ export class EventListeners {
     }
   }
 
-  private static mouseDownWindow(this: Speech, available: HTMLElement | HTMLElement[], event: MouseEvent) {
-    this.mouseDownElement = EventListeners.getElementIfFocusedOnAvailable(available, event.target as HTMLElement);
+  private static mouseDownWindow(this: Speech, available: Element | Element[], event: MouseEvent) {
+    this.mouseDownElement = EventListeners.getElementIfFocusedOnAvailable(available, event.target as Element);
   }
 
   private static mouseUpWindow(this: Speech, options?: Options) {
