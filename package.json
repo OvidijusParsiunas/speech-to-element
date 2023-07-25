@@ -1,6 +1,6 @@
 {
   "name": "speech-to-element",
-  "version": "0.1.16",
+  "version": "0.1.23",
   "description": "Transcribe speech and place the result text directly into a target element",
   "main": "dist/index.js",
   "scripts": {

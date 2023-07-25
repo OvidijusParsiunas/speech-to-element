@@ -27,14 +27,11 @@ export class Azure extends Speech {
   }
 
   private validate(options: Options & AzureOptions) {
-    if (Azure.getAPI()) {
+    if (!Azure.getAPI()) {
       this.moduleNotFound();
       return false;
     }
-    if (AzureSpeechConfig.validateOptions(this.error, options)) {
-      return false;
-    }
-    return true;
+    return AzureSpeechConfig.validateOptions(this.error, options);
   }
 
   private instantiateService(options: Options & AzureOptions) {

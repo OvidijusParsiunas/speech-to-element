@@ -38,6 +38,7 @@ export interface Options {
   // WebSpeechAPI
   // does not display text in safari if this is set to false
   displayInterimResults?: boolean;
+  // does not work for shadow elements as getSelection is not supported natively for all browsers
   insertInCursorLocation?: boolean;
   // default - true
   scrollIntoView?: boolean;

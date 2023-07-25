@@ -125,7 +125,10 @@ export abstract class Speech {
     if (Browser.IS_SAFARI && this.insertInCursorLocation) {
       Cursor.setOffsetForSafariGeneric(element, finalText.length + interimText.length);
     }
-    if (this.scrollIntoView) this.interimSpan.scrollIntoView();
+    if (this.scrollIntoView) {
+      // false to scroll to the bottom of span and true if interim is empty as false does not scroll then
+      this.interimSpan.scrollIntoView(Browser.IS_SAFARI ? false : interimTranscript === '');
+    }
   }
 
   finalise(isDuringReset?: boolean) {

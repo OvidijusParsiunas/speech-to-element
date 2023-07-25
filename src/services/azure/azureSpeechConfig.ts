@@ -20,6 +20,7 @@ export class AzureSpeechConfig {
       onError(`Please define a 'region' property - more info: ${README_URL}`);
       return false;
     }
+    return true;
   }
 
   private static getNewSpeechConfig(sdkSpeechConfig: typeof SpeechConfig, options: AzureOptions) {
