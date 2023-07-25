@@ -1,5 +1,6 @@
-import {OnError, OnResult, Options} from './types/options';
+import {OnError, OnPreResult, OnResult, Options} from './types/options';
 import {EventListeners} from './utils/eventListeners';
+import {PreResultUtils} from './utils/preResultUtils';
 import {StopTimeout} from './utils/stopTimeout';
 import {Highlight} from './utils/highlight';
 import {Elements} from './utils/elements';
@@ -34,12 +35,14 @@ export abstract class Speech {
   stopTimeout?: NodeJS.Timeout;
   stopTimeoutMS?: number;
   insertInCursorLocation = true;
-  private _onResult?: OnResult;
   scrollIntoView = true;
+  private _onResult?: OnResult;
+  private _onPreResult?: OnPreResult;
   private _onStart?: () => void;
   private _onStop?: () => void;
   private _onError?: OnError;
   private _isRestarting = false;
+  private _options?: Options;
 
   constructor() {
     this.resetState();
@@ -64,12 +67,14 @@ export abstract class Speech {
       Elements.applyCustomColors(this, options.textColor);
     }
     if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMS);
-    this._onResult ??= options?.onResult;
     if (options?.insertInCursorLocation !== undefined) this.insertInCursorLocation = options.insertInCursorLocation;
     if (options?.scrollIntoView !== undefined) this.scrollIntoView = options.scrollIntoView;
+    this._onResult = options?.onResult;
+    this._onPreResult = options?.onPreResult;
     this._onStart = options?.onStart;
     this._onStop = options?.onStop;
     this._onError = options?.onError;
+    this._options = options;
   }
 
   private prepare(targetElement: HTMLElement) {
@@ -92,9 +97,12 @@ export abstract class Speech {
     this.start(options);
   }
 
+  // prettier-ignore
   updateElements(interimTranscript: string, finalTranscript: string, newText: string) {
     const newFinalText = Text.capitalize(finalTranscript);
     if (this.finalTranscript === newFinalText && interimTranscript === '') return;
+    if (this._onPreResult
+      && !PreResultUtils.process(this, newText, interimTranscript === '', this._onPreResult, this._options)) return;
     this._onResult?.(newText, interimTranscript === '');
     StopTimeout.reset(this, this.stopTimeoutMS);
     this.finalTranscript = newFinalText;

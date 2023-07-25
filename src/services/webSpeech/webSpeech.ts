@@ -1,4 +1,4 @@
-import {Options, Translations, WebSpeechAPIOptions} from '../../types/options';
+import {Options, Translations, WebSpeechOptions} from '../../types/options';
 import {ExtractFunc, WebSpeechTranscript} from './webSpeechTranscript';
 import {Browser} from '../../utils/browser';
 import {Speech} from '../../speech';
@@ -15,7 +15,7 @@ export class WebSpeech extends Speech {
     this._extractText = Browser.IS_SAFARI ? WebSpeechTranscript.extractSafari : WebSpeechTranscript.extract;
   }
 
-  start(options?: Options & WebSpeechAPIOptions) {
+  start(options?: Options & WebSpeechOptions) {
     if (this.validate()) {
       this.prepareBeforeStart(options);
       this.instantiateService(options);
@@ -32,7 +32,7 @@ export class WebSpeech extends Speech {
     return true;
   }
 
-  private instantiateService(options?: Options & WebSpeechAPIOptions) {
+  private instantiateService(options?: Options & WebSpeechOptions) {
     const speechRecognition = WebSpeech.getAPI();
     this._service = new speechRecognition();
     this._service.continuous = true;

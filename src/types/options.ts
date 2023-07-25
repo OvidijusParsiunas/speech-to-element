@@ -4,9 +4,17 @@ export interface Translations {
 
 export type OnError = (message: string) => void;
 
-// WebSpeechAPI
+// WebSpeech
 // interim results are returned as final for Safari
 export type OnResult = (text: string, isFinal: boolean) => void;
+
+// WebSpeech
+// interim results are returned as final for Safari
+// continue/stop/restart and choose whether the text is displayed
+export type OnPreResult = (
+  text: string,
+  isFinal: boolean
+) => void | {stop?: boolean; restart?: boolean; displayText?: boolean};
 
 export interface TextColor {
   interim?: string;
@@ -22,7 +30,7 @@ export interface AzureOptions {
   language?: string;
 }
 
-export interface WebSpeechAPIOptions {
+export interface WebSpeechOptions {
   // BCP 47 language tag
   // If not specified, this defaults to the HTML lang (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html#lang)
   // attribute value, or the user agent's language setting if that isn't set either.
@@ -34,8 +42,9 @@ export interface Options {
   onStart?: () => void;
   onStop?: () => void;
   onResult?: OnResult;
+  onPreResult?: OnPreResult;
   onError?: OnError;
-  // WebSpeechAPI
+  // WebSpeech
   // does not display text in safari if this is set to false
   displayInterimResults?: boolean;
   // does not work for shadow elements as getSelection is not supported natively for all browsers
