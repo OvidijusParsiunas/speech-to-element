@@ -37,10 +37,6 @@ export default class SpeechToElement {
     this._service.start(options);
   }
 
-  public static isAzureSupported() {
-    return !!Azure.getAPI();
-  }
-
   public static stop() {
     if (this._service?.recognizing) {
       this._service.stop();

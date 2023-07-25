@@ -18,9 +18,13 @@ export class Azure extends Speech {
   private _translations?: Translations;
 
   start(options: Options & AzureOptions) {
+    this.startAsync(options);
+  }
+
+  private async startAsync(options: Options & AzureOptions) {
     if (this.validate(options)) {
       this.prepareBeforeStart(options);
-      this.instantiateService(options);
+      await this.instantiateService(options);
       this._translations = options?.translations;
       this._service?.startContinuousRecognitionAsync(() => {}, this.error);
     }
@@ -34,10 +38,10 @@ export class Azure extends Speech {
     return AzureSpeechConfig.validateOptions(this.error, options);
   }
 
-  private instantiateService(options: Options & AzureOptions) {
+  private async instantiateService(options: Options & AzureOptions) {
     const speechSDK = Azure.getAPI();
     const audioConfig = speechSDK.AudioConfig.fromDefaultMicrophoneInput();
-    const speechConfig = AzureSpeechConfig.get(speechSDK.SpeechConfig, options);
+    const speechConfig = await AzureSpeechConfig.get(speechSDK.SpeechConfig, options);
     if (speechConfig) {
       const recognizer = new speechSDK.SpeechRecognizer(speechConfig, audioConfig);
       this.setEvents(recognizer);

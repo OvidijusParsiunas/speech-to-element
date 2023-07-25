@@ -14,7 +14,7 @@ export interface TextColor {
 }
 
 export interface AzureOptions {
-  retrieveToken?: () => string;
+  retrieveToken?: () => Promise<string>;
   subscriptionKey?: string;
   token?: string;
   region?: string;
