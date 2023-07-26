@@ -1,3 +1,16 @@
+export type OnPauseTrigger = (isStart: boolean) => void;
+
+export type OnCommandModeTrigger = (isStart: boolean) => void;
+
+export interface Commands {
+  commandMode?: string; // 'wait' // like pause except it automatically resumes after a said command
+  stop?: string; // 'stop'
+  pause?: string; // 'pause'
+  resume?: string; // 'continue'
+  reset?: string; // 'start over'; // only works from the last mouse click
+  removeAllText?: string; // 'remove all text';
+}
+
 export interface Translations {
   [key: string]: string;
 }
@@ -14,7 +27,7 @@ export type OnResult = (text: string, isFinal: boolean) => void;
 export type OnPreResult = (
   text: string,
   isFinal: boolean
-) => void | {stop?: boolean; restart?: boolean; displayText?: boolean};
+) => {stop?: boolean; restart?: boolean; displayText?: boolean} | void | null | undefined;
 
 export interface TextColor {
   interim?: string;
@@ -44,6 +57,8 @@ export interface Options {
   onResult?: OnResult;
   onPreResult?: OnPreResult;
   onError?: OnError;
+  onCommandModeTrigger?: OnCommandModeTrigger;
+  onPauseTrigger?: OnPauseTrigger;
   // WebSpeech
   // does not display text in safari if this is set to false
   displayInterimResults?: boolean;
@@ -56,4 +71,5 @@ export interface Options {
   stopAfterSilenceMS?: number;
   // need to define text for lower and upper cases
   translations?: Translations;
+  commands?: Commands;
 }

@@ -1,6 +1,6 @@
 export class Cursor {
   public static setOffsetForGeneric(element: HTMLElement, offset: number, countedText = 0) {
-    let counteTextInElement = 0;
+    let countedTextInElement = 0;
     for (let i = 0; i < element.childNodes.length; i += 1) {
       const node = element.childNodes[i];
       if (node.childNodes.length > 0) {
@@ -19,10 +19,10 @@ export class Cursor {
           return -1;
         }
         countedText += node.textContent.length;
-        counteTextInElement += node.textContent.length;
+        countedTextInElement += node.textContent.length;
       }
     }
-    return counteTextInElement;
+    return countedTextInElement;
   }
 
   public static setOffsetForSafariGeneric(element: HTMLElement, newTextLength: number) {

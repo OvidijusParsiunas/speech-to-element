@@ -1,6 +1,7 @@
-import {OnError, OnPreResult, OnResult, Options} from './types/options';
+import {OnCommandModeTrigger, OnError, OnPauseTrigger, OnPreResult, OnResult, Options} from './types/options';
 import {EventListeners} from './utils/eventListeners';
 import {PreResultUtils} from './utils/preResultUtils';
+import {CommandUtils} from './utils/commandUtils';
 import {StopTimeout} from './utils/stopTimeout';
 import {Highlight} from './utils/highlight';
 import {Elements} from './utils/elements';
@@ -43,6 +44,11 @@ export abstract class Speech {
   private _onError?: OnError;
   private _isRestarting = false;
   private _options?: Options;
+  private _originalText?: string;
+  onCommandModeTrigger?: OnCommandModeTrigger;
+  onPauseTrigger?: OnPauseTrigger;
+  isPaused = false;
+  isWaitingForCommand = false;
 
   constructor() {
     this.resetState();
@@ -74,6 +80,8 @@ export abstract class Speech {
     this._onStart = options?.onStart;
     this._onStop = options?.onStop;
     this._onError = options?.onError;
+    this.onCommandModeTrigger = options?.onCommandModeTrigger;
+    this.onPauseTrigger = options?.onPauseTrigger;
     this._options = options;
   }
 
@@ -82,8 +90,10 @@ export abstract class Speech {
     Highlight.setState(this, targetElement);
     if (Elements.isPrimitiveElement(targetElement)) {
       this._primitiveElement = targetElement as HTMLInputElement;
+      this._originalText = this._primitiveElement.value;
     } else {
       this._genericElement = targetElement;
+      this._originalText = this._genericElement.textContent as string;
     }
   }
 
@@ -103,6 +113,9 @@ export abstract class Speech {
     if (this.finalTranscript === newFinalText && interimTranscript === '') return;
     if (this._onPreResult
       && !PreResultUtils.process(this, newText, interimTranscript === '', this._onPreResult, this._options)) return;
+    if (this._options?.commands && CommandUtils.execCommand(this,
+      this._options, newText, this._primitiveElement || this._genericElement, this._originalText)) return;
+    if (this.isPaused || this.isWaitingForCommand) return;
     this._onResult?.(newText, interimTranscript === '');
     StopTimeout.reset(this, this.stopTimeoutMS);
     this.finalTranscript = newFinalText;
@@ -143,7 +156,7 @@ export abstract class Speech {
     if (this._genericElement) {
       if (isDuringReset) {
         this.finalSpan = Elements.createFinalSpan();
-        this.interimSpan.style.color = this._finalTextColor || 'black';
+        this.setInterimColorToFinal();
         this.interimSpan = Elements.createInterimSpan();
       } else {
         this._genericElement.textContent = this._genericElement.textContent as string;
@@ -151,6 +164,10 @@ export abstract class Speech {
       this.spansPopulated = false;
     }
     EventListeners.remove(this);
+  }
+
+  setInterimColorToFinal() {
+    this.interimSpan.style.color = this._finalTextColor || 'black';
   }
 
   private resetState(isDuringReset?: boolean) {
