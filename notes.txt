@@ -14,4 +14,15 @@ npm run build:module
 
 How to bundle into a single file:
 
-npm run build:bundle
+add the following to package:
+
+"type": "module",
+
+"scripts":
+
+"build:bundle": "vite build"
+
+remove code from index.ts
+
+module.exports = SpeechToElement;
+

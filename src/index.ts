@@ -1,5 +1,6 @@
 import {AzureOptions, Options, WebSpeechOptions} from './types/options';
 import {WebSpeech} from './services/webSpeech/webSpeech';
+import {CommandUtils} from './utils/commandUtils';
 import {Azure} from './services/azure/azure';
 import {Speech} from './speech';
 
@@ -41,6 +42,10 @@ export default class SpeechToElement {
     if (this._service?.recognizing) {
       this._service.stop();
     }
+  }
+
+  public static endCommandMode() {
+    if (this._service) CommandUtils.toggleCommandModeOff(this._service);
   }
 }
 

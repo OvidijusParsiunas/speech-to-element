@@ -83,6 +83,7 @@ export abstract class Speech {
     this.onCommandModeTrigger = options?.onCommandModeTrigger;
     this.onPauseTrigger = options?.onPauseTrigger;
     this._options = options;
+    if (this._options?.commands) this._options.commands = CommandUtils.process(this._options.commands);
   }
 
   private prepare(targetElement: HTMLElement) {

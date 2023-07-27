@@ -16,4 +16,8 @@ export class Text {
   public static isCharDefined(char?: string) {
     return char !== undefined && char !== ' ' && char !== ' ' && char !== '\n' && char !== '';
   }
+
+  public static breakupIntoWordsArr(text: string): string[] {
+    return text.split(/(\W+)/);
+  }
 }

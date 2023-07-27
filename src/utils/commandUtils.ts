@@ -1,15 +1,25 @@
-import {Options} from '../types/options';
+import {Commands, Options} from '../types/options';
 import {Elements} from './elements';
 import {Speech} from '../speech';
 import {Cursor} from './cursor';
+import {Text} from './text';
 
 export class CommandUtils {
-  private static toggleCommandModeOn(speech: Speech) {
-    speech.isWaitingForCommand = true;
-    speech.onCommandModeTrigger?.(false);
+  public static process(commands: Commands): Commands {
+    if (commands.settings?.caseSensitive === true) return commands;
+    return Object.keys(commands).reduce((prev, current) => {
+      const property = (commands as Required<Commands>)[current as keyof Commands];
+      prev[current] = typeof property === 'string' ? property.toLowerCase() : property;
+      return prev;
+    }, {} as {[prop: string]: string | Commands['settings']});
   }
 
-  private static toggleCommandModeOff(speech: Speech) {
+  private static toggleCommandModeOn(speech: Speech) {
+    speech.isWaitingForCommand = true;
+    speech.onCommandModeTrigger?.(true);
+  }
+
+  public static toggleCommandModeOff(speech: Speech) {
     if (speech.isWaitingForCommand) {
       speech.onCommandModeTrigger?.(false);
       speech.isWaitingForCommand = false;
@@ -27,40 +37,51 @@ export class CommandUtils {
     speech.resetRecording(options);
   }
 
+  private static checkIfMatchesSubstring(command: string, newText: string) {
+    return newText.includes(command);
+  }
+
+  private static checkIfMatchesWord(command: string, _: string, newTextArr: string[]) {
+    return newTextArr.includes(command);
+  }
+
   public static execCommand(speech: Speech, options: Options, newText: string, element?: Element, originalText?: string) {
     const commands = options.commands;
     if (!commands || !element) return false;
-    const lowerCaseText = newText.toLowerCase();
-    if (commands.commandMode && lowerCaseText.includes(commands.commandMode)) {
+    const text = commands.settings?.caseSensitive === true ? newText : newText.toLowerCase();
+    const newWords = commands.settings?.substrings === false ? Text.breakupIntoWordsArr(text) : [];
+    const check =
+      commands.settings?.substrings === false ? CommandUtils.checkIfMatchesWord : CommandUtils.checkIfMatchesSubstring;
+    if (commands.settings?.commandMode && check(commands.settings?.commandMode, text, newWords)) {
       CommandUtils.toggleCommandModeOn(speech);
       speech.setInterimColorToFinal();
       return true;
     }
-    if (commands.commandMode && !speech.isWaitingForCommand) return false;
-    if (commands.stop && lowerCaseText.includes(commands.stop)) {
+    if (commands.settings?.commandMode && !speech.isWaitingForCommand) return false;
+    if (commands.stop && check(commands.stop, text, newWords)) {
       speech.stop();
       CommandUtils.toggleCommandModeOff(speech);
       return true;
     }
-    if (commands.pause && lowerCaseText.includes(commands.pause)) {
+    if (commands.pause && check(commands.pause, text, newWords)) {
       speech.isPaused = true;
       speech.onPauseTrigger?.(true);
       CommandUtils.toggleCommandModeOff(speech);
       speech.setInterimColorToFinal();
       return true;
     }
-    if (commands.resume && lowerCaseText.includes(commands.resume)) {
+    if (commands.resume && check(commands.resume, text, newWords)) {
       speech.isPaused = false;
       speech.onPauseTrigger?.(false);
       CommandUtils.toggleCommandModeOff(speech);
       speech.resetRecording(options);
       return true;
     }
-    if (commands.reset && lowerCaseText.includes(commands.reset)) {
+    if (commands.reset && check(commands.reset, text, newWords)) {
       if (originalText !== undefined) CommandUtils.setText(speech, options, originalText, element);
       return true;
     }
-    if (commands.removeAllText && lowerCaseText.includes(commands.removeAllText)) {
+    if (commands.removeAllText && check(commands.removeAllText, text, newWords)) {
       CommandUtils.setText(speech, options, '', element);
       return true;
     }
