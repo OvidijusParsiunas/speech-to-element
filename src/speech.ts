@@ -114,8 +114,13 @@ export abstract class Speech {
     if (this.finalTranscript === newFinalText && interimTranscript === '') return;
     if (this._onPreResult
       && !PreResultUtils.process(this, newText, interimTranscript === '', this._onPreResult, this._options)) return;
-    if (this._options?.commands && CommandUtils.execCommand(this,
-      this._options, newText, this._primitiveElement || this._genericElement, this._originalText)) return;
+    const commandResult = this._options?.commands && CommandUtils.execCommand(this,
+      this._options, newText, this._primitiveElement || this._genericElement, this._originalText);
+    if (commandResult) {
+      if (commandResult.removeCommandWord) {
+        interimTranscript = '', finalTranscript = '';
+      } else if (commandResult.stop) return;
+    }
     if (this.isPaused || this.isWaitingForCommand) return;
     this._onResult?.(newText, interimTranscript === '');
     StopTimeout.reset(this, this.stopTimeoutMS);

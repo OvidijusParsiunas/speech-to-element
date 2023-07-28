@@ -4,7 +4,15 @@ import {Speech} from '../speech';
 import {Cursor} from './cursor';
 import {Text} from './text';
 
+type ExecutionResponse = undefined | {removeCommandWord?: number; stop?: boolean};
+
 export class CommandUtils {
+  public static trimTranscripts(interimTranscript: string, finalTranscript: string, length: number) {
+    if (interimTranscript) interimTranscript = interimTranscript.substring(0, interimTranscript.length - length);
+    if (finalTranscript) finalTranscript = finalTranscript.substring(0, finalTranscript.length - length);
+    return {interimTranscriptP: interimTranscript, finalTranscriptP: finalTranscript};
+  }
+
   public static process(commands: Commands): Commands {
     if (commands.settings?.caseSensitive === true) return commands;
     return Object.keys(commands).reduce((prev, current) => {
@@ -37,54 +45,73 @@ export class CommandUtils {
     speech.resetRecording(options);
   }
 
-  private static checkIfMatchesSubstring(command: string, newText: string) {
-    return newText.includes(command);
+  private static checkIfMatchesSubstring(command: string, text: string) {
+    return text.includes(command);
   }
 
-  private static checkIfMatchesWord(command: string, _: string, newTextArr: string[]) {
-    return newTextArr.includes(command);
+  private static checkIfMatchesWord(command: string, _: string, textArr: string[]) {
+    return textArr.includes(command);
   }
 
-  public static execCommand(speech: Speech, options: Options, newText: string, element?: Element, originalText?: string) {
+  private static getFullCommandWordLength(commands: Commands, command: string, textArr: string[]) {
+    if (commands.settings?.substrings === false) {
+      return command.length;
+    }
+    let letterCount = 0;
+    for (let i = textArr.length - 1; i >= 0; i -= 1) {
+      const word = textArr[i];
+      letterCount += word.length;
+      if (letterCount > command.length) break;
+    }
+    return letterCount;
+  }
+
+  // prettier-ignore
+  public static execCommand(
+      speech: Speech, options: Options, newText: string, element?: Element, originalText?: string): ExecutionResponse {
     const commands = options.commands;
-    if (!commands || !element) return false;
+    if (!commands || !element) return;
     const text = commands.settings?.caseSensitive === true ? newText : newText.toLowerCase();
-    const newWords = commands.settings?.substrings === false ? Text.breakupIntoWordsArr(text) : [];
+    const textArr = Text.breakupIntoWordsArr(text);
     const check =
       commands.settings?.substrings === false ? CommandUtils.checkIfMatchesWord : CommandUtils.checkIfMatchesSubstring;
-    if (commands.settings?.commandMode && check(commands.settings?.commandMode, text, newWords)) {
-      CommandUtils.toggleCommandModeOn(speech);
+    if (commands.settings?.commandMode && check(commands.settings.commandMode, text, textArr)) {
+      setTimeout(() => {
+        CommandUtils.toggleCommandModeOn(speech);
+      });
       speech.setInterimColorToFinal();
-      return true;
+      return {removeCommandWord: CommandUtils.getFullCommandWordLength(commands, commands.settings.commandMode, textArr) };
     }
-    if (commands.settings?.commandMode && !speech.isWaitingForCommand) return false;
-    if (commands.stop && check(commands.stop, text, newWords)) {
+    if (commands.settings?.commandMode && !speech.isWaitingForCommand) return;
+    if (commands.stop && check(commands.stop, text, textArr)) {
       speech.stop();
       CommandUtils.toggleCommandModeOff(speech);
-      return true;
+      return {removeCommandWord: CommandUtils.getFullCommandWordLength(commands, commands.stop, textArr) };
     }
-    if (commands.pause && check(commands.pause, text, newWords)) {
-      speech.isPaused = true;
-      speech.onPauseTrigger?.(true);
+    if (commands.pause && check(commands.pause, text, textArr)) {
+      setTimeout(() => {
+        speech.isPaused = true;
+        speech.onPauseTrigger?.(true);
+      });
       CommandUtils.toggleCommandModeOff(speech);
       speech.setInterimColorToFinal();
-      return true;
+      return {removeCommandWord: CommandUtils.getFullCommandWordLength(commands, commands.pause, textArr) };
     }
-    if (commands.resume && check(commands.resume, text, newWords)) {
+    if (commands.resume && check(commands.resume, text, textArr)) {
       speech.isPaused = false;
       speech.onPauseTrigger?.(false);
       CommandUtils.toggleCommandModeOff(speech);
       speech.resetRecording(options);
-      return true;
+      return {stop: true};
     }
-    if (commands.reset && check(commands.reset, text, newWords)) {
+    if (commands.reset && check(commands.reset, text, textArr)) {
       if (originalText !== undefined) CommandUtils.setText(speech, options, originalText, element);
-      return true;
+      return {stop: true};
     }
-    if (commands.removeAllText && check(commands.removeAllText, text, newWords)) {
+    if (commands.removeAllText && check(commands.removeAllText, text, textArr)) {
       CommandUtils.setText(speech, options, '', element);
-      return true;
+      return {stop: true};
     }
-    return false;
+    return;
   }
 }
