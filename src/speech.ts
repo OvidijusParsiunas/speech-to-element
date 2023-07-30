@@ -112,14 +112,14 @@ export abstract class Speech {
   updateElements(interimTranscript: string, finalTranscript: string, newText: string) {
     const newFinalText = Text.capitalize(finalTranscript);
     if (this.finalTranscript === newFinalText && interimTranscript === '') return;
-    if (this._onPreResult
-      && !PreResultUtils.process(this, newText, interimTranscript === '', this._onPreResult, this._options)) return;
+    if (PreResultUtils.process(this, newText, interimTranscript === '', this._onPreResult, this._options)) {
+      interimTranscript = '', newText = '';
+    }
     const commandResult = this._options?.commands && CommandUtils.execCommand(this,
       this._options, newText, this._primitiveElement || this._genericElement, this._originalText);
     if (commandResult) {
-      if (commandResult.removeCommandWord) {
-        interimTranscript = '', finalTranscript = '';
-      } else if (commandResult.stop) return;
+      if (commandResult.doNotProcessTranscription) return;
+      interimTranscript = '', newText = '';
     }
     if (this.isPaused || this.isWaitingForCommand) return;
     this._onResult?.(newText, interimTranscript === '');

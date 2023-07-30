@@ -16,6 +16,7 @@ export interface Options {
   scrollIntoView?: boolean;
   // only works for generic elements and not input, textarea
   textColor?: TextColor;
+  // default - 20s
   stopAfterSilenceMS?: number;
   // need to define text for lower and upper cases
   translations?: Translations;
@@ -32,7 +33,8 @@ export type OnResult = (text: string, isFinal: boolean) => void;
 export type OnPreResult = (
   text: string,
   isFinal: boolean
-) => {stop?: boolean; restart?: boolean; displayText?: boolean} | void | null | undefined;
+  // removeNewText only works with either stop or restart used
+) => {stop?: boolean; restart?: boolean; removeNewText?: boolean} | void | null | undefined;
 
 export type OnCommandModeTrigger = (isStart: boolean) => void;
 
