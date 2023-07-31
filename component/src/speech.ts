@@ -74,6 +74,7 @@ export abstract class Speech {
       this._finalTextColor = options?.textColor?.final;
       Elements.applyCustomColors(this, options.textColor);
     }
+    // WORK - catch auto error thrown by azure
     if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMS);
     if (options?.insertInCursorLocation !== undefined) this.insertInCursorLocation = options.insertInCursorLocation;
     if (options?.scrollIntoView !== undefined) this.scrollIntoView = options.scrollIntoView;
@@ -155,6 +156,7 @@ export abstract class Speech {
       Cursor.setOffsetForSafariGeneric(element, finalText.length + interimText.length);
     }
     if (this.scrollIntoView) {
+      // WORK - the whole screen appears to move
       // false to scroll to the bottom of span and true if interim is empty as false does not scroll then
       this.interimSpan.scrollIntoView(Browser.IS_SAFARI ? false : interimTranscript === '');
     }

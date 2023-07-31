@@ -21,7 +21,6 @@ export class AzureSpeechConfig {
 
   private static async getNewSpeechConfig(sdkSpeechConfig: typeof SpeechConfig, options: AzureOptions) {
     if (!options.region) return;
-    // WORK - error handling for incorrect key
     if (options.subscriptionKey) {
       return sdkSpeechConfig.fromSubscription(options.subscriptionKey, options.region);
     }

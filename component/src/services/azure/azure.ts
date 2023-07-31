@@ -16,6 +16,7 @@ export class Azure extends Speech {
   private _stopping?: boolean;
   private _service?: sdk.SpeechRecognizer;
   private _translations?: Translations;
+  private _retrieveTokenInterval?: NodeJS.Timeout;
 
   start(options: Options & AzureOptions) {
     this.startAsync(options);
@@ -47,6 +48,7 @@ export class Azure extends Speech {
       const recognizer = new speechSDK.SpeechRecognizer(speechConfig, audioConfig);
       this.setEvents(recognizer);
       this._service = recognizer;
+      if (options.retrieveToken) this.retrieveTokenInterval(options.retrieveToken);
     }
   }
 
@@ -76,7 +78,6 @@ export class Azure extends Speech {
     this.updateElements(interimTranscript, finalTranscript, newText);
   }
 
-  // WORK - huge opportunity to fix this in the repo!!!!!
   //   function onRecognized(sender, recognitionEventArgs) {
   //     var result = recognitionEventArgs.result;
   //     onRecognizedResult(recognitionEventArgs.result);
@@ -109,11 +110,25 @@ export class Azure extends Speech {
   }
 
   private onSessionStopped() {
+    if (!this._retrieveTokenInterval) clearInterval(this._retrieveTokenInterval);
     this._stopping = false;
     this.setStateOnStop();
   }
 
+  private retrieveTokenInterval(retrieveToken: AzureOptions['retrieveToken']) {
+    this._retrieveTokenInterval = setInterval(() => {
+      retrieveToken?.()
+        .then((token) => {
+          if (this._service) this._service.authorizationToken = token;
+        })
+        .catch((error) => {
+          this.error(error);
+        });
+    }, 10000);
+  }
+
   stop(isDuringReset?: boolean) {
+    if (!isDuringReset && this._retrieveTokenInterval) clearInterval(this._retrieveTokenInterval);
     this._stopping = true;
     this._service?.stopContinuousRecognitionAsync();
     this.finalise(isDuringReset);
@@ -133,6 +148,7 @@ export class Azure extends Speech {
   }
 
   private error(details: string) {
+    if (this._retrieveTokenInterval) clearInterval(this._retrieveTokenInterval);
     console.error(details);
     this.setStateOnError(details);
   }
