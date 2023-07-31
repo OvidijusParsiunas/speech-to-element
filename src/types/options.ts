@@ -68,14 +68,14 @@ export interface WebSpeechOptions {
 }
 
 export interface Commands {
-  settings?: {
-    commandMode?: string; // 'wait' // like pause except it automatically resumes after a said command
-    substrings?: boolean; // true by default // marks if commands are full words or can be substrings of words
-    caseSensitive?: boolean; // false by default // toggles if commands are case sensitive
-  };
   stop?: string; // 'stop'
   pause?: string; // 'pause'
   resume?: string; // 'continue'
   reset?: string; // 'start over'; // only works from the last mouse click
   removeAllText?: string; // 'remove all text';
+  commandMode?: string; // 'wait' // like pause except it automatically resumes after a said command
+  settings?: {
+    substrings?: boolean; // true by default // marks if commands are full words or can be substrings of words
+    caseSensitive?: boolean; // false by default // toggles if commands are case sensitive
+  };
 }

@@ -22,8 +22,9 @@ export class Azure extends Speech {
   }
 
   private async startAsync(options: Options & AzureOptions) {
+    // need to prepare before validation to set onError
+    this.prepareBeforeStart(options);
     if (this.validate(options)) {
-      this.prepareBeforeStart(options);
       await this.instantiateService(options);
       this._translations = options?.translations;
       this._service?.startContinuousRecognitionAsync(() => {}, this.error);
@@ -35,7 +36,7 @@ export class Azure extends Speech {
       this.moduleNotFound();
       return false;
     }
-    return AzureSpeechConfig.validateOptions(this.error, options);
+    return AzureSpeechConfig.validateOptions(this.error.bind(this), options);
   }
 
   private async instantiateService(options: Options & AzureOptions) {

@@ -1,4 +1,5 @@
 import {OnCommandModeTrigger, OnError, OnPauseTrigger, OnPreResult, OnResult, Options} from './types/options';
+import {InternalCommands} from './types/internalCommands';
 import {EventListeners} from './utils/eventListeners';
 import {PreResultUtils} from './utils/preResultUtils';
 import {CommandUtils} from './utils/commandUtils';
@@ -48,6 +49,7 @@ export abstract class Speech {
   onCommandModeTrigger?: OnCommandModeTrigger;
   onPauseTrigger?: OnPauseTrigger;
   isPaused = false;
+  commands?: InternalCommands;
   isWaitingForCommand = false;
 
   constructor() {
@@ -83,7 +85,7 @@ export abstract class Speech {
     this.onCommandModeTrigger = options?.onCommandModeTrigger;
     this.onPauseTrigger = options?.onPauseTrigger;
     this._options = options;
-    if (this._options?.commands) this._options.commands = CommandUtils.process(this._options.commands);
+    if (this._options?.commands) this.commands = CommandUtils.process(this._options.commands);
   }
 
   private prepare(targetElement: HTMLElement) {
@@ -115,8 +117,8 @@ export abstract class Speech {
     if (PreResultUtils.process(this, newText, interimTranscript === '', this._onPreResult, this._options)) {
       interimTranscript = '', newText = '';
     }
-    const commandResult = this._options?.commands && CommandUtils.execCommand(this,
-      this._options, newText, this._primitiveElement || this._genericElement, this._originalText);
+    const commandResult = this.commands && CommandUtils.execCommand(this,
+      newText, this._options, this._primitiveElement || this._genericElement, this._originalText);
     if (commandResult) {
       if (commandResult.doNotProcessTranscription) return;
       interimTranscript = '', newText = '';

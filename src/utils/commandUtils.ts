@@ -1,3 +1,4 @@
+import {InternalCommands} from '../types/internalCommands';
 import {Commands, Options} from '../types/options';
 import {Elements} from './elements';
 import {Speech} from '../speech';
@@ -7,13 +8,19 @@ import {Text} from './text';
 type ExecutionResponse = undefined | {doNotProcessTranscription?: boolean};
 
 export class CommandUtils {
-  public static process(commands: Commands): Commands {
+  private static processCommand(command: string, settings?: Commands['settings']) {
+    if (!settings || !settings.caseSensitive) command = command.toLowerCase();
+    return settings?.substrings === false ? Text.breakupIntoWordsArr(command) : command;
+  }
+
+  public static process(commands: Commands): InternalCommands {
     if (commands.settings?.caseSensitive === true) return commands;
-    return Object.keys(commands).reduce((prev, current) => {
+    const internalCommands: InternalCommands = Object.keys(commands).reduce((prev, current) => {
       const property = (commands as Required<Commands>)[current as keyof Commands];
-      prev[current] = typeof property === 'string' ? property.toLowerCase() : property;
+      prev[current] = typeof property === 'string' ? CommandUtils.processCommand(property, commands.settings) : property;
       return prev;
-    }, {} as {[prop: string]: string | Commands['settings']});
+    }, {} as {[prop: string]: string | string[] | InternalCommands['settings']});
+    return internalCommands;
   }
 
   private static toggleCommandModeOn(speech: Speech) {
@@ -39,29 +46,39 @@ export class CommandUtils {
     speech.resetRecording(options);
   }
 
-  private static checkIfMatchesSubstring(command: string, text: string) {
-    return text.includes(command);
+  private static checkIfMatchesSubstring(command: string | string[], text: string) {
+    return text.includes(command as string);
   }
 
-  private static checkIfMatchesWord(command: string, _: string, textArr: string[]) {
-    return textArr.includes(command);
+  private static checkIfMatchesWord(command: string | string[], _: string, textArr: string[]) {
+    const commandWords = command as string[];
+    for (let i = textArr.length - 1; i >= 0; i -= 1) {
+      let textI = i;
+      let commandI = commandWords.length - 1;
+      while (textArr[textI] === commandWords[commandI] && commandI >= 0) {
+        textI -= 1;
+        commandI -= 1;
+      }
+      if (commandI < 0) return true;
+    }
+    return false;
   }
 
   // prettier-ignore
   public static execCommand(
-      speech: Speech, options: Options, newText: string, element?: Element, originalText?: string): ExecutionResponse {
-    const commands = options.commands;
-    if (!commands || !element) return;
+      speech: Speech, newText: string, options?: Options, element?: Element, originalText?: string): ExecutionResponse {
+    const commands = speech.commands;
+    if (!commands || !element || !options) return;
     const text = commands.settings?.caseSensitive === true ? newText : newText.toLowerCase();
     const textArr = Text.breakupIntoWordsArr(text);
     const check =
       commands.settings?.substrings === false ? CommandUtils.checkIfMatchesWord : CommandUtils.checkIfMatchesSubstring;
-    if (commands.settings?.commandMode && check(commands.settings.commandMode, text, textArr)) {
+    if (commands.commandMode && check(commands.commandMode, text, textArr)) {
       speech.setInterimColorToFinal();
       setTimeout(() => CommandUtils.toggleCommandModeOn(speech));
       return {doNotProcessTranscription: false};
     }
-    if (commands.settings?.commandMode && !speech.isWaitingForCommand) return;
+    if (commands.commandMode && !speech.isWaitingForCommand) return;
     if (commands.stop && check(commands.stop, text, textArr)) {
       CommandUtils.toggleCommandModeOff(speech);
       setTimeout(() => speech.stop());
