@@ -1,8 +1,8 @@
-import {ExceptionMiddleware} from './exceptionMiddleware';
+import {ExceptionMiddleware} from './middleware/exceptionMiddleware';
 import {AppController} from './app.controller';
 import {APP_FILTER} from '@nestjs/core';
 import {Module} from '@nestjs/common';
-import {Client} from './client';
+import {Client} from './app.client';
 
 @Module({
   imports: [],
