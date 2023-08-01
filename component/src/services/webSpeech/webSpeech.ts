@@ -8,14 +8,16 @@ export class WebSpeech extends Speech {
   private _stopping?: boolean;
   private _service?: SpeechRecognition;
   private _translations?: Translations;
-  private readonly _extractText?: ExtractFunc;
+  private _extractText?: ExtractFunc;
 
   constructor() {
     super();
-    this._extractText = Browser.IS_SAFARI ? WebSpeechTranscript.extractSafari : WebSpeechTranscript.extract;
   }
 
   start(options?: Options & WebSpeechOptions) {
+    if (this._extractText === undefined) {
+      this._extractText = Browser.IS_SAFARI() ? WebSpeechTranscript.extractSafari : WebSpeechTranscript.extract;
+    }
     if (this.validate()) {
       this.prepareBeforeStart(options);
       this.instantiateService(options);
@@ -49,7 +51,7 @@ export class WebSpeech extends Speech {
 
     this._service.onerror = (event) => {
       // this error is thrown in Safari when the service is restarted
-      if (Browser.IS_SAFARI && event.message === 'Another request is started') return;
+      if (Browser.IS_SAFARI() && event.message === 'Another request is started') return;
       this.error(event.message);
     };
 
