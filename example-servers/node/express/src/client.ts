@@ -10,10 +10,7 @@ export class Client {
       `https://${region}.api.cognitive.microsoft.com/sts/v1.0/issuetoken`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Ocp-Apim-Subscription-Key': process.env.SUBSCRIPTION_KEY,
-        },
+        headers: {'Ocp-Apim-Subscription-Key': process.env.SUBSCRIPTION_KEY},
       },
       (reqResp) => {
         let data = '';

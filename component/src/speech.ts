@@ -156,7 +156,6 @@ export abstract class Speech {
       Cursor.setOffsetForSafariGeneric(element, finalText.length + interimText.length);
     }
     if (this.scrollIntoView) {
-      // WORK - the whole screen appears to move
       // false to scroll to the bottom of span and true if interim is empty as false does not scroll then
       this.interimSpan.scrollIntoView(Browser.IS_SAFARI ? false : interimTranscript === '');
     }
