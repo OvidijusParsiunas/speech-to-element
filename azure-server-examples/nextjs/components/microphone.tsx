@@ -1,3 +1,4 @@
+import styles from '../styles/microphone.module.css';
 import React from 'react';
 
 const recordingFilter =
@@ -8,11 +9,8 @@ const defaultFilter =
 export default function Microphone(props: {isRecording: boolean}) {
   return (
     <svg
-      style={{
-        width: 50,
-        cursor: 'pointer',
-        filter: props.isRecording ? recordingFilter : defaultFilter,
-      }}
+      id={styles.microphone}
+      style={{filter: props.isRecording ? recordingFilter : defaultFilter}}
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
     >

@@ -1,7 +1,7 @@
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import Microphone from '../components/microphone';
-import styles from '../styles/Index.module.css';
 import SpeechToElement from 'speech-to-element';
+import styles from '../styles/main.module.css';
 import React from 'react';
 
 declare global {
@@ -55,25 +55,13 @@ export default function IndexPage() {
   }, []);
   return (
     <>
-      <main className={styles.main}>
+      <main id={styles.main}>
         <div>
-          <h1 id={styles.pageTitle}>Speech To Text via Azure Demo</h1>
+          <h1 id={styles.title}>Speech To Element via Azure Demo</h1>
           <div>
+            <div id={styles.text} ref={element} contentEditable={true}></div>
             <div
-              style={{
-                width: 500,
-                height: 250,
-                border: '1px solid grey',
-                marginTop: 60,
-                textAlign: 'left',
-                overflow: 'auto',
-                borderRadius: '6px',
-              }}
-              ref={element}
-              contentEditable={true}
-            ></div>
-            <div
-              style={{width: 'fit-content', marginLeft: 'auto', marginRight: 'auto', marginTop: 40}}
+              id={styles.button}
               onClick={() => {
                 buttonClick(element, setIsRecording, setIsPreparing, setIsError);
                 if (!isRecording) setIsPreparing(true);
