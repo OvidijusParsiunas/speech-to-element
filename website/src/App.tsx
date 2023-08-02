@@ -1,8 +1,11 @@
 import {toggleAzure, toggleWebSpeech} from './utils/toggleSpeech';
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
+import {validateAzure} from './utils/validateAzureOptions';
+import AzureOptions from './components/AzureOptions';
 import {changeService} from './utils/changeService';
 import Microphone from './components/Microphone';
 import SpeechToElement from 'speech-to-element';
+import Header from './components/header/Header';
 import React from 'react';
 import './App.css';
 
@@ -12,12 +15,16 @@ declare global {
   }
 }
 
+// WORK - enhance website to add toggles for more options and display what the API would look like
 function App() {
   const [availableServices, setAvailableServices] = React.useState<{value: string; text: string}[]>([]);
+  const [activeAzureOption, setActiveAzureOption] = React.useState('subscription');
+  const [azureCredentials, setAzureCredentials] = React.useState('');
+  const [activeAzureRegion, setActiveAzureRegion] = React.useState('');
   const [activeService, setActiveService] = React.useState('webspeech');
   const [isRecording, setIsRecording] = React.useState(false);
   const [isPreparing, setIsPreparing] = React.useState(false);
-  const [isError, setIsError] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState('');
   const textElement = React.useRef(null);
   React.useEffect(() => {
     // WORK - add link for more examples
@@ -30,16 +37,31 @@ function App() {
   }, []);
   return (
     <>
+      <Header />
       <main id="main">
-        <h1 id="title">Speech To Element Demo</h1>
+        <h1 id="title">Speech To Element</h1>
         <div id="text" ref={textElement} contentEditable={true}></div>
         <div
           id="button"
           onClick={() => {
             if (activeService === 'webspeech') {
-              toggleWebSpeech(textElement, setIsRecording, setIsPreparing, setIsError);
+              toggleWebSpeech(textElement, setIsRecording, setIsPreparing, setErrorMessage);
             } else if (activeService === 'azure') {
-              toggleAzure(textElement, setIsRecording, setIsPreparing, setIsError);
+              const errorMessage = validateAzure(activeAzureOption, activeAzureRegion, azureCredentials);
+              if (errorMessage) {
+                console.error(errorMessage);
+                return setErrorMessage(errorMessage);
+              } else {
+                toggleAzure(
+                  textElement,
+                  setIsRecording,
+                  setIsPreparing,
+                  setErrorMessage,
+                  activeAzureOption,
+                  activeAzureRegion,
+                  azureCredentials
+                );
+              }
             }
             if (!isRecording) setIsPreparing(true);
           }}
@@ -49,17 +71,18 @@ function App() {
         <div>
           {isPreparing ? (
             <div>Connecting...</div>
-          ) : isError ? (
-            <div id="message-error">Error, please check the console for more info</div>
+          ) : errorMessage ? (
+            <div id="message-error">{errorMessage}</div>
           ) : (
             <div id="message-empty">Placeholder text</div>
           )}
         </div>
         <select
-          id="dropdown"
+          id="service-dropdown"
+          className={'dropdown'}
           value={activeService}
           onChange={(event) => {
-            changeService(isRecording, isPreparing, setIsError);
+            changeService(isRecording, isPreparing, setErrorMessage);
             setActiveService(event.target.value);
           }}
         >
@@ -69,9 +92,15 @@ function App() {
             </option>
           ))}
         </select>
-        {activeService === 'azure' && (
-          <div id="subscription-key-tip">Make sure to set the SUBSCRIPTION_KEY and REGION environment variables</div>
-        )}
+        {activeService === 'azure' &&
+          AzureOptions(
+            activeAzureOption,
+            setActiveAzureOption,
+            activeAzureRegion,
+            setActiveAzureRegion,
+            azureCredentials,
+            setAzureCredentials
+          )}
       </main>
     </>
   );

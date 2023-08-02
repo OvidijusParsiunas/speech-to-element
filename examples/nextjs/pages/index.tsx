@@ -45,6 +45,8 @@ export default function IndexPage() {
           }}
         >
           <Microphone isRecording={isRecording}></Microphone>
+        </div>
+        <div>
           {isPreparing ? (
             <div>Connecting...</div>
           ) : isError ? (
@@ -57,7 +59,7 @@ export default function IndexPage() {
           id={styles.dropdown}
           value={activeService}
           onChange={(event) => {
-            changeService(isRecording, isPreparing);
+            changeService(isRecording, isPreparing, setIsError);
             setActiveService(event.target.value);
           }}
         >
