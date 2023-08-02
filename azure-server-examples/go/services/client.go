@@ -10,13 +10,13 @@ import (
 	"os"
 )
 
-// Make sure to set the SUBSCRIPTION_KEY environment variable in a .env file (create if does not exist) - see .env.example
+// Make sure to set the SUBSCRIPTION_KEY and REGION environment variables in a .env file (create if does not exist) - see .env.example
 
 func RequestSpeechToken(w http.ResponseWriter, r *http.Request) error {
 	fmt.Printf("Requesting token\n")
 	err := ProcessIncomingRequest(&w, r)
 	if err != nil { return err }
-	region := "eastus"
+	region := os.Getenv("REGION")
 	URL := fmt.Sprintf("https://%s.api.cognitive.microsoft.com/sts/v1.0/issuetoken", region)
 	req, _ := http.NewRequest("POST", URL, strings.NewReader(""))
 	req.Header.Set("Ocp-Apim-Subscription-Key", os.Getenv("SUBSCRIPTION_KEY"))

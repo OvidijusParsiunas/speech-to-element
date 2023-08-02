@@ -8,7 +8,7 @@ import org.springframework.http.*;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-// Make sure to set the SUBSCRIPTION_KEY environment variable in application.properties
+// Make sure to set the SUBSCRIPTION_KEY and REGION environment variables in application.properties
 
 @Service
 public class Client {
@@ -16,6 +16,9 @@ public class Client {
 
   @Value("${SUBSCRIPTION_KEY}")
   private String subscriptionKey;
+
+  @Value("${REGION}")
+  private String region;
   
   public String requestSpeechToken() throws Exception {
     LOGGER.info("Requesting token");
@@ -23,7 +26,6 @@ public class Client {
     RestTemplate restTemplate = new RestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.set("Ocp-Apim-Subscription-Key", subscriptionKey);
-    String region = "eastus";
     String URL = String.format("https://%s.api.cognitive.microsoft.com/sts/v1.0/issuetoken", region);
     UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL);
 

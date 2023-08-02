@@ -1,11 +1,11 @@
 import {NextFunction, Response} from 'express';
 import https from 'https';
 
-// Make sure to set the SUBSCRIPTION_KEY environment variable in a .env file (create if does not exist) - see .env.example
+// Make sure to set the SUBSCRIPTION_KEY and REGION environment variables in a .env file (create if does not exist) - see .env.example
 
 export class Client {
   public static async requestSpeechToken(res: Response, next: NextFunction) {
-    const region = 'eastus';
+    const region = process.env.REGION;
     const req = https.request(
       `https://${region}.api.cognitive.microsoft.com/sts/v1.0/issuetoken`,
       {

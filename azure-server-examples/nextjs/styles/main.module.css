@@ -16,7 +16,7 @@
   width: 500px;
   height: 250px;
   border: 1px solid grey;
-  margin-top: 60px;
+  margin-top: 65px;
   margin-left: auto;
   margin-right: auto;
   text-align: left;
@@ -28,5 +28,35 @@
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 40px;
+  margin-top: 45px;
+}
+
+#messageEmpty {
+  opacity: 0;
+}
+
+#messageError {
+  color: red;
+}
+
+#subscriptionKeyTip {
+  margin-top: 30px;
+  color: grey;
+}
+
+#dropdown {
+  margin-top: 12px;
+  font-size: 17px;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  color: #373737;
+}
+
+/* fix for incosistent style in firefox */
+@-moz-document url-prefix() {
+  #dropdown {
+    border-radius: revert;
+  }
 }

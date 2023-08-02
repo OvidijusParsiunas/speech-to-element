@@ -1,3 +1,5 @@
+import {toggleAzure, toggleWebSpeech} from '../utils/functionality/toggleSpeech';
+import {changeService} from '../utils/functionality/changeService';
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import Microphone from '../components/microphone';
 import SpeechToElement from 'speech-to-element';
@@ -10,75 +12,64 @@ declare global {
   }
 }
 
-function buttonClick(
-  element: React.MutableRefObject<HTMLInputElement>,
-  setIsRecording: (state: boolean) => void,
-  setIsPreparing: (state: boolean) => void,
-  setIsError: (state: boolean) => void
-) {
-  setIsError(false);
-  SpeechToElement.toggle('azure', {
-    element: element.current,
-    region: 'eastus',
-    retrieveToken: async () => {
-      return fetch('api/token')
-        .then((res) => res.text())
-        .then((data) => {
-          return data;
-        });
-    },
-    onStart: () => {
-      setIsRecording(true);
-      setIsPreparing(false);
-    },
-    onStop: () => {
-      setIsRecording(false);
-      setIsPreparing(false);
-    },
-    onError: () => {
-      setIsError(true);
-      setIsPreparing(false);
-    },
-  });
-}
-
 export default function IndexPage() {
+  const [availableServices, setAvailableServices] = React.useState<{value: string; text: string}[]>([]);
+  const [activeService, setActiveService] = React.useState('webspeech');
   const [isRecording, setIsRecording] = React.useState(false);
   const [isPreparing, setIsPreparing] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
-  const element = React.useRef<HTMLInputElement>(null);
+  const textElement = React.useRef<HTMLInputElement>(null);
   React.useEffect(() => {
     // WORK - add link for more examples
     if (!window.SpeechSDK) {
       window.SpeechSDK = sdk;
     }
+    const availableServicesArr: {value: string; text: string}[] = [{value: 'azure', text: 'Azure Speech'}];
+    if (SpeechToElement.isWebSpeechSupported()) availableServicesArr.unshift({value: 'webspeech', text: 'Web Speech'});
+    setAvailableServices(availableServicesArr);
   }, []);
   return (
     <>
       <main id={styles.main}>
-        <div>
-          <h1 id={styles.title}>Speech To Element via Azure Demo</h1>
-          <div>
-            <div id={styles.text} ref={element} contentEditable={true}></div>
-            <div
-              id={styles.button}
-              onClick={() => {
-                buttonClick(element, setIsRecording, setIsPreparing, setIsError);
-                if (!isRecording) setIsPreparing(true);
-              }}
-            >
-              <Microphone isRecording={isRecording}></Microphone>
-              {isPreparing ? (
-                <div>Preparing</div>
-              ) : isError ? (
-                <div style={{color: 'red'}}>Error, please check the console for more info</div>
-              ) : (
-                <div style={{opacity: 0}}>Placeholder text</div>
-              )}
-            </div>
-          </div>
-          <div style={{marginTop: 30, color: 'grey'}}>Make sure to set the SUBSCRIPTION_KEY environment variable</div>
+        <h1 id={styles.title}>Speech To Element Demo</h1>
+        <div id={styles.text} ref={textElement} contentEditable={true}></div>
+        <div
+          id={styles.button}
+          onClick={() => {
+            if (activeService === 'webspeech') {
+              toggleWebSpeech(textElement, setIsRecording, setIsPreparing, setIsError);
+            } else if (activeService === 'azure') {
+              toggleAzure(textElement, setIsRecording, setIsPreparing, setIsError);
+            }
+            if (!isRecording) setIsPreparing(true);
+          }}
+        >
+          <Microphone isRecording={isRecording}></Microphone>
+          {isPreparing ? (
+            <div>Connecting...</div>
+          ) : isError ? (
+            <div id={styles.messageError}>Error, please check the console for more info</div>
+          ) : (
+            <div id={styles.messageEmpty}>Placeholder text</div>
+          )}
         </div>
+        <select
+          id={styles.dropdown}
+          value={activeService}
+          onChange={(event) => {
+            changeService(isRecording, isPreparing);
+            setActiveService(event.target.value);
+          }}
+        >
+          {availableServices.map((service) => (
+            <option key={service.value} value={service.value}>
+              {service.text}
+            </option>
+          ))}
+        </select>
+        {activeService === 'azure' && (
+          <div id={styles.subscriptionKeyTip}>Make sure to set the SUBSCRIPTION_KEY and REGION environment variables</div>
+        )}
       </main>
     </>
   );
