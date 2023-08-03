@@ -29,7 +29,7 @@ export class AzureSpeechConfig {
     }
     if (options.retrieveToken) {
       return options.retrieveToken().then((token) => {
-        return options.region ? sdkSpeechConfig.fromAuthorizationToken(token, options.region) : null;
+        return options.region ? sdkSpeechConfig.fromAuthorizationToken(token || '', options.region) : null;
       });
     }
     return null;

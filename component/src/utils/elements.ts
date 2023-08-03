@@ -13,7 +13,7 @@ export class Elements {
     return span;
   }
 
-  public static createFinalSpan() {
+  public static createGenericSpan() {
     const span = document.createElement('span');
     span.style.pointerEvents = 'none';
     return span;
@@ -25,6 +25,7 @@ export class Elements {
       const selection = window.getSelection();
       if (selection?.focusNode) {
         const newRange = selection.getRangeAt(0);
+        newRange.insertNode(speech.scrollingSpan);
         newRange.insertNode(speech.interimSpan);
         newRange.insertNode(speech.finalSpan);
         newRange.collapse(false);
@@ -35,6 +36,7 @@ export class Elements {
     }
     element.appendChild(speech.finalSpan);
     element.appendChild(speech.interimSpan);
+    element.appendChild(speech.scrollingSpan);
   }
 
   public static applyCustomColors(speech: Speech, color: TextColor) {

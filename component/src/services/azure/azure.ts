@@ -17,14 +17,15 @@ export class Azure extends Speech {
   private _service?: sdk.SpeechRecognizer;
   private _translations?: Translations;
   private _retrieveTokenInterval?: NodeJS.Timeout;
+  private _newTextPadding = ''; // Unlike webspeech there is no automatic space between final results
 
   start(options: Options & AzureOptions) {
+    this._newTextPadding = '';
+    this.prepareBeforeStart(options); // need to prepare before validation to set onError
     this.startAsync(options);
   }
 
   private async startAsync(options: Options & AzureOptions) {
-    // need to prepare before validation to set onError
-    this.prepareBeforeStart(options);
     if (this.validate(options)) {
       await this.instantiateService(options);
       this._translations = options?.translations;
@@ -74,10 +75,11 @@ export class Azure extends Speech {
   private onRecognizing(_: Recognizer, event: SpeechRecognitionEventArgs) {
     if (this._stopping) return;
     const {interimTranscript, finalTranscript, newText} = AzureTranscript.extract(
-      event.result.text, this.finalTranscript, false, this._translations);
+      this._newTextPadding + event.result.text, this.finalTranscript, false, this._translations);
     this.updateElements(interimTranscript, finalTranscript, newText);
   }
 
+  // WORK - huge opportunity to fix this in the repo!!!!!
   //   function onRecognized(sender, recognitionEventArgs) {
   //     var result = recognitionEventArgs.result;
   //     onRecognizedResult(recognitionEventArgs.result);
@@ -92,8 +94,9 @@ export class Azure extends Speech {
       case window.SpeechSDK.ResultReason.RecognizedSpeech:
         if (result.text && !this._stopping) {
           const {interimTranscript, finalTranscript, newText} = AzureTranscript.extract(
-            result.text, this.finalTranscript, true, this._translations);
+            this._newTextPadding + result.text, this.finalTranscript, true, this._translations);
           this.updateElements(interimTranscript, finalTranscript, newText);
+          if (finalTranscript !== '') this._newTextPadding = ' ';
         }
         break;
     }
@@ -119,7 +122,7 @@ export class Azure extends Speech {
     this._retrieveTokenInterval = setInterval(() => {
       retrieveToken?.()
         .then((token) => {
-          if (this._service) this._service.authorizationToken = token;
+          if (this._service) this._service.authorizationToken = token || '';
         })
         .catch((error) => {
           this.error(error);

@@ -31,11 +31,13 @@ export class Padding {
         const rightCharacter = element.textContent?.[endIndex];
         if (Text.isCharDefined(leftCharacter)) speech.startPadding = ' ';
         if (Text.isCharDefined(rightCharacter)) speech.endPadding = ' ';
+        speech.isCursorAtEnd = element.textContent?.length === endIndex;
         return;
       }
     }
     const lastCharacter = element.innerText.charAt(element.innerText.length - 1);
     if (Text.isCharDefined(lastCharacter)) speech.startPadding = ' ';
+    speech.isCursorAtEnd = true;
   }
 
   public static setState(speech: Speech, element: HTMLElement) {

@@ -6,7 +6,7 @@ export class AzureTranscript {
   public static extract(text: string, finalTranscript: string, isFinal: boolean, translations?: Translations) {
     if (translations) text = Translate.translate(text, translations);
     if (isFinal) {
-      return {interimTranscript: '', finalTranscript: `${finalTranscript + text} `, newText: text};
+      return {interimTranscript: '', finalTranscript: finalTranscript + text, newText: text};
     }
     return {interimTranscript: text, finalTranscript, newText: text};
   }

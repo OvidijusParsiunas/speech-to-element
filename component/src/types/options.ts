@@ -13,11 +13,11 @@ export interface Options {
   // does not work for shadow elements as getSelection is not supported natively for all browsers
   insertInCursorLocation?: boolean;
   // default - true
-  scrollIntoView?: boolean;
+  autoScroll?: boolean;
   // only works for generic elements and not input, textarea
   textColor?: TextColor;
   // default - 20s
-  stopAfterSilenceMS?: number;
+  stopAfterSilenceMs?: number;
   // need to define text for lower and upper cases
   translations?: Translations;
   commands?: Commands;
@@ -52,10 +52,10 @@ export interface Translations {
 }
 
 export interface AzureOptions {
-  retrieveToken?: () => Promise<string>;
+  retrieveToken?: () => Promise<string | void>;
   subscriptionKey?: string;
   token?: string;
-  region?: string;
+  region: string;
   // https://docs.microsoft.com/azure/cognitive-services/speech-service/supported-languages
   language?: string;
 }

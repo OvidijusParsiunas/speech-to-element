@@ -45,9 +45,7 @@ export function toggleAzure(
     azureOptions.retrieveToken = async () => {
       return fetch('http://localhost:8080/token')
         .then((res) => res.text())
-        .then((data) => {
-          return data;
-        })
+        .then((token) => token)
         .catch(() => {
           // WORK - refactor the catch functions
           return '';

@@ -38,9 +38,7 @@ export function toggleAzure(
     retrieveToken: async () => {
       return fetch('api/token')
         .then((res) => res.text())
-        .then((data) => {
-          return data;
-        });
+        .then((token) => token);
     },
     onStart: () => {
       setIsRecording(true);

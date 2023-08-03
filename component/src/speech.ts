@@ -4,6 +4,7 @@ import {EventListeners} from './utils/eventListeners';
 import {PreResultUtils} from './utils/preResultUtils';
 import {CommandUtils} from './utils/commandUtils';
 import {StopTimeout} from './utils/stopTimeout';
+import {AutoScroll} from './utils/autoScroll';
 import {Highlight} from './utils/highlight';
 import {Elements} from './utils/elements';
 import {Padding} from './utils/padding';
@@ -14,8 +15,11 @@ import {Text} from './utils/text';
 export abstract class Speech {
   finalTranscript = '';
   // used for editable element
-  interimSpan: HTMLSpanElement = Elements.createInterimSpan();
-  finalSpan: HTMLSpanElement = Elements.createFinalSpan();
+  interimSpan = Elements.createInterimSpan();
+  finalSpan = Elements.createGenericSpan();
+  // used for allowing autoScroll() to scroll to it when interimSpan enters another line and doesn't scroll
+  scrollingSpan = Elements.createGenericSpan();
+  isCursorAtEnd = false;
   // used for input/textarea elements that don't allow spans
   private _primitiveElement?: HTMLInputElement;
   private _genericElement?: HTMLElement;
@@ -37,13 +41,13 @@ export abstract class Speech {
   stopTimeout?: NodeJS.Timeout;
   stopTimeoutMS?: number;
   insertInCursorLocation = true;
-  scrollIntoView = true;
+  autoScroll = true;
   private _onResult?: OnResult;
   private _onPreResult?: OnPreResult;
   private _onStart?: () => void;
   private _onStop?: () => void;
   private _onError?: OnError;
-  private _isRestarting = false;
+  isRestarting = false;
   private _options?: Options;
   private _originalText?: string;
   onCommandModeTrigger?: OnCommandModeTrigger;
@@ -75,9 +79,9 @@ export abstract class Speech {
       Elements.applyCustomColors(this, options.textColor);
     }
     // WORK - catch auto error thrown by azure
-    if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMS);
+    if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMs);
     if (options?.insertInCursorLocation !== undefined) this.insertInCursorLocation = options.insertInCursorLocation;
-    if (options?.scrollIntoView !== undefined) this.scrollIntoView = options.scrollIntoView;
+    if (options?.autoScroll !== undefined) this.autoScroll = options.autoScroll;
     this._onResult = options?.onResult;
     this._onPreResult = options?.onPreResult;
     this._onStart = options?.onStart;
@@ -105,7 +109,7 @@ export abstract class Speech {
   // unfortunately it did not work because the service would still continue firing the intermediate and final results
   // into the new position
   resetRecording(options?: Options) {
-    this._isRestarting = true;
+    this.isRestarting = true;
     this.stop(true);
     this.resetState(true);
     this.start(options);
@@ -141,32 +145,35 @@ export abstract class Speech {
     if (!this.primitiveTextRecorded) Padding.adjustStateForPrimitiveElement(this, element);
     const cursorLefSideText = this.startPadding + this.finalTranscript + interimTranscript;
     element.value = cursorLefSideText + this.endPadding;
-    Cursor.setOffsetForPrimitive(element, cursorLefSideText.length + this.numberOfSpacesAfterNewText, this.scrollIntoView);
+    Cursor.setOffsetForPrimitive(element, cursorLefSideText.length + this.numberOfSpacesAfterNewText, this.autoScroll);
   }
 
   private updateGenericElement(element: HTMLElement, interimTranscript: string) {
     if (this.isHighlighted) Highlight.removeForGeneric(this, element);
     if (!this.spansPopulated) Elements.appendSpans(this, element);
+    // this is primarily used to remove padding when interim/final text is removed on command
+    const isNoText = this.finalTranscript === '' && interimTranscript === '';
     // for web speech api - safari only returns final text - no interim
-    const finalText = this.startPadding + Text.lineBreak(this.finalTranscript);
+    const finalText = (isNoText ? '' : this.startPadding) + Text.lineBreak(this.finalTranscript);
     this.finalSpan.innerHTML = finalText;
-    const interimText = Text.lineBreak(interimTranscript) + this.endPadding;
+    const isAutoScrollingRequired = AutoScroll.isRequired(this.autoScroll, element);
+    AutoScroll.changeStateIfNeeded(this, isAutoScrollingRequired);
+    const interimText = Text.lineBreak(interimTranscript) + (isNoText ? '' : this.endPadding);
     this.interimSpan.innerHTML = interimText;
-    if (Browser.IS_SAFARI && this.insertInCursorLocation) {
+    if (Browser.IS_SAFARI() && this.insertInCursorLocation) {
       Cursor.setOffsetForSafariGeneric(element, finalText.length + interimText.length);
     }
-    if (this.scrollIntoView) {
-      // false to scroll to the bottom of span and true if interim is empty as false does not scroll then
-      this.interimSpan.scrollIntoView(Browser.IS_SAFARI ? false : interimTranscript === '');
-    }
+    if (isAutoScrollingRequired) AutoScroll.scroll(this, element);
+    if (isNoText) this.scrollingSpan.innerHTML = '';
   }
 
   finalise(isDuringReset?: boolean) {
     if (this._genericElement) {
       if (isDuringReset) {
-        this.finalSpan = Elements.createFinalSpan();
+        this.finalSpan = Elements.createGenericSpan();
         this.setInterimColorToFinal();
         this.interimSpan = Elements.createInterimSpan();
+        this.scrollingSpan = Elements.createGenericSpan();
       } else {
         this._genericElement.textContent = this._genericElement.textContent as string;
       }
@@ -185,6 +192,7 @@ export abstract class Speech {
     this.finalTranscript = '';
     this.finalSpan.innerHTML = '';
     this.interimSpan.innerHTML = '';
+    this.scrollingSpan.innerHTML = '';
     this.startPadding = '';
     this.endPadding = '';
     this.isHighlighted = false;
@@ -195,10 +203,10 @@ export abstract class Speech {
 
   setStateOnStart() {
     this.recognizing = true;
-    if (this._isRestarting) {
+    if (this.isRestarting) {
       // this is the only place where this.isRestarting needs to be set to false
       // as whn something goes wrong or the user is manually restarting - a new speech service will be initialized
-      this._isRestarting = false;
+      this.isRestarting = false;
     } else {
       this._onStart?.();
     }
@@ -206,7 +214,7 @@ export abstract class Speech {
 
   setStateOnStop() {
     this.recognizing = false;
-    if (!this._isRestarting) {
+    if (!this.isRestarting) {
       this._onStop?.();
     }
   }

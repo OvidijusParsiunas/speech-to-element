@@ -52,7 +52,8 @@ export class WebSpeech extends Speech {
     this._service.onerror = (event) => {
       // this error is thrown in Safari when the service is restarted
       if (Browser.IS_SAFARI() && event.message === 'Another request is started') return;
-      this.error(event.message);
+      if (event.error === 'aborted' && this.isRestarting) return;
+      this.error(event.message || event.error);
     };
 
     // stop is here because onEnd is fired too late

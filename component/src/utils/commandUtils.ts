@@ -1,5 +1,6 @@
 import {InternalCommands} from '../types/internalCommands';
 import {Commands, Options} from '../types/options';
+import {AutoScroll} from './autoScroll';
 import {Elements} from './elements';
 import {Speech} from '../speech';
 import {Cursor} from './cursor';
@@ -35,13 +36,14 @@ export class CommandUtils {
     }
   }
 
-  private static setText(speech: Speech, options: Options, originalText: string, element: Element) {
+  private static setText(speech: Speech, options: Options, newText: string, element: Element) {
     CommandUtils.toggleCommandModeOff(speech);
     if (Elements.isPrimitiveElement(element)) {
-      (element as HTMLInputElement).value = originalText;
+      (element as HTMLInputElement).value = newText;
     } else {
-      element.textContent = originalText;
-      Cursor.setOffsetForGeneric(element as HTMLElement, originalText.length - 1);
+      element.textContent = newText;
+      Cursor.focusEndOfGenericElement(element as HTMLElement);
+      setTimeout(() => AutoScroll.scroll(speech, element as HTMLElement));
     }
     speech.resetRecording(options);
   }

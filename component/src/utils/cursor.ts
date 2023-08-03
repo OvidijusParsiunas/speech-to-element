@@ -25,6 +25,17 @@ export class Cursor {
     return countedTextInElement;
   }
 
+  public static focusEndOfGenericElement(element: HTMLElement) {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    range.collapse(false);
+    const sel = window.getSelection();
+    if (sel) {
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }
+
   public static setOffsetForSafariGeneric(element: HTMLElement, newTextLength: number) {
     const selection = window.getSelection();
     if (selection) {

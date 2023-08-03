@@ -16,7 +16,7 @@ export default class SpeechToElement {
     } else if (processedServiceName === 'webspeech') {
       SpeechToElement.startWebSpeech(options);
     } else if (processedServiceName === 'azure') {
-      SpeechToElement.startAzure(options as Options);
+      SpeechToElement.startAzure(options as Options & AzureOptions);
     } else {
       console.error("service not found - must be either 'webspeech' or 'azure'");
     }
