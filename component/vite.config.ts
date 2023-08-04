@@ -10,9 +10,6 @@ export default defineConfig({
       fileName: 'index',
     },
   },
-  define: {
-    module: 'window',
-  },
   plugins: [
     dts({
       insertTypesEntry: true,
