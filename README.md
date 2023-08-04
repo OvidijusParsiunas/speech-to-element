@@ -1,4 +1,6 @@
-<b>Speech To Element</b> is an all purpose [library](https://www.npmjs.com/package/speech-to-element) used to transcribe your speech into text right out of the box! Try it out in the [official website](WORK).
+<img src="./assets/banner-white.png" alt="Logo">
+
+<b>Speech To Element</b> is an all purpose library that transcribes your speech into text right out of the box! Try it out in the [official website](WORK).
 
 // WORK - quick demo, ability to edit whilst speaking
 
@@ -24,10 +26,10 @@ const targetElement = document.getElementById('target-element');
 SpeechToElement.toggle("webspeech", {element: targetElement});
 ```
 
-[CDN](WORK):
+[CDN](https://cdn.jsdelivr.net/gh/ovidijusparsiunas/speech-to-element@master/component/bundle/index.js):
 
 ```
-<script src="bundle/index.umd.cjs"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/ovidijusparsiunas/speech-to-element@master/component/bundle/index.js"></script>
 ```
 
 ```
@@ -42,7 +44,7 @@ Make sure to checkout the [`examples`](https://github.com/OvidijusParsiunas/spee
 
 #### Methods
 
-Methods that are used to control the Speech To Element transcription:
+Used to control Speech To Element transcription:
 
 | Name                                                                                   | Description                                                                                                           |
 | :------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------- |
@@ -290,7 +292,7 @@ Example React project that uses a package bundler. It should work similarly for 
 
 VanillaJS approach with no bundler (this can also be used as fallback if above doesn't work):
 
-[Click for Live Example](https://codesandbox.io/s/active-table-vanillajs-xlsx-9h3tcj?file=/index.html)
+[Click for Live Example](https://codesandbox.io/s/speech-to-element-azure-vanillajs-gvj9v4?file=/index.html)
 
 ## :heart: Contributions
 
