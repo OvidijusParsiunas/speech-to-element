@@ -1,7 +1,7 @@
 {
   "name": "speech-to-element",
-  "version": "0.1.57",
-  "description": "Transcribe speech and place the result text directly into a target element",
+  "version": "0.1.59",
+  "description": "Transcribe your speech into text, embed it into elements and more",
   "main": "dist/index.js",
   "scripts": {
     "start": "vite",
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/OvidijusParsiunas/speech-to-element.git"
   },
-  "author": "",
+  "author": "OvidijusParsiunas",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/OvidijusParsiunas/speech-to-element/issues"

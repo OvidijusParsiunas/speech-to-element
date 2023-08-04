@@ -1,4 +1,4 @@
-<b>Speech To Element</b> is an [NPM library](https://www.npmjs.com/package/speech-to-element) that brings speech to text functionality to your app right out of the box! Try it out in the [official website](WORK).
+<b>Speech To Element</b> is an all purpose [library](https://www.npmjs.com/package/speech-to-element) used to transcribe your speech into text right out of the box! Try it out in the [official website](WORK).
 
 // WORK - quick demo, ability to edit whilst speaking
 
@@ -9,13 +9,13 @@
 - [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API)
 - [Azure Cognitive Speech Services API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-to-text)
 
-### :computer: Installation
+### :computer: How to use
+
+[NPM](https://www.npmjs.com/package/speech-to-element):
 
 ```
 npm install speech-to-element
 ```
-
-### :checkered_flag: How to use
 
 ```
 import SpeechToElement from 'speech-to-element';
@@ -24,7 +24,19 @@ const targetElement = document.getElementById('target-element');
 SpeechToElement.toggle("webspeech", {element: targetElement});
 ```
 
-When using Azure you will also need to install its [SDK](HERE). More info in the [Azure SDK](#Azure-SDK) section.
+[CDN](WORK):
+
+```
+<script src="bundle/index.umd.cjs"></script>
+```
+
+```
+const targetElement = document.getElementById('target-element');
+window.SpeechToElement.toggle("webspeech", {element: targetElement});
+```
+
+When using Azure, you will also need to install its speech [SDK](https://www.npmjs.com/package/microsoft-cognitiveservices-speech-sdk). Read more in the [Azure SDK](#floppy_disk-azure-sdk) section. <br />
+Make sure to checkout the [`examples`](https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples) directory to browse templates for [`React`](https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/ui), [`Next.js`](https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/nextjs) and more.
 
 ### :beginner: API
 
@@ -32,14 +44,14 @@ When using Azure you will also need to install its [SDK](HERE). More info in the
 
 Methods that are used to control the Speech To Element transcription:
 
-| Name                                                              | Description                       |
-| :---------------------------------------------------------------- | :-------------------------------- |
-| startWebSpeech({[Options](HERE) & [WebSpeechOptions](HERE)})      | Start [Web Speech API](HERE)      |
-| startAzure({[Options](HERE) & [AzureOptions](HERE)})              | Start [Azure API](HERE)           |
-| toggle("webspeech", {[Options](HERE) & [WebSpeechOptions](HERE)}) | Start/Stop [Web Speech API](HERE) |
-| toggle("azure", {[Options](HERE) & [AzureOptions](HERE)})         | Start/Stop [Azure API](HERE)      |
-| stop()                                                            | Stops all speech services         |
-| endCommandMode()                                                  | Ends the [`command`](HERE) mode   |
+| Name                                                                                   | Description                                                                                                           |
+| :------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------- |
+| startWebSpeech({[`Options`](#options) & [`WebSpeechOptions`](#webspeechoptions)})      | Start [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API)      |
+| startAzure({[`Options`](#options) & [`AzureOptions`](#azureoptions)})                  | Start [Azure API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-to-text)                  |
+| toggle("webspeech", {[`Options`](#options) & [`WebSpeechOptions`](#webspeechoptions)}) | Start/Stop [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API) |
+| toggle("azure", {[`Options`](#options) & [`AzureOptions`](#azureoptions)})             | Start/Stop [Azure API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-to-text)             |
+| stop()                                                                                 | Stops all speech services                                                                                             |
+| endCommandMode()                                                                       | Ends the [`command`](#commands) mode                                                                                  |
 
 Examples:
 
@@ -58,22 +70,22 @@ SpeechToElement.endCommandMode();
 
 Generic options for the speech to element functionality:
 
-| Name                       | Type                                                                | Description                                                                                                                                                                    |
-| :------------------------- | :------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| element                    | `Element \| Element[]`                                              | Transcription's target element. By defining multiple inside an array, the user can transcribe speech into any of them by clicking into them. WORK - behaviour for empty array. |
-| autoScroll                 | `boolean`                                                           | Toggles if element will automatically scroll to new text.                                                                                                                      |
-| displayInterimResults      | `boolean`                                                           | Toggles if interim result will be displayed.                                                                                                                                   |
-| textColor                  | [`TextColor`](HERE)                                                 | Object defining the result text colors.                                                                                                                                        |
-| stopAfterSilenceMs         | `number`                                                            | Milliseconds of silence required for the microphone to automatically turn off. Default is 25000ms (25 seconds).                                                                |
-| translations               | `{[key: string]: string}`                                           | Case-sensitive one-to-one map of words that will automatically be translated to others.                                                                                        |
-| commands                   | [`Commands`](HERE)                                                  | Set the phrases that will trigger various chat functionality.                                                                                                                  |
-| onStart                    | `() => void`                                                        | Triggered when speech recording has started.                                                                                                                                   |
-| onStop                     | `() => void`                                                        | Triggered when speech recording has stopped.                                                                                                                                   |
-| onResult                   | `( text: string, isFinal: boolean ) => void`                        | Triggered when a new result is transcribed and inserted into element.                                                                                                          |
-| onPreResult                | `( text: string, isFinal: boolean )` => [PreResult](HERE) \| `void` | Triggered before result text insertion. This function can be used to control the speech service based on what was spoken via the [PreResult](HERE) object.                     |
-| onCommandMode<br />Trigger | `(isStart: boolean) => void`                                        | Triggered when command mode is initiated and stopped.                                                                                                                          |
-| onPauseTrigger             | `(isStart: boolean) => void`                                        | Triggered when the pause command is initiated and stopped via resume command.                                                                                                  |
-| onError                    | `(message: string) => void`                                         | Triggered when an error has occurred.                                                                                                                                          |
+| Name                       | Type                                                                      | Description                                                                                                                                                      |
+| :------------------------- | :------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| element                    | `Element \| Element[]`                                                    | Transcription target element. By defining multiple inside an array the user can switch between them in the same session by clicking on them.                     |
+| autoScroll                 | `boolean`                                                                 | Controls if element will automatically scroll to the new text.                                                                                                   |
+| displayInterimResults      | `boolean`                                                                 | Controls if interim result are displayed.                                                                                                                        |
+| textColor                  | [`TextColor`](#textcolor)                                                 | Object defining the result text colors.                                                                                                                          |
+| stopAfterSilenceMs         | `number`                                                                  | Milliseconds of silence required for the speech service to automatically stop. Default is 25000ms (25 seconds).                                                  |
+| translations               | `{[key: string]: string}`                                                 | Case-sensitive one-to-one map of words that will automatically be translated to others.                                                                          |
+| commands                   | [`Commands`](#commands)                                                   | Set the phrases that will trigger various chat functionality.                                                                                                    |
+| onStart                    | `() => void`                                                              | Triggered when speech recording has started.                                                                                                                     |
+| onStop                     | `() => void`                                                              | Triggered when speech recording has stopped.                                                                                                                     |
+| onResult                   | `( text: string, isFinal: boolean ) => void`                              | Triggered when a new result is transcribed and inserted into element.                                                                                            |
+| onPreResult                | `( text: string, isFinal: boolean )` => [PreResult](#preresult) \| `void` | Triggered before result text insertion. This function can be used to control the speech service based on what was spoken via the [PreResult](#preresult) object. |
+| onCommandMode<br />Trigger | `(isStart: boolean) => void`                                              | Triggered when command mode is initiated and stopped.                                                                                                            |
+| onPauseTrigger             | `(isStart: boolean) => void`                                              | Triggered when the pause command is initiated and stopped via resume command.                                                                                    |
+| onError                    | `(message: string) => void`                                               | Triggered when an error has occurred.                                                                                                                            |
 
 Examples:
 
@@ -103,15 +115,15 @@ SpeechToElement.toggle("webspeech", {
 
 Object used to set the phrases of commands that will control transcription and input functionality:
 
-| Name          | Type                      | Description                                                                                                                                             |
-| :------------ | :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| stop          | `string`                  | Stop the speech service                                                                                                                                 |
-| pause         | `string`                  | Temporarily stops the transcription and re-enables it after the phrase for `resume` is spoken.                                                          |
-| resume        | `string`                  | Re-enables transcription after it has been stopped by the `pause` or `commandMode` commands.                                                            |
-| reset         | `string`                  | Remove the transcribed text (since the last element cursor move)                                                                                        |
-| removeAllText | `string`                  | Remove all element text                                                                                                                                 |
-| commandMode   | `string`                  | Activate the command mode which will stops transcription and waits for a command to be executed. Use the phrase for `resume` to leave the command mode. |
-| settings      | [`CommandSettings`](HERE) | Controls how command mode is used.                                                                                                                      |
+| Name          | Type                                  | Description                                                                                                                                             |
+| :------------ | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| stop          | `string`                              | Stop the speech service                                                                                                                                 |
+| pause         | `string`                              | Temporarily stops the transcription and re-enables it after the phrase for `resume` is spoken.                                                          |
+| resume        | `string`                              | Re-enables transcription after it has been stopped by the `pause` or `commandMode` commands.                                                            |
+| reset         | `string`                              | Remove the transcribed text (since the last element cursor move)                                                                                        |
+| removeAllText | `string`                              | Remove all element text                                                                                                                                 |
+| commandMode   | `string`                              | Activate the command mode which will stops transcription and waits for a command to be executed. Use the phrase for `resume` to leave the command mode. |
+| settings      | [`CommandSettings`](#commandsettings) | Controls how command mode is used.                                                                                                                      |
 
 Example:
 
@@ -227,7 +239,7 @@ Example server templates for the `retrieveToken` property:
 
 ### :floppy_disk: Azure SDK
 
-To use the [Azure Cognitive Speech Services API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-to-text), you will need to add the official [Azure Speech SDK](HERE) into your project and assign it to the `window.SpeechSDK` variable. Here are some simple ways you can achieve this:
+To use the [Azure Cognitive Speech Services API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-to-text), you will need to add the official [Azure Speech SDK](https://www.npmjs.com/package/microsoft-cognitiveservices-speech-sdk) into your project and assign it to the `window.SpeechSDK` variable. Here are some simple ways you can achieve this:
 
 - <b>Import from a dependancy:</b>
   If you are using a dependancy manager, import and assign it to window.SpeechSDK:
@@ -270,11 +282,11 @@ declare global {
 
 Examples:
 
-React project that uses a package bundler - should work similarly for other [Frameworks](./frameworks):
+Example React project that uses a package bundler. It should work similarly for other UI frameworks:
 
 // WORK - examples
 
-[Click for Live Example](https://codesandbox.io/s/active-table-react-xlsx-h3j7rq?file=/src/App.tsx)
+[Click for Live Example](https://stackblitz.com/edit/stackblitz-starters-u6bayx?file=src%2FApp.tsx)
 
 VanillaJS approach with no bundler (this can also be used as fallback if above doesn't work):
 

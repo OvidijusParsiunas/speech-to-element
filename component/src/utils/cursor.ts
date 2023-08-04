@@ -25,7 +25,7 @@ export class Cursor {
     return countedTextInElement;
   }
 
-  public static focusEndOfGenericElement(element: HTMLElement) {
+  public static focusEndOfGeneric(element: HTMLElement) {
     const range = document.createRange();
     range.selectNodeContents(element);
     range.collapse(false);

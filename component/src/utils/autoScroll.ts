@@ -21,12 +21,19 @@ export class AutoScroll {
     }
   }
 
-  public static scroll(speech: Speech, element: HTMLElement) {
+  public static scrollGeneric(speech: Speech, element: HTMLElement) {
     if (speech.isCursorAtEnd) {
       element.scrollTop = element.scrollHeight;
     } else {
       speech.scrollingSpan.scrollIntoView({block: 'nearest'});
     }
+  }
+
+  // primitives don't need to be scrolled except in safari
+  // they can only safely be scrolled to the end
+  public static scrollSafariPrimitiveToEnd(element: HTMLElement) {
+    element.scrollLeft = element.scrollWidth;
+    element.scrollTop = element.scrollHeight;
   }
 
   private static isElementOverflown(element: HTMLElement) {

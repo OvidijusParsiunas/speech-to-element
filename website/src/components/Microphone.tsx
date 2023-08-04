@@ -6,7 +6,7 @@ const recordingFilter =
 const defaultFilter =
   'brightness(0) saturate(100%) invert(9%) sepia(0%) saturate(2096%) hue-rotate(257deg) brightness(99%) contrast(96%)';
 const hoverFilter =
-  'brightness(0) saturate(100%) invert(36%) sepia(0%) saturate(2087%) hue-rotate(147deg) brightness(95%) contrast(92%)';
+  'brightness(0) saturate(100%) invert(26%) sepia(0%) saturate(833%) hue-rotate(166deg) brightness(96%) contrast(90%)';
 
 export default function Microphone(props: {isRecording: boolean}) {
   const [filter, setFilter] = React.useState(defaultFilter);

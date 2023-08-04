@@ -31,6 +31,7 @@ export abstract class Speech {
   startPadding = '';
   // primitive elements use this as the right hand side text of cursor
   endPadding = '';
+  numberOfSpacesBeforeNewText = 0; // primarily used for setting cursor for primitive elements
   numberOfSpacesAfterNewText = 0; // primarily used for setting cursor for primitive elements
   isHighlighted = false;
   primitiveTextRecorded = false;
@@ -133,26 +134,30 @@ export abstract class Speech {
     StopTimeout.reset(this, this.stopTimeoutMS);
     this.finalTranscript = newFinalText;
     if (!this._displayInterimResults) interimTranscript = '';
+    // this is primarily used to remove padding when interim/final text is removed on command
+    const isNoText = this.finalTranscript === '' && interimTranscript === '';
     if (this._primitiveElement) {
-      this.updatePrimitiveElement(this._primitiveElement, interimTranscript);
+      this.updatePrimitiveElement(this._primitiveElement, interimTranscript, isNoText);
     } else if (this._genericElement) {
-      this.updateGenericElement(this._genericElement, interimTranscript);
+      this.updateGenericElement(this._genericElement, interimTranscript, isNoText);
     }
   }
 
-  private updatePrimitiveElement(element: HTMLInputElement, interimTranscript: string) {
+  // prettier-ignore
+  // remember that padding values here contain actual text left and right
+  private updatePrimitiveElement(element: HTMLInputElement, interimTranscript: string, isNoText: boolean) {
     if (this.isHighlighted) Highlight.removeForPrimitive(this, element);
-    if (!this.primitiveTextRecorded) Padding.adjustStateForPrimitiveElement(this, element);
-    const cursorLefSideText = this.startPadding + this.finalTranscript + interimTranscript;
-    element.value = cursorLefSideText + this.endPadding;
-    Cursor.setOffsetForPrimitive(element, cursorLefSideText.length + this.numberOfSpacesAfterNewText, this.autoScroll);
+    if (!this.primitiveTextRecorded) Padding.adjustStateAfterRecodingPrimitiveElement(this, element);
+    if (isNoText) Padding.adjustSateForNoTextPrimitiveElement(this);
+    const cursorLeftSideText = this.startPadding + this.finalTranscript + interimTranscript;
+    element.value = cursorLeftSideText + this.endPadding;
+    Cursor.setOffsetForPrimitive(element, cursorLeftSideText.length + this.numberOfSpacesAfterNewText, this.autoScroll);
+    if (this.autoScroll && Browser.IS_SAFARI() && this.isCursorAtEnd) AutoScroll.scrollSafariPrimitiveToEnd(element);
   }
 
-  private updateGenericElement(element: HTMLElement, interimTranscript: string) {
+  private updateGenericElement(element: HTMLElement, interimTranscript: string, isNoText: boolean) {
     if (this.isHighlighted) Highlight.removeForGeneric(this, element);
     if (!this.spansPopulated) Elements.appendSpans(this, element);
-    // this is primarily used to remove padding when interim/final text is removed on command
-    const isNoText = this.finalTranscript === '' && interimTranscript === '';
     // for web speech api - safari only returns final text - no interim
     const finalText = (isNoText ? '' : this.startPadding) + Text.lineBreak(this.finalTranscript);
     this.finalSpan.innerHTML = finalText;
@@ -163,7 +168,7 @@ export abstract class Speech {
     if (Browser.IS_SAFARI() && this.insertInCursorLocation) {
       Cursor.setOffsetForSafariGeneric(element, finalText.length + interimText.length);
     }
-    if (isAutoScrollingRequired) AutoScroll.scroll(this, element);
+    if (isAutoScrollingRequired) AutoScroll.scrollGeneric(this, element);
     if (isNoText) this.scrollingSpan.innerHTML = '';
   }
 
@@ -197,6 +202,7 @@ export abstract class Speech {
     this.endPadding = '';
     this.isHighlighted = false;
     this.primitiveTextRecorded = false;
+    this.numberOfSpacesBeforeNewText = 0;
     this.numberOfSpacesAfterNewText = 0;
     if (!isDuringReset) this.stopTimeout = undefined;
   }

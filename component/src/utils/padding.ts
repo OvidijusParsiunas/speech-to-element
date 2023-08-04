@@ -10,15 +10,23 @@ export class Padding {
       const leftCharacter = element.value[startIndex - 1];
       const endIndex = element.selectionEnd === null ? startIndex : element.selectionEnd;
       const rightCharacter = element.value[endIndex];
-      if (Text.isCharDefined(leftCharacter)) speech.startPadding = ' ';
+      if (Text.isCharDefined(leftCharacter)) {
+        speech.startPadding = ' ';
+        speech.numberOfSpacesBeforeNewText = 1;
+      }
       if (Text.isCharDefined(rightCharacter)) {
         speech.endPadding = ' ';
         speech.numberOfSpacesAfterNewText = 1;
       }
+      speech.isCursorAtEnd = element.value.length === endIndex;
       return;
     }
     const lastCharacter = element.value[element.value.length - 1];
-    if (Text.isCharDefined(lastCharacter)) speech.startPadding = ' ';
+    if (Text.isCharDefined(lastCharacter)) {
+      speech.startPadding = ' ';
+      speech.numberOfSpacesBeforeNewText = 1;
+    }
+    speech.isCursorAtEnd = true;
   }
 
   private static setStateForGenericElement(speech: Speech, element: HTMLElement) {
@@ -48,7 +56,7 @@ export class Padding {
     }
   }
 
-  public static adjustStateForPrimitiveElement(speech: Speech, input: HTMLInputElement) {
+  public static adjustStateAfterRecodingPrimitiveElement(speech: Speech, input: HTMLInputElement) {
     speech.primitiveTextRecorded = true;
     if (speech.insertInCursorLocation && document.activeElement === input) {
       if (input.selectionEnd !== null) {
@@ -61,5 +69,16 @@ export class Padding {
     }
     // this needs to be set to not retain the existing text
     speech.startPadding = input.value + speech.startPadding;
+  }
+
+  public static adjustSateForNoTextPrimitiveElement(speech: Speech) {
+    if (speech.numberOfSpacesBeforeNewText === 1) {
+      speech.startPadding = speech.startPadding.substring(0, speech.startPadding.length - 1);
+      speech.numberOfSpacesBeforeNewText = 0;
+    }
+    if (speech.numberOfSpacesAfterNewText === 1) {
+      speech.endPadding = speech.endPadding.substring(1);
+      speech.numberOfSpacesAfterNewText = 0;
+    }
   }
 }

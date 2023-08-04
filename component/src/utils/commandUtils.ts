@@ -2,6 +2,7 @@ import {InternalCommands} from '../types/internalCommands';
 import {Commands, Options} from '../types/options';
 import {AutoScroll} from './autoScroll';
 import {Elements} from './elements';
+import {Browser} from './browser';
 import {Speech} from '../speech';
 import {Cursor} from './cursor';
 import {Text} from './text';
@@ -40,10 +41,12 @@ export class CommandUtils {
     CommandUtils.toggleCommandModeOff(speech);
     if (Elements.isPrimitiveElement(element)) {
       (element as HTMLInputElement).value = newText;
+      Cursor.setOffsetForPrimitive(element as HTMLInputElement, newText.length, true);
+      if (Browser.IS_SAFARI() && speech.autoScroll) AutoScroll.scrollSafariPrimitiveToEnd(element as HTMLInputElement);
     } else {
       element.textContent = newText;
-      Cursor.focusEndOfGenericElement(element as HTMLElement);
-      setTimeout(() => AutoScroll.scroll(speech, element as HTMLElement));
+      Cursor.focusEndOfGeneric(element as HTMLElement);
+      setTimeout(() => AutoScroll.scrollGeneric(speech, element as HTMLElement));
     }
     speech.resetRecording(options);
   }
