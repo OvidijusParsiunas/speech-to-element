@@ -2,14 +2,12 @@
 
 <b>Speech To Element</b> is an all purpose library that transcribes your speech into text right out of the box! Try it out in the [official website](WORK).
 
-// WORK - quick demo, ability to edit whilst speaking
-
-// WORK - command mode
-
 ### :zap: Services
 
 - [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API)
 - [Azure Cognitive Speech Services API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-to-text)
+
+https://github.com/OvidijusParsiunas/speech-to-element/assets/18709577/e2e618f8-b61c-4877-804b-26eeefbb0afa
 
 ### :computer: How to use
 
@@ -114,6 +112,8 @@ SpeechToElement.toggle("webspeech", {
 ```
 
 ##### Commands:
+
+https://github.com/OvidijusParsiunas/speech-to-element/assets/18709577/76351a54-7e70-4e39-8816-3106616c92f2
 
 Object used to set the phrases of commands that will control transcription and input functionality:
 
