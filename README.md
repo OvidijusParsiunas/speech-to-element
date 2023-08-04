@@ -7,8 +7,6 @@
 - [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API)
 - [Azure Cognitive Speech Services API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-to-text)
 
-https://github.com/OvidijusParsiunas/speech-to-element/assets/18709577/e2e618f8-b61c-4877-804b-26eeefbb0afa
-
 ### :computer: How to use
 
 [NPM](https://www.npmjs.com/package/speech-to-element):
@@ -37,6 +35,8 @@ window.SpeechToElement.toggle("webspeech", {element: targetElement});
 
 When using Azure, you will also need to install its speech [SDK](https://www.npmjs.com/package/microsoft-cognitiveservices-speech-sdk). Read more in the [Azure SDK](#floppy_disk-azure-sdk) section. <br />
 Make sure to checkout the [`examples`](https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples) directory to browse templates for [`React`](https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/ui), [`Next.js`](https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/nextjs) and more.
+
+https://github.com/OvidijusParsiunas/speech-to-element/assets/18709577/e2e618f8-b61c-4877-804b-26eeefbb0afa
 
 ### :beginner: API
 
