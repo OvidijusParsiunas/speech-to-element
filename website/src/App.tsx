@@ -1,5 +1,6 @@
 import {toggleAzure, toggleWebSpeech} from './utils/toggleSpeech';
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
+import titleImage from './title/banner-white-dark-text.png';
 import {validateAzure} from './utils/validateAzureOptions';
 import AzureOptions from './components/AzureOptions';
 import {changeService} from './utils/changeService';
@@ -39,7 +40,7 @@ function App() {
     <>
       <Header />
       <main id="main">
-        <h1 id="title">Speech To Element</h1>
+        <img src={titleImage} width={570} alt="" />
         <div id="text" ref={textElement} contentEditable={true}></div>
         <div
           id="button"

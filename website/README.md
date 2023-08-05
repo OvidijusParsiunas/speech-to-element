@@ -1,31 +1,20 @@
-// WORK - refactor
+<img src="https://raw.githubusercontent.com/OvidijusParsiunas/speech-to-element/HEAD/assets/banner-white.png" alt="Logo">
 
-![Deep Chat](../../assets/readme/ui-example.png)
+<b>Speech To Element</b> is an all purpose library that transcribes your speech into text right out of the box!
 
-<br>
+Check out the the deployed website on [here](WORK).
 
-This is an example [Deep Chat](https://www.npmjs.com/package/deep-chat) UI project that can be used to communicate with the [example server](https://deepchat.dev/examples/servers) projects.
-
-### :computer: Local setup
-
-If you are downloading the project via `git clone` - we advise you to use shallow cloning with the use of the [--depth 1](https://www.perforce.com/blog/vcs/git-beyond-basics-using-shallow-clones) option to reduce its size:
+## :construction_worker: Local setup
 
 ```
-git clone --depth 1 https://github.com/OvidijusParsiunas/deep-chat.git
+# Install node dependencies:
+$ npm install
+
+# Run the project in watch mode:
+$ npm run start
 ```
 
-Navigate to this directory and run the following command to download the dependencies:
+## :heart: Contributions
 
-```
-npm install
-```
-
-Run the project:
-
-```
-npm run start
-```
-
-### :wrench: Improvements
-
-If you are experiencing issues with this project or have suggestions on how to improve it, do not hesitate to create a new ticket in [Github issues](https://github.com/OvidijusParsiunas/deep-chat/issues) and we will look into it as soon as possible.
+Open source is built by the community for the community. All contributions to this project are welcome!
+<br> Additionally, if you have any suggestions for enhancements, ideas on how to take the project further or have discovered a bug, do not hesitate to create a new issue ticket and we will look into it as soon as possible!

@@ -1,4 +1,4 @@
-<img src="./assets/banner-white.png" alt="Logo">
+<img src="https://raw.githubusercontent.com/OvidijusParsiunas/speech-to-element/HEAD/assets/banner-white.png" alt="Logo">
 
 <b>Speech To Element</b> is an all purpose library that transcribes your speech into text right out of the box! Try it out in the [official website](WORK).
 
@@ -37,6 +37,19 @@ window.SpeechToElement.toggle("webspeech", {element: targetElement});
 
 When using Azure, you will also need to install its speech [SDK](https://www.npmjs.com/package/microsoft-cognitiveservices-speech-sdk). Read more in the [Azure SDK](#floppy_disk-azure-sdk) section. <br />
 Make sure to checkout the [examples](https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples) directory to browse templates for [React](https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/ui), [Next.js](https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/nextjs) and more.
+
+## :construction_worker: Local setup
+
+```
+# Install node dependencies:
+$ npm install
+
+# Serve the component locally (from index.html):
+$ npm run start
+
+# Build the component into a module (dist/index.js):
+$ npm run build:module
+```
 
 ### :beginner: API
 
@@ -231,19 +244,11 @@ SpeechToElement.toggle("azure", {
 });
 ```
 
-<br />
-
 Example server templates for the `retrieveToken` property:
 
 | Express                                                                                                                                                                                                                                        | Nest                                                                                                                                                                                                                                       | Flask                                                                                                                                                                                                                                        | Spring                                                                                                                                                                                                                                               | Go                                                                                                                                                                                                                              | Next                                                                                                                                                                                                                                  |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <a href="https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/node/express" target="_blank"><img src="https://raw.githubusercontent.com/OvidijusParsiunas/speech-to-element/HEAD/assets/expressLogo.png" width="60"/></a> | <a href="https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/node/nestjs" target="_blank"><img src="https://raw.githubusercontent.com/OvidijusParsiunas/speech-to-element/HEAD/assets/nestLogo.png" width="60"/></a> | <a href="https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/python/flask" target="_blank"><img src="https://raw.githubusercontent.com/OvidijusParsiunas/speech-to-element/HEAD/assets/flaskLogo.png" width="60"/></a> | <a href="https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/java/springboot" target="_blank"><img src="https://raw.githubusercontent.com/OvidijusParsiunas/speech-to-element/HEAD/assets/springBootLogo.png" width="50"/></a> | <a href="https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/go" target="_blank"><img src="https://raw.githubusercontent.com/OvidijusParsiunas/speech-to-element/HEAD/assets/goLogo.png" width="40"/></a> | <a href="https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples/nextjs" target="_blank"><img src="https://raw.githubusercontent.com/OvidijusParsiunas/speech-to-element/HEAD/assets/nextLogo.png" width="55"/></a> |
-
-<br />
-
-Location of `subscriptionKey` and `region` details in Azure Portal:
-
-<img width="987" src="./assets/azure-credentials.png" alt="Credentials location in Azure Portal">
 
 <br />
 

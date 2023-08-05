@@ -70,7 +70,17 @@ function App() {
           ))}
         </select>
         {activeService === 'azure' && (
-          <div id="subscription-key-tip">Make sure to set the SUBSCRIPTION_KEY and REGION environment variables</div>
+          <div id="subscription-key-tip">
+            Make sure to launch one of the{' '}
+            <a
+              href="https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples"
+              target="_blank"
+              rel="noreferrer"
+            >
+              example servers
+            </a>
+            .
+          </div>
         )}
       </main>
     </>
