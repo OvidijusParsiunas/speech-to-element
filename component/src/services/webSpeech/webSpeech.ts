@@ -3,6 +3,8 @@ import {ExtractFunc, WebSpeechTranscript} from './webSpeechTranscript';
 import {Browser} from '../../utils/browser';
 import {Speech} from '../../speech';
 
+// TO-DO - increase the silence timeout:
+// https://stackoverflow.com/questions/70653818/web-speech-api-closes-after-some-seconds
 export class WebSpeech extends Speech {
   // when service is manually stopped events are still fired, this is used to stop more text being added
   private _stopping?: boolean;
@@ -39,7 +41,7 @@ export class WebSpeech extends Speech {
     this._service = new speechRecognition();
     this._service.continuous = true;
     this._service.interimResults = options?.displayInterimResults ?? true;
-    this._service.lang = options?.language || 'en-US';
+    this._service.lang = options?.language?.trim() || 'en-US';
     this.setEvents();
   }
 
@@ -53,6 +55,8 @@ export class WebSpeech extends Speech {
       // this error is thrown in Safari when the service is restarted
       if (Browser.IS_SAFARI() && event.message === 'Another request is started') return;
       if (event.error === 'aborted' && this.isRestarting) return;
+      // TO-DO - could potentially use this to extend
+      if (event.error === 'no-speech') return;
       this.error(event.message || event.error);
     };
 
@@ -93,5 +97,6 @@ export class WebSpeech extends Speech {
   private error(details: string) {
     console.error(details);
     this.setStateOnError(details);
+    this.stop();
   }
 }

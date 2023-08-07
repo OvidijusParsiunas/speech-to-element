@@ -20,10 +20,9 @@ function App() {
   const [isError, setIsError] = React.useState(false);
   const textElement = React.useRef(null);
   React.useEffect(() => {
-    // WORK - add link for more examples
-    if (!window.SpeechSDK) {
-      window.SpeechSDK = sdk;
-    }
+    // SpeechSDK can be defined in multiple ways, check out the following live code example:
+    // https://stackblitz.com/edit/stackblitz-starters-ujkq7j?file=src%2FApp.tsx
+    if (!window.SpeechSDK) window.SpeechSDK = sdk;
     const availableServicesArr: {value: string; text: string}[] = [{value: 'azure', text: 'Azure Speech'}];
     if (SpeechToElement.isWebSpeechSupported()) availableServicesArr.unshift({value: 'webspeech', text: 'Web Speech'});
     setAvailableServices(availableServicesArr);

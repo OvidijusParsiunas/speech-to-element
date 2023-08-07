@@ -41,11 +41,11 @@ export class CommandUtils {
     CommandUtils.toggleCommandModeOff(speech);
     if (Elements.isPrimitiveElement(element)) {
       (element as HTMLInputElement).value = newText;
-      Cursor.setOffsetForPrimitive(element as HTMLInputElement, newText.length, true);
+      if (!speech.isTargetInShadow) Cursor.setOffsetForPrimitive(element as HTMLInputElement, newText.length, true);
       if (Browser.IS_SAFARI() && speech.autoScroll) AutoScroll.scrollSafariPrimitiveToEnd(element as HTMLInputElement);
     } else {
       element.textContent = newText;
-      Cursor.focusEndOfGeneric(element as HTMLElement);
+      if (!speech.isTargetInShadow) Cursor.focusEndOfGeneric(element as HTMLElement);
       setTimeout(() => AutoScroll.scrollGeneric(speech, element as HTMLElement));
     }
     speech.resetRecording(options);

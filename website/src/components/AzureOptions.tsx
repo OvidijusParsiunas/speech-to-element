@@ -78,8 +78,12 @@ export default function AzureOptions(
       )}
       {activeAzureOption === 'retrieve' && (
         <div id="subscription-key-tip">
-          The browser will make a GET request to http://localhost:8080/token, please see {/* WORK - update link */}
-          <a href="https://github.com/OvidijusParsiunas/speech-to-element" target="_blank" rel="noreferrer">
+          The browser will make a GET request to http://localhost:8080/token, please see{' '}
+          <a
+            href="https://github.com/OvidijusParsiunas/speech-to-element/tree/main/examples"
+            target="_blank"
+            rel="noreferrer"
+          >
             server examples
           </a>
           .

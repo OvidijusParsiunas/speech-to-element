@@ -43,4 +43,8 @@ export class Elements {
     if (color.interim) speech.interimSpan.style.color = color.interim;
     if (color.final) speech.finalSpan.style.color = color.final;
   }
+
+  public static isInsideShadowDOM(element: Element) {
+    return element.getRootNode() instanceof ShadowRoot;
+  }
 }

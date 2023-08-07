@@ -22,21 +22,29 @@ export class AzureSpeechConfig {
   private static async getNewSpeechConfig(sdkSpeechConfig: typeof SpeechConfig, options: AzureOptions) {
     if (!options.region) return;
     if (options.subscriptionKey) {
-      return sdkSpeechConfig.fromSubscription(options.subscriptionKey, options.region);
+      return sdkSpeechConfig.fromSubscription(options.subscriptionKey.trim(), options.region.trim());
     }
     if (options.token) {
-      return sdkSpeechConfig.fromAuthorizationToken(options.token, options.region);
+      return sdkSpeechConfig.fromAuthorizationToken(options.token.trim(), options.region.trim());
     }
     if (options.retrieveToken) {
-      return options.retrieveToken().then((token) => {
-        return options.region ? sdkSpeechConfig.fromAuthorizationToken(token || '', options.region) : null;
-      });
+      return options
+        .retrieveToken()
+        .then((token) => {
+          return options.region
+            ? sdkSpeechConfig.fromAuthorizationToken(token?.trim() || '', options.region.trim())
+            : null;
+        })
+        .catch((err) => {
+          console.error(err);
+          return null;
+        });
     }
     return null;
   }
 
   private static process(sdkSpeechConfig: SpeechConfig, options: AzureOptions) {
-    if (options.language) sdkSpeechConfig.speechRecognitionLanguage = options.language;
+    if (options.language) sdkSpeechConfig.speechRecognitionLanguage = options.language.trim();
   }
 
   public static async get(sdkConfigType: typeof SpeechConfig, options: AzureOptions) {

@@ -45,11 +45,7 @@ export function toggleAzure(
     azureOptions.retrieveToken = async () => {
       return fetch('http://localhost:8080/token')
         .then((res) => res.text())
-        .then((token) => token)
-        .catch(() => {
-          // WORK - refactor the catch functions
-          return '';
-        });
+        .then((token) => token);
     };
   }
   SpeechToElement.toggle('azure', {

@@ -2,6 +2,7 @@ import {Recognizer, SpeechRecognitionEventArgs} from 'microsoft-cognitiveservice
 import {AzureOptions, Options, Translations} from '../../types/options';
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import {AzureSpeechConfig} from './azureSpeechConfig';
+import {StopTimeout} from '../../utils/stopTimeout';
 import {AzureTranscript} from './azureTranscript';
 import {Speech} from '../../speech';
 
@@ -11,6 +12,7 @@ declare global {
   }
 }
 
+// WORK - prevent problems if user clicks the microphone multiple times
 export class Azure extends Speech {
   // when service is manually stopped events are still fired, this is used to stop more text being added
   private _stopping?: boolean;
@@ -21,6 +23,7 @@ export class Azure extends Speech {
 
   start(options: Options & AzureOptions) {
     this._newTextPadding = '';
+    if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMs);
     this.prepareBeforeStart(options); // need to prepare before validation to set onError
     this.startAsync(options);
   }
@@ -50,6 +53,8 @@ export class Azure extends Speech {
       this.setEvents(recognizer);
       this._service = recognizer;
       if (options.retrieveToken) this.retrieveTokenInterval(options.retrieveToken);
+    } else {
+      this.error('Unable to contact Azure server');
     }
   }
 
@@ -76,6 +81,7 @@ export class Azure extends Speech {
     if (this._stopping) return;
     const {interimTranscript, finalTranscript, newText} = AzureTranscript.extract(
       this._newTextPadding + event.result.text, this.finalTranscript, false, this._translations);
+    StopTimeout.reset(this, this.stopTimeoutMS);
     this.updateElements(interimTranscript, finalTranscript, newText);
   }
 
@@ -95,6 +101,7 @@ export class Azure extends Speech {
         if (result.text && !this._stopping) {
           const {interimTranscript, finalTranscript, newText} = AzureTranscript.extract(
             this._newTextPadding + result.text, this.finalTranscript, true, this._translations);
+          StopTimeout.reset(this, this.stopTimeoutMS);
           this.updateElements(interimTranscript, finalTranscript, newText);
           if (finalTranscript !== '') this._newTextPadding = ' ';
         }
@@ -122,7 +129,7 @@ export class Azure extends Speech {
     this._retrieveTokenInterval = setInterval(() => {
       retrieveToken?.()
         .then((token) => {
-          if (this._service) this._service.authorizationToken = token || '';
+          if (this._service) this._service.authorizationToken = token?.trim() || '';
         })
         .catch((error) => {
           this.error(error);
@@ -154,5 +161,6 @@ export class Azure extends Speech {
     if (this._retrieveTokenInterval) clearInterval(this._retrieveTokenInterval);
     console.error(details);
     this.setStateOnError(details);
+    this.stop();
   }
 }

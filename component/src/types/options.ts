@@ -16,8 +16,6 @@ export interface Options {
   autoScroll?: boolean;
   // only works for generic elements and not input, textarea
   textColor?: TextColor;
-  // default - 20s
-  stopAfterSilenceMs?: number;
   // need to define text for lower and upper cases
   translations?: Translations;
   commands?: Commands;
@@ -58,6 +56,8 @@ export interface AzureOptions {
   region: string;
   // https://docs.microsoft.com/azure/cognitive-services/speech-service/supported-languages
   language?: string;
+  // default - 20s
+  stopAfterSilenceMs?: number;
 }
 
 export interface WebSpeechOptions {

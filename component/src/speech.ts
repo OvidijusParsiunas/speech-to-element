@@ -3,7 +3,6 @@ import {InternalCommands} from './types/internalCommands';
 import {EventListeners} from './utils/eventListeners';
 import {PreResultUtils} from './utils/preResultUtils';
 import {CommandUtils} from './utils/commandUtils';
-import {StopTimeout} from './utils/stopTimeout';
 import {AutoScroll} from './utils/autoScroll';
 import {Highlight} from './utils/highlight';
 import {Elements} from './utils/elements';
@@ -56,6 +55,7 @@ export abstract class Speech {
   isPaused = false;
   commands?: InternalCommands;
   isWaitingForCommand = false;
+  isTargetInShadow = false;
 
   constructor() {
     this.resetState();
@@ -79,8 +79,6 @@ export abstract class Speech {
       this._finalTextColor = options?.textColor?.final;
       Elements.applyCustomColors(this, options.textColor);
     }
-    // WORK - catch auto error thrown by azure
-    if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMs);
     if (options?.insertInCursorLocation !== undefined) this.insertInCursorLocation = options.insertInCursorLocation;
     if (options?.autoScroll !== undefined) this.autoScroll = options.autoScroll;
     this._onResult = options?.onResult;
@@ -97,6 +95,7 @@ export abstract class Speech {
   private prepare(targetElement: HTMLElement) {
     Padding.setState(this, targetElement);
     Highlight.setState(this, targetElement);
+    this.isTargetInShadow = Elements.isInsideShadowDOM(targetElement);
     if (Elements.isPrimitiveElement(targetElement)) {
       this._primitiveElement = targetElement as HTMLInputElement;
       this._originalText = this._primitiveElement.value;
@@ -131,7 +130,6 @@ export abstract class Speech {
     }
     if (this.isPaused || this.isWaitingForCommand) return;
     this._onResult?.(newText, interimTranscript === '');
-    StopTimeout.reset(this, this.stopTimeoutMS);
     this.finalTranscript = newFinalText;
     if (!this._displayInterimResults) interimTranscript = '';
     // this is primarily used to remove padding when interim/final text is removed on command
@@ -151,7 +149,10 @@ export abstract class Speech {
     if (isNoText) Padding.adjustSateForNoTextPrimitiveElement(this);
     const cursorLeftSideText = this.startPadding + this.finalTranscript + interimTranscript;
     element.value = cursorLeftSideText + this.endPadding;
-    Cursor.setOffsetForPrimitive(element, cursorLeftSideText.length + this.numberOfSpacesAfterNewText, this.autoScroll);
+    if (!this.isTargetInShadow) {
+      const newCusrorPos = cursorLeftSideText.length + this.numberOfSpacesAfterNewText;
+      Cursor.setOffsetForPrimitive(element, newCusrorPos, this.autoScroll);      
+    }
     if (this.autoScroll && Browser.IS_SAFARI() && this.isCursorAtEnd) AutoScroll.scrollSafariPrimitiveToEnd(element);
   }
 

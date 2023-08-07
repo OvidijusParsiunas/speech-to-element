@@ -19,6 +19,7 @@ export default class SpeechToElement {
       SpeechToElement.startAzure(options as Options & AzureOptions);
     } else {
       console.error("service not found - must be either 'webspeech' or 'azure'");
+      options?.onError?.("service not found - must be either 'webspeech' or 'azure'");
     }
   }
 
@@ -48,5 +49,3 @@ export default class SpeechToElement {
     if (this._service) CommandUtils.toggleCommandModeOff(this._service);
   }
 }
-
-module.exports = SpeechToElement;

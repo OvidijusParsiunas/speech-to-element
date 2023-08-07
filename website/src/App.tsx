@@ -28,10 +28,9 @@ function App() {
   const [errorMessage, setErrorMessage] = React.useState('');
   const textElement = React.useRef(null);
   React.useEffect(() => {
-    // WORK - add link for more examples
-    if (!window.SpeechSDK) {
-      window.SpeechSDK = sdk;
-    }
+    // SpeechSDK can be defined in multiple ways, check out the following live code example:
+    // https://stackblitz.com/edit/stackblitz-starters-ujkq7j?file=src%2FApp.tsx
+    if (!window.SpeechSDK) window.SpeechSDK = sdk;
     const availableServicesArr: {value: string; text: string}[] = [{value: 'azure', text: 'Azure Speech'}];
     if (SpeechToElement.isWebSpeechSupported()) availableServicesArr.unshift({value: 'webspeech', text: 'Web Speech'});
     setAvailableServices(availableServicesArr);
@@ -48,7 +47,9 @@ function App() {
             if (activeService === 'webspeech') {
               toggleWebSpeech(textElement, setIsRecording, setIsPreparing, setErrorMessage);
             } else if (activeService === 'azure') {
-              const errorMessage = validateAzure(activeAzureOption, activeAzureRegion, azureCredentials);
+              const region = activeAzureRegion.trim();
+              const credentials = azureCredentials.trim();
+              const errorMessage = validateAzure(activeAzureOption, region, credentials);
               if (errorMessage) {
                 console.error(errorMessage);
                 return setErrorMessage(errorMessage);
@@ -59,8 +60,8 @@ function App() {
                   setIsPreparing,
                   setErrorMessage,
                   activeAzureOption,
-                  activeAzureRegion,
-                  azureCredentials
+                  region,
+                  credentials
                 );
               }
             }
