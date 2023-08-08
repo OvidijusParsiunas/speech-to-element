@@ -18,6 +18,7 @@ function CredentialsInput(props: {
 function OptionsDropdown(props: {activeAzureOption: string; setActiveAzureOption: (state: string) => void}) {
   return (
     <select
+      id="azure-options-dropdown"
       className={'dropdown'}
       value={props.activeAzureOption}
       onChange={(event) => {
@@ -68,7 +69,6 @@ export default function AzureOptions(
   return (
     <div id="azure-options">
       <OptionsDropdown activeAzureOption={activeAzureOption} setActiveAzureOption={setActiveAzureOption}></OptionsDropdown>
-      <RegionDropdown activeAzureRegion={activeAzureRegion} setActiveAzureRegion={setActiveAzureRegion}></RegionDropdown>
       {(activeAzureOption === 'subscription' || activeAzureOption === 'token') && (
         <CredentialsInput
           activeAzureOption={activeAzureOption}
@@ -76,6 +76,7 @@ export default function AzureOptions(
           setAzureCredentials={setAzureCredentials}
         ></CredentialsInput>
       )}
+      <RegionDropdown activeAzureRegion={activeAzureRegion} setActiveAzureRegion={setActiveAzureRegion}></RegionDropdown>
       {activeAzureOption === 'retrieve' && (
         <div id="subscription-key-tip">
           The browser will make a GET request to http://localhost:8080/token, please see{' '}

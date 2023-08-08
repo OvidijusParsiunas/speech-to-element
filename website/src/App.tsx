@@ -34,12 +34,13 @@ function App() {
     const availableServicesArr: {value: string; text: string}[] = [{value: 'azure', text: 'Azure Speech'}];
     if (SpeechToElement.isWebSpeechSupported()) availableServicesArr.unshift({value: 'webspeech', text: 'Web Speech'});
     setAvailableServices(availableServicesArr);
+    if (availableServicesArr.length === 1) setActiveService(availableServicesArr[0].value);
   }, []);
   return (
     <>
       <Header />
       <main id="main">
-        <img src={titleImage} width={570} alt="" />
+        <img id="title-image" src={titleImage} width={570} alt="" />
         <div id="text" ref={textElement} contentEditable={true}></div>
         <div
           id="button"

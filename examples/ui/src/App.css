@@ -1,9 +1,8 @@
-/* WORK - make the demo appropriate for smaller screens */
 #main {
   font-family: sans-serif;
   text-align: center;
   position: absolute;
-  top: 44%;
+  top: calc(50% - 30px);
   left: 49.5%;
   transform: translate(-50%, -50%);
 }
@@ -16,7 +15,7 @@
   width: 500px;
   height: 250px;
   border: 1px solid grey;
-  margin-top: 65px;
+  margin-top: 30px;
   margin-left: auto;
   margin-right: auto;
   text-align: left;
@@ -28,7 +27,7 @@
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 45px;
+  margin-top: 30px;
 }
 
 #message-empty {
@@ -45,7 +44,7 @@
 }
 
 #dropdown {
-  margin-top: 12px;
+  margin-top: 8px;
   font-size: 17px;
   border-radius: 4px;
   padding-left: 2px;
@@ -58,5 +57,74 @@
 @-moz-document url-prefix() {
   #dropdown {
     border-radius: revert;
+  }
+}
+
+@media (max-height: 700px) {
+  #text {
+    height: 200px;
+  }
+}
+
+@media (max-height: 610px) {
+  #main {
+    top: calc(50% - 10px);
+  }
+  #text {
+    height: 170px;
+  }
+  #button {
+    margin-top: 20px;
+  }
+}
+
+@media (max-height: 520px) {
+  #text {
+    margin-top: 5px;
+  }
+  #button {
+    margin-top: 15px;
+  }
+}
+
+@media (max-height: 475px) {
+  #text {
+    height: 20vh;
+  }
+}
+
+@media (max-height: 367px) {
+  #microphone {
+    width: 40px;
+  }
+  #ddropdown {
+    font-size: 14px;
+  }
+}
+
+@media (max-height: 320px) {
+  #text {
+    margin-top: 0px;
+  }
+  #microphone {
+    width: 30px;
+  }
+}
+
+@media (max-width: 575px) {
+  #text {
+    width: 80vw;
+  }
+  #title-image {
+    width: 90vw;
+  }
+}
+
+@media (max-width: 390px) {
+  #text {
+    width: 80vw;
+  }
+  #title-image {
+    width: 90vw;
   }
 }

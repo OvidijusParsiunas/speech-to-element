@@ -1,6 +1,7 @@
 #header {
   width: 100%;
   position: absolute;
+  z-index: 1;
 }
 
 /* when screen height is narrow - remove the header element */

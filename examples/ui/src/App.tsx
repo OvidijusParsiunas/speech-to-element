@@ -3,6 +3,7 @@ import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import {changeService} from './utils/changeService';
 import Microphone from './components/Microphone';
 import SpeechToElement from 'speech-to-element';
+import titleImage from './title/title.png';
 import React from 'react';
 import './App.css';
 
@@ -26,11 +27,12 @@ function App() {
     const availableServicesArr: {value: string; text: string}[] = [{value: 'azure', text: 'Azure Speech'}];
     if (SpeechToElement.isWebSpeechSupported()) availableServicesArr.unshift({value: 'webspeech', text: 'Web Speech'});
     setAvailableServices(availableServicesArr);
+    if (availableServicesArr.length === 1) setActiveService(availableServicesArr[0].value);
   }, []);
   return (
     <>
       <main id="main">
-        <h1 id="title">Speech To Element Demo</h1>
+        <img id="title-image" src={titleImage} width={570} alt="" />
         <div id="text" ref={textElement} contentEditable={true}></div>
         <div
           id="button"
