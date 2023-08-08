@@ -22,7 +22,16 @@ add the following to package:
 
 "build:bundle": "vite build"
 
-remove code from index.ts
+Add the following to index.ts:
 
-module.exports = SpeechToElement;
+window.SpeechToElement = SpeechToElement;
 
+and add:
+
+declare global {
+  interface Window {
+    SpeechToElement: typeof SpeechToElement;
+  }
+}
+
+Move the result index.js file to bundle

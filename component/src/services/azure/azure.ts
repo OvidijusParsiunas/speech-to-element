@@ -13,6 +13,7 @@ declare global {
 }
 
 // WORK - prevent problems if user clicks the microphone multiple times
+// REF - https://github.com/Azure-Samples/cognitive-services-speech-sdk/blob/master/samples/js/browser/index.html#L240
 export class Azure extends Speech {
   // when service is manually stopped events are still fired, this is used to stop more text being added
   private _stopping?: boolean;
