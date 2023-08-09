@@ -1,4 +1,4 @@
-import styles from '../styles/microphone.module.css';
+import styles from '../styles/main.module.css';
 import React from 'react';
 
 const recordingFilter =

@@ -39,7 +39,12 @@ export function toggleAzure(
     retrieveToken: async () => {
       return fetch('http://localhost:8080/token')
         .then((res) => res.text())
-        .then((token) => token);
+        .then((token) => token)
+        .catch((error) => {
+          console.error(error);
+          setIsError(true);
+          setIsPreparing(false);
+        });
     },
     onStart: () => {
       setIsRecording(true);

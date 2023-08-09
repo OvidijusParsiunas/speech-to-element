@@ -7,10 +7,6 @@
   transform: translate(-50%, -50%);
 }
 
-#title {
-  margin-top: 0px;
-}
-
 #text {
   width: 500px;
   height: 250px;
@@ -97,7 +93,10 @@
   #microphone {
     width: 40px;
   }
-  #ddropdown {
+  #dropdown {
+    font-size: 14px;
+  }
+  #subscription-key-tip {
     font-size: 14px;
   }
 }

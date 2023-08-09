@@ -37,12 +37,12 @@ function App() {
         <div
           id="button"
           onClick={() => {
+            if (!isRecording) setIsPreparing(true);
             if (activeService === 'webspeech') {
               toggleWebSpeech(textElement, setIsRecording, setIsPreparing, setIsError);
             } else if (activeService === 'azure') {
               toggleAzure(textElement, setIsRecording, setIsPreparing, setIsError);
             }
-            if (!isRecording) setIsPreparing(true);
           }}
         >
           <Microphone isRecording={isRecording}></Microphone>

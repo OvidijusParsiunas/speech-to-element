@@ -4,6 +4,8 @@ import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import Microphone from '../components/microphone';
 import SpeechToElement from 'speech-to-element';
 import styles from '../styles/main.module.css';
+import titleImage from '../assets/title.png';
+import Image from 'next/image';
 import React from 'react';
 
 declare global {
@@ -30,17 +32,17 @@ export default function IndexPage() {
   return (
     <>
       <main id={styles.main}>
-        <h1 id={styles.title}>Speech To Element Demo</h1>
+        <Image id={styles.titleImage} src={titleImage} alt="Picture of the author" width={570} />
         <div id={styles.text} ref={textElement} contentEditable={true}></div>
         <div
           id={styles.button}
           onClick={() => {
+            if (!isRecording) setIsPreparing(true);
             if (activeService === 'webspeech') {
               toggleWebSpeech(textElement, setIsRecording, setIsPreparing, setIsError);
             } else if (activeService === 'azure') {
               toggleAzure(textElement, setIsRecording, setIsPreparing, setIsError);
             }
-            if (!isRecording) setIsPreparing(true);
           }}
         >
           <Microphone isRecording={isRecording}></Microphone>
