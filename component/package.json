@@ -1,6 +1,6 @@
 {
   "name": "speech-to-element",
-  "version": "0.1.65",
+  "version": "0.1.66",
   "description": "Transcribe your speech into text, embed it into elements and more",
   "main": "dist/index.js",
   "scripts": {

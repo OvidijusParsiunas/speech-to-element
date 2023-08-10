@@ -1,18 +1,16 @@
 import {AzureOptions, Options, WebSpeechOptions} from './types/options';
 import {WebSpeech} from './services/webSpeech/webSpeech';
 import {CommandUtils} from './utils/commandUtils';
+import {GlobalState} from './utils/globalState';
 import {Azure} from './services/azure/azure';
-import {Speech} from './speech';
 
 export default class SpeechToElement {
-  private static _service: Speech | undefined;
-
   public static toggle(service: 'webspeech', options?: Options & WebSpeechOptions): void;
   public static toggle(service: 'azure', options: Options & AzureOptions): void;
   public static toggle(service: 'webspeech' | 'azure', options?: Options & WebSpeechOptions & AzureOptions) {
     const processedServiceName = service.toLocaleLowerCase().trim();
-    if (this._service?.recognizing) {
-      this._service.stop();
+    if (GlobalState.service?.recognizing) {
+      this.stop();
     } else if (processedServiceName === 'webspeech') {
       SpeechToElement.startWebSpeech(options);
     } else if (processedServiceName === 'azure') {
@@ -24,9 +22,9 @@ export default class SpeechToElement {
   }
 
   public static startWebSpeech(options?: Options & WebSpeechOptions) {
-    SpeechToElement.stop();
-    this._service = new WebSpeech();
-    this._service.start(options);
+    if (SpeechToElement.stop()) return;
+    GlobalState.service = new WebSpeech();
+    GlobalState.service.start(options);
   }
 
   public static isWebSpeechSupported() {
@@ -34,18 +32,20 @@ export default class SpeechToElement {
   }
 
   public static startAzure(options: Options & AzureOptions) {
-    SpeechToElement.stop();
-    this._service = new Azure();
-    this._service.start(options);
+    if (SpeechToElement.stop() || GlobalState.service?.cannotBeStopped) return;
+    GlobalState.service = new Azure();
+    GlobalState.service.start(options);
   }
 
   public static stop() {
-    if (this._service?.recognizing) {
-      this._service.stop();
+    if (GlobalState.doubleClickDetector()) return true;
+    if (GlobalState.service?.recognizing) {
+      GlobalState.service.stop();
     }
+    return false;
   }
 
   public static endCommandMode() {
-    if (this._service) CommandUtils.toggleCommandModeOff(this._service);
+    if (GlobalState.service) CommandUtils.toggleCommandModeOff(GlobalState.service);
   }
 }

@@ -56,6 +56,7 @@ export abstract class Speech {
   commands?: InternalCommands;
   isWaitingForCommand = false;
   isTargetInShadow = false;
+  cannotBeStopped = false; // this is mostly used for Azure to prevent user from stopping when it is connecting
 
   constructor() {
     this.resetState();
@@ -112,7 +113,7 @@ export abstract class Speech {
     this.isRestarting = true;
     this.stop(true);
     this.resetState(true);
-    this.start(options);
+    this.start(options, true);
   }
 
   // prettier-ignore
@@ -231,7 +232,7 @@ export abstract class Speech {
     this.recognizing = false;
   }
 
-  abstract start(options?: Options): void;
+  abstract start(options?: Options, isDuringReset?: boolean): void;
 
   abstract stop(isDuringReset?: boolean): void;
 }

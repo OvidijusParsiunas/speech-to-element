@@ -1,6 +1,7 @@
 import {Recognizer, SpeechRecognitionEventArgs} from 'microsoft-cognitiveservices-speech-sdk';
 import {AzureOptions, Options, Translations} from '../../types/options';
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
+import {PreventConnectionStop} from './preventConnectionStop';
 import {AzureSpeechConfig} from './azureSpeechConfig';
 import {StopTimeout} from '../../utils/stopTimeout';
 import {AzureTranscript} from './azureTranscript';
@@ -12,7 +13,6 @@ declare global {
   }
 }
 
-// WORK - prevent problems if user clicks the microphone multiple times
 // REF - https://github.com/Azure-Samples/cognitive-services-speech-sdk/blob/master/samples/js/browser/index.html#L240
 export class Azure extends Speech {
   // when service is manually stopped events are still fired, this is used to stop more text being added
@@ -20,13 +20,15 @@ export class Azure extends Speech {
   private _service?: sdk.SpeechRecognizer;
   private _translations?: Translations;
   private _retrieveTokenInterval?: NodeJS.Timeout;
+  _manualConnectionStopPrevention?: NodeJS.Timeout;
   private _newTextPadding = ''; // Unlike webspeech there is no automatic space between final results
 
-  start(options: Options & AzureOptions) {
+  start(options: Options & AzureOptions, isDuringReset?: boolean) {
     this._newTextPadding = '';
     if (this.stopTimeout === undefined) StopTimeout.reset(this, options?.stopAfterSilenceMs);
     this.prepareBeforeStart(options); // need to prepare before validation to set onError
     this.startAsync(options);
+    if (!isDuringReset) PreventConnectionStop.applyPrevention(this);
   }
 
   private async startAsync(options: Options & AzureOptions) {
@@ -117,6 +119,7 @@ export class Azure extends Speech {
   }
 
   private onSessionStarted() {
+    PreventConnectionStop.clearPrevention(this);
     this.setStateOnStart();
   }
 
