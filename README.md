@@ -1,6 +1,6 @@
 <img src="./assets/banner-white.png" alt="Logo">
 
-<b>Speech To Element</b> is an all purpose library that transcribes your speech into text right out of the box! Try it out in the [official website](WORK).
+<b>Speech To Element</b> is an all purpose library that transcribes your speech into text right out of the box! Try it out in the [official website](https://speechtoelement.com).
 
 ### :zap: Services
 

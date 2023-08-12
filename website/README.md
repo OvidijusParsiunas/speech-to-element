@@ -2,7 +2,7 @@
 
 <b>Speech To Element</b> is an all purpose library that transcribes your speech into text right out of the box!
 
-Check out the the deployed website on [here](WORK).
+Check out the the deployed website on [here](https://speechtoelement.com).
 
 ## :construction_worker: Local setup
 
