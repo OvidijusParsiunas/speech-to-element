@@ -88,12 +88,6 @@ export class Azure extends Speech {
     this.updateElements(interimTranscript, finalTranscript, newText);
   }
 
-  // WORK - huge opportunity to fix this in the repo!!!!!
-  //   function onRecognized(sender, recognitionEventArgs) {
-  //     var result = recognitionEventArgs.result;
-  //     onRecognizedResult(recognitionEventArgs.result);
-  // }
-
   // prettier-ignore
   private onRecognized(_: Recognizer, event: SpeechRecognitionEventArgs) {
     const result = event.result;

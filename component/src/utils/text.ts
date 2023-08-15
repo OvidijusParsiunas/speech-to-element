@@ -17,7 +17,6 @@ export class Text {
     return char !== undefined && char !== ' ' && char !== ' ' && char !== '\n' && char !== '';
   }
 
-  // WORK - can optimize to not not have to do it multiple times
   public static breakupIntoWordsArr(text: string): string[] {
     return text.split(/(\W+)/);
   }

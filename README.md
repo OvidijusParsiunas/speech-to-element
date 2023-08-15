@@ -21,7 +21,7 @@ npm install speech-to-element
 import SpeechToElement from 'speech-to-element';
 
 const targetElement = document.getElementById('target-element');
-SpeechToElement.toggle("webspeech", {element: targetElement});
+SpeechToElement.toggle('webspeech', {element: targetElement});
 ```
 
 [CDN](https://cdn.jsdelivr.net/gh/ovidijusparsiunas/speech-to-element@master/component/bundle/index.min.js):
@@ -32,7 +32,7 @@ SpeechToElement.toggle("webspeech", {element: targetElement});
 
 ```
 const targetElement = document.getElementById('target-element');
-window.SpeechToElement.toggle("webspeech", {element: targetElement});
+window.SpeechToElement.toggle('webspeech', {element: targetElement});
 ```
 
 When using Azure, you will also need to install its speech [SDK](https://www.npmjs.com/package/microsoft-cognitiveservices-speech-sdk). Read more in the [Azure SDK](#floppy_disk-azure-sdk) section. <br />
@@ -57,9 +57,9 @@ Examples:
 
 ```
 SpeechToElement.startWebSpeech({element: targetElement, displayInterimResults: false});
-SpeechToElement.startAzure({element: targetElement, region: "westus", token: "token"});
-SpeechToElement.toggle("webspeech", {element: targetElement, language: "en-US"});
-SpeechToElement.toggle("azure", {element: targetElement, region: "eastus", subscriptionKey: "key"});
+SpeechToElement.startAzure({element: targetElement, region: 'westus', token: 'token'});
+SpeechToElement.toggle('webspeech', {element: targetElement, language: 'en-US'});
+SpeechToElement.toggle('azure', {element: targetElement, region: 'eastus', subscriptionKey: 'key'});
 SpeechToElement.stop();
 SpeechToElement.endCommandMode();
 ```
@@ -89,8 +89,8 @@ Generic options for the speech to element functionality:
 Examples:
 
 ```
-SpeechToElement.toggle("webspeech", {element: targetElement, translations: {hi: 'bye', Hi: 'Bye'}});
-SpeechToElement.toggle("webspeech", {onResult: (text) => console.log(text)});
+SpeechToElement.toggle('webspeech', {element: targetElement, translations: {hi: 'bye', Hi: 'Bye'}});
+SpeechToElement.toggle('webspeech', {onResult: (text) => console.log(text)});
 ```
 
 ##### TextColor:
@@ -105,7 +105,7 @@ Object used to set the color for transcription result text (does not work for `i
 Example:
 
 ```
-SpeechToElement.toggle("webspeech", {
+SpeechToElement.toggle('webspeech', {
   element: targetElement, textColor: {interim: 'grey', final: 'black'}
 });
 ```
@@ -129,13 +129,13 @@ Object used to set the phrases of commands that will control transcription and i
 Example:
 
 ```
-SpeechToElement.toggle("webspeech", {
+SpeechToElement.toggle('webspeech', {
   element: targetElement,
   commands: {
-    pause: "pause",
-    resume: "resume",
-    removeAllText: "remove text",
-    commandMode: "command"
+    pause: 'pause',
+    resume: 'resume',
+    removeAllText: 'remove text',
+    commandMode: 'command'
   }
 });
 ```
@@ -152,13 +152,13 @@ Object used to configure how the command phrases are interpreted:
 Example:
 
 ```
-SpeechToElement.toggle("webspeech", {
+SpeechToElement.toggle('webspeech', {
   element: targetElement,
   commands: {
-    removeAllText: "remove text"
-    "settings": {
-      "substrings": true,
-      "caseSensitive": false
+    removeAllText: 'remove text',
+    settings: {
+      substrings: true,
+      caseSensitive: false
   }}
 });
 ```
@@ -176,10 +176,10 @@ Result object for the `onPreResult` function. This can be used to control the sp
 Example for a creating a custom command:
 
 ```
-SpeechToElement.toggle("webspeech", {
+SpeechToElement.toggle('webspeech', {
   element: targetElement,
   onPreResult: (text) => {
-    if (text.toLowerCase().includes("custom command")) {
+    if (text.toLowerCase().includes('custom command')) {
       SpeechToElement.endCommandMode();
       your custom code here
       return {restart: true, removeNewText: true};
@@ -198,12 +198,12 @@ Custom options for the [Web Speech API](https://developer.mozilla.org/en-US/docs
 Example:
 
 ```
-SpeechToElement.toggle("webspeech", {element: targetElement, language: "en-GB"});
+SpeechToElement.toggle('webspeech', {element: targetElement, language: 'en-GB'});
 ```
 
 ##### AzureOptions:
 
-Options for the [Azure Cognitive Speech Services API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-to-text). This object requires `region` and either `retrieveToken`, `subscriptionKey` or the `token` properties to be defined with it:
+Options for the [Azure Cognitive Speech Services API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-to-text). This object REQUIRES `region` and either `retrieveToken` or `subscriptionKey` or `token` properties to be defined with it:
 
 | Name               | Type                    | Description                                                                                                                                                                                                                                                                                                                                            |
 | :----------------- | :---------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -217,9 +217,14 @@ Options for the [Azure Cognitive Speech Services API](https://learn.microsoft.co
 Examples:
 
 ```
-SpeechToElement.toggle("azure", {element: targetElement, token: "token", language: "ja-JP"});
+SpeechToElement.toggle('azure', {
+  element: targetElement,
+  region: 'eastus',
+  token: 'token',
+  language: 'ja-JP'
+});
 
-SpeechToElement.toggle("azure", {
+SpeechToElement.toggle('azure', {
   element: targetElement,
   region: 'southeastasia',
   retrieveToken: async () => {
