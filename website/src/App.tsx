@@ -16,7 +16,6 @@ declare global {
   }
 }
 
-// WORK - enhance website to add toggles for more options and display what the API would look like
 function App() {
   const [availableServices, setAvailableServices] = React.useState<{value: string; text: string}[]>([]);
   const [activeAzureOption, setActiveAzureOption] = React.useState('subscription');
@@ -55,6 +54,7 @@ function App() {
                 console.error(errorMessage);
                 return setErrorMessage(errorMessage);
               } else {
+                if (!isRecording) setIsPreparing(true);
                 toggleAzure(
                   textElement,
                   setIsRecording,
@@ -66,7 +66,6 @@ function App() {
                 );
               }
             }
-            if (!isRecording) setIsPreparing(true);
           }}
         >
           <Microphone isRecording={isRecording}></Microphone>

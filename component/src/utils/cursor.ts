@@ -39,6 +39,7 @@ export class Cursor {
   public static setOffsetForSafariGeneric(element: HTMLElement, newTextLength: number) {
     const selection = window.getSelection();
     if (selection) {
+      // if refactoring this - take care of overflow
       const cursorOffset = Cursor.getGenericElementCursorOffset(element, selection, true);
       Cursor.setOffsetForGeneric(element, cursorOffset + newTextLength);
     }

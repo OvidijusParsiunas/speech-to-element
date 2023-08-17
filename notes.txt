@@ -24,14 +24,14 @@ add the following to package:
 
 Add the following to index.ts:
 
-window.SpeechToElement = SpeechToElement;
-
-and add:
-
 declare global {
   interface Window {
     SpeechToElement: typeof SpeechToElement;
   }
 }
+
+and add:
+
+window.SpeechToElement = SpeechToElement;
 
 Move the result index.js file to bundle
