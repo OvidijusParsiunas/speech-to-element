@@ -4,26 +4,53 @@
   <head>
     <meta charset="utf-8" />
     <title>Speech To Element</title>
-    <script type="module" src="src/index.ts"></script>
-    <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0px;
-      }
-    </style>
+    <link rel="stylesheet" href="indexStyle.css" />
+    <!-- Uncomment this when using Azure -->
+    <!-- <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script> -->
   </head>
   <body>
-    <div id="input-text" contenteditable="true" style="width: 300px; height: 20px; border: 1px solid grey"></div>
-    <input id="input-text-2" type="text" style="width: 300px; height: 20px; border: 1px solid grey" />
-    <textarea id="input-text-3" type="text" style="width: 300px; height: 20px; border: 1px solid grey"></textarea>
-    <button id="record-button">Record</button>
+    <h1 id="title">Speech To Element Development</h1>
+    <div id="text" contenteditable="true"></div>
+    <button id="button">Start</button>
+    <div id="error">Error, check the console for more details.</div>
     <script type="module">
       import SpeechToElement from './src/index';
-      const button = document.getElementById('record-button');
-      button.onclick = () => {
-        // const speechToInput = new SpeechToInput();
-        SpeechToElement.toggle({element: document.getElementById('input-text-3')});
+      const textEl = document.getElementById('text');
+      const buttonEl = document.getElementById('button');
+      const errorEl = document.getElementById('error');
+      buttonEl.onclick = () => {
+        errorEl.style.display = 'none';
+        // WebSpeech
+        SpeechToElement.toggle('webspeech', {
+          element: textEl,
+          onStart: () => {
+            buttonEl.innerText = 'Stop';
+          },
+          onStop: () => {
+            buttonEl.innerText = 'Start';
+          },
+          onError: () => {
+            errorEl.style.display = 'block';
+            buttonEl.innerText = 'Start';
+          },
+        });
+        // Azure
+        // set your REGION and SUBSCRIPTION-KEY
+        // SpeechToElement.toggle('azure', {
+        //   region: 'eastus',
+        //   subscriptionKey: '2473441130e84b6c84457e697ce0a108',
+        //   element: textEl,
+        //   onStart: () => {
+        //     buttonEl.innerText = 'Stop';
+        //   },
+        //   onStop: () => {
+        //     buttonEl.innerText = 'Start';
+        //   },
+        //   onError: () => {
+        //     errorEl.style.display = 'block';
+        //     buttonEl.innerText = 'Start';
+        //   },
+        // });
       };
     </script>
   </body>
