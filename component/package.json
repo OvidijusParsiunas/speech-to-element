@@ -1,7 +1,7 @@
 {
   "name": "speech-to-element",
-  "version": "1.0.0",
-  "description": "Transcribe your speech into text, embed it into elements and more",
+  "version": "1.0.1",
+  "description": "Add real-time speech to text functionality into your website with no effort",
   "main": "dist/index.js",
   "scripts": {
     "start": "vite",
@@ -13,11 +13,25 @@
     "url": "git+https://github.com/OvidijusParsiunas/speech-to-element.git"
   },
   "author": "OvidijusParsiunas",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/OvidijusParsiunas/speech-to-element/issues"
   },
-  "homepage": "https://github.com/OvidijusParsiunas/speech-to-element#readme",
+  "homepage": "https://speechtoelement.com/",
+  "keywords": [
+    "speech",
+    "to",
+    "text",
+    "recognition",
+    "webspeech",
+    "azure",
+    "cognitive",
+    "stt",
+    "input",
+    "element",
+    "real-time",
+    "real"
+  ],
   "devDependencies": {
     "@types/dom-speech-recognition": "^0.0.1",
     "@types/node": "^20.4.4",
