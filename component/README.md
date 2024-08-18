@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/OvidijusParsiunas/speech-to-element/HEAD/assets/banner-white.png" alt="Logo">
 
-<b>Speech To Element</b> is an all purpose library that transcribes your speech into text right out of the box! Try it out in the [official website](https://speechtoelement.com).
+<b>Speech To Element</b> is an all purpose [npm](https://www.npmjs.com/package/speech-to-element) library that can transcribe speech into text right out of the box! Try it out in the [official website](https://speechtoelement.com).
 
 ### :zap: Services
 
