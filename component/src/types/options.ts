@@ -56,6 +56,8 @@ export interface AzureOptions {
   region: string;
   // https://docs.microsoft.com/azure/cognitive-services/speech-service/supported-languages
   language?: string;
+  // max 4 languages can be added (azure limitation)
+  autoLanguages?: string[];
   // default - 20s
   stopAfterSilenceMs?: number;
 }

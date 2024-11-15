@@ -52,7 +52,13 @@ export class Azure extends Speech {
     const audioConfig = speechSDK.AudioConfig.fromDefaultMicrophoneInput();
     const speechConfig = await AzureSpeechConfig.get(speechSDK.SpeechConfig, options);
     if (speechConfig) {
-      const recognizer = new speechSDK.SpeechRecognizer(speechConfig, audioConfig);
+      const recognizer = speechSDK.SpeechRecognizer.FromConfig(
+        speechConfig,
+        speechSDK.AutoDetectSourceLanguageConfig.fromLanguages(
+          options.autoLanguages ?? [options.language ?? 'en-US']
+        ),
+        audioConfig
+      );
       this.setEvents(recognizer);
       this._service = recognizer;
       if (options.retrieveToken) this.retrieveTokenInterval(options.retrieveToken);
@@ -150,7 +156,7 @@ export class Azure extends Speech {
     console.error('speech recognition module not found:');
     console.error(
       "please install the 'microsoft-cognitiveservices-speech-sdk' npm package " +
-        'or add a script tag: <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>'
+      'or add a script tag: <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>'
     );
     this.setStateOnError('speech recognition module not found');
   }
