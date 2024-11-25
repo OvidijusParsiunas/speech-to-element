@@ -162,7 +162,7 @@ export class Azure extends Speech {
     console.error('speech recognition module not found:');
     console.error(
       "please install the 'microsoft-cognitiveservices-speech-sdk' npm package " +
-      'or add a script tag: <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>'
+        'or add a script tag: <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>'
     );
     this.setStateOnError('speech recognition module not found');
   }
