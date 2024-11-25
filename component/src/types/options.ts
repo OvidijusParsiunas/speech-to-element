@@ -56,8 +56,10 @@ export interface AzureOptions {
   region: string;
   // https://docs.microsoft.com/azure/cognitive-services/speech-service/supported-languages
   language?: string;
-  // max 4 languages can be added (azure limitation)
-  autoLanguages?: [string, ...string[]] & { length: 1 | 2 | 3 | 4 };
+  detectionType?: "AtStart" | "Continuous";
+  // - AtStart    max 4 languages can be added
+  // - Continuous max 10 languages can be added
+  autoLanguages?: [string, ...string[]] & { length: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 };
   // default - 20s
   stopAfterSilenceMs?: number;
 }

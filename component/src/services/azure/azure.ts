@@ -57,6 +57,9 @@ export class Azure extends Speech {
         const autoDetectLanguageConfig = speechSDK.AutoDetectSourceLanguageConfig.fromLanguages(
           options.autoLanguages
         );
+        if(options.detectionType === "Continuous") {
+            autoDetectLanguageConfig.mode = 1;
+        }
         recognizer = speechSDK.SpeechRecognizer.FromConfig(
           speechConfig,
           autoDetectLanguageConfig,
