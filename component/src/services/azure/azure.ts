@@ -52,13 +52,19 @@ export class Azure extends Speech {
     const audioConfig = speechSDK.AudioConfig.fromDefaultMicrophoneInput();
     const speechConfig = await AzureSpeechConfig.get(speechSDK.SpeechConfig, options);
     if (speechConfig) {
-      const recognizer = speechSDK.SpeechRecognizer.FromConfig(
-        speechConfig,
-        speechSDK.AutoDetectSourceLanguageConfig.fromLanguages(
-          options.autoLanguages ?? [options.language ?? 'en-US']
-        ),
-        audioConfig
-      );
+      let recognizer: sdk.SpeechRecognizer;
+      if (options.autoLanguages && options.autoLanguages.length > 0) {
+        const autoDetectLanguageConfig = speechSDK.AutoDetectSourceLanguageConfig.fromLanguages(
+          options.autoLanguages
+        );
+        recognizer = speechSDK.SpeechRecognizer.FromConfig(
+          speechConfig,
+          autoDetectLanguageConfig,
+          audioConfig
+        );
+      } else {
+        recognizer = new speechSDK.SpeechRecognizer(speechConfig, audioConfig);
+      }
       this.setEvents(recognizer);
       this._service = recognizer;
       if (options.retrieveToken) this.retrieveTokenInterval(options.retrieveToken);
