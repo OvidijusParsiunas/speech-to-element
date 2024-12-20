@@ -116,15 +116,15 @@ https://github.com/OvidijusParsiunas/speech-to-element/assets/18709577/cca6bc40-
 
 Object used to set the phrases of commands that will control transcription and input functionality:
 
-| Name          | Type                                  | Description                                                                                                                                             |
-| :------------ | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| stop          | `string`                              | Stop the speech service                                                                                                                                 |
-| pause         | `string`                              | Temporarily stops the transcription and re-enables it after the phrase for `resume` is spoken.                                                          |
-| resume        | `string`                              | Re-enables transcription after it has been stopped by the `pause` or `commandMode` commands.                                                            |
-| reset         | `string`                              | Remove the transcribed text (since the last element cursor move)                                                                                        |
-| removeAllText | `string`                              | Remove all element text                                                                                                                                 |
-| commandMode   | `string`                              | Activate the command mode which will stops transcription and waits for a command to be executed. Use the phrase for `resume` to leave the command mode. |
-| settings      | [`CommandSettings`](#commandsettings) | Controls how command mode is used.                                                                                                                      |
+| Name          | Type                                  | Description                                                                                                                                               |
+| :------------ | :------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| stop          | `string`                              | Stop the speech service                                                                                                                                   |
+| pause         | `string`                              | Temporarily stops the transcription and re-enables it after the phrase for `resume` is spoken.                                                            |
+| resume        | `string`                              | Re-enables transcription after it has been stopped by the `pause` or `commandMode` commands.                                                              |
+| reset         | `string`                              | Remove the transcribed text (since the last element cursor move)                                                                                          |
+| removeAllText | `string`                              | Remove all element text                                                                                                                                   |
+| commandMode   | `string`                              | Activate the command mode which will stop the transcription and wait for a command to be executed. Use the phrase for `resume` to leave the command mode. |
+| settings      | [`CommandSettings`](#commandsettings) | Controls how command mode is used.                                                                                                                        |
 
 Example:
 
