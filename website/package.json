@@ -10,7 +10,7 @@
     "@types/node": "^16.18.38",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
-    "speech-to-element": "1.0.1",
+    "speech-to-element": "1.0.3",
     "microsoft-cognitiveservices-speech-sdk": "^1.30.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

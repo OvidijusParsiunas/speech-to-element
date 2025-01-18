@@ -1,25 +1,25 @@
-const x = class {
-  static capitalize(a) {
-    return a.replace(x.FIRST_CHAR_REGEX, (t) => t.toUpperCase());
+const F = class A {
+  static capitalize(t) {
+    return t.replace(A.FIRST_CHAR_REGEX, (e) => e.toUpperCase());
   }
-  static lineBreak(a) {
-    return a.replace(x.DOUBLE_LINE, "<p></p>").replace(x.ONE_LINE, "<br>");
+  static lineBreak(t) {
+    return t.replace(A.DOUBLE_LINE, "<p></p>").replace(A.ONE_LINE, "<br>");
   }
-  static isCharDefined(a) {
-    return a !== void 0 && a !== " " && a !== " " && a !== `
-` && a !== "";
+  static isCharDefined(t) {
+    return t !== void 0 && t !== " " && t !== " " && t !== `
+` && t !== "";
   }
-  static breakupIntoWordsArr(a) {
-    return a.split(/(\W+)/);
+  static breakupIntoWordsArr(t) {
+    return t.split(/(\W+)/);
   }
 };
-let l = x;
-l.FIRST_CHAR_REGEX = /\S/;
-l.DOUBLE_LINE = /\n\n/g;
-l.ONE_LINE = /\n/g;
-class F {
+F.FIRST_CHAR_REGEX = /\S/;
+F.DOUBLE_LINE = /\n\n/g;
+F.ONE_LINE = /\n/g;
+let u = F;
+class L {
   static translate(t, e) {
-    const i = l.breakupIntoWordsArr(t);
+    const i = u.breakupIntoWordsArr(t);
     for (let r = 0; r < i.length; r += 1)
       e[i[r]] && (i[r] = e[i[r]]);
     return i.join("");
@@ -30,7 +30,7 @@ class D {
     let r = "";
     for (let n = t.resultIndex; n < t.results.length; ++n) {
       let s = t.results[n][0].transcript;
-      i && (s = F.translate(s, i)), t.results[n].isFinal ? e += s : r += s;
+      i && (s = L.translate(s, i)), t.results[n].isFinal ? e += s : r += s;
     }
     return { interimTranscript: r, finalTranscript: e, newText: r || e };
   }
@@ -38,42 +38,42 @@ class D {
     let r = "";
     const n = "";
     for (let s = t.resultIndex; s < t.results.length; ++s) {
-      let o = t.results[s][0].transcript;
-      i && (o = F.translate(o, i)), r += o;
+      let a = t.results[s][0].transcript;
+      i && (a = L.translate(a, i)), r += a;
     }
     return { interimTranscript: n, finalTranscript: r, newText: n || r };
   }
 }
-const R = class {
+const w = class {
 };
-let w = R;
-w.IS_SAFARI = () => (R._IS_SAFARI === void 0 && (R._IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)), R._IS_SAFARI);
-const h = class {
-  static getElementIfFocusedOnAvailable(a, t) {
-    return Array.isArray(a) ? a.find((e) => t === e) : t === a ? a : void 0;
+w.IS_SAFARI = () => (w._IS_SAFARI === void 0 && (w._IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)), w._IS_SAFARI);
+let I = w;
+const B = class h {
+  static getElementIfFocusedOnAvailable(t, e) {
+    return Array.isArray(t) ? t.find((i) => e === i) : e === t ? t : void 0;
   }
-  static keyDownWindow(a) {
-    a.element && h.getElementIfFocusedOnAvailable(a.element, document.activeElement) && (h.KEY_DOWN_TIMEOUT !== null && clearTimeout(h.KEY_DOWN_TIMEOUT), h.KEY_DOWN_TIMEOUT = setTimeout(() => {
-      h.KEY_DOWN_TIMEOUT = null, this.resetRecording(a);
+  static keyDownWindow(t) {
+    t.element && h.getElementIfFocusedOnAvailable(t.element, document.activeElement) && (h.KEY_DOWN_TIMEOUT !== null && clearTimeout(h.KEY_DOWN_TIMEOUT), h.KEY_DOWN_TIMEOUT = setTimeout(() => {
+      h.KEY_DOWN_TIMEOUT = null, this.resetRecording(t);
     }, 500));
   }
-  static mouseDownWindow(a, t) {
-    this.mouseDownElement = h.getElementIfFocusedOnAvailable(a, t.target);
+  static mouseDownWindow(t, e) {
+    this.mouseDownElement = h.getElementIfFocusedOnAvailable(t, e.target);
   }
-  static mouseUpWindow(a) {
-    this.mouseDownElement && this.resetRecording(a), this.mouseDownElement = void 0;
+  static mouseUpWindow(t) {
+    this.mouseDownElement && this.resetRecording(t), this.mouseDownElement = void 0;
   }
-  static add(a, t) {
-    const e = (t == null ? void 0 : t.insertInCursorLocation) === void 0 || (t == null ? void 0 : t.insertInCursorLocation);
-    t != null && t.element && e && (a.mouseDownEvent = h.mouseDownWindow.bind(a, t.element), document.addEventListener("mousedown", a.mouseDownEvent), a.mouseUpEvent = h.mouseUpWindow.bind(a, t), document.addEventListener("mouseup", a.mouseUpEvent), a.keyDownEvent = h.keyDownWindow.bind(a, t), document.addEventListener("keydown", a.keyDownEvent));
+  static add(t, e) {
+    const i = (e == null ? void 0 : e.insertInCursorLocation) === void 0 || (e == null ? void 0 : e.insertInCursorLocation);
+    e != null && e.element && i && (t.mouseDownEvent = h.mouseDownWindow.bind(t, e.element), document.addEventListener("mousedown", t.mouseDownEvent), t.mouseUpEvent = h.mouseUpWindow.bind(t, e), document.addEventListener("mouseup", t.mouseUpEvent), t.keyDownEvent = h.keyDownWindow.bind(t, e), document.addEventListener("keydown", t.keyDownEvent));
   }
-  static remove(a) {
-    document.removeEventListener("mousedown", a.mouseDownEvent), document.removeEventListener("mouseup", a.mouseUpEvent), document.removeEventListener("keydown", a.keyDownEvent);
+  static remove(t) {
+    document.removeEventListener("mousedown", t.mouseDownEvent), document.removeEventListener("mouseup", t.mouseUpEvent), document.removeEventListener("keydown", t.keyDownEvent);
   }
 };
-let N = h;
-N.KEY_DOWN_TIMEOUT = null;
-class B {
+B.KEY_DOWN_TIMEOUT = null;
+let M = B;
+class U {
   static process(t, e, i, r, n) {
     const s = r == null ? void 0 : r(e, i);
     return s ? (setTimeout(() => {
@@ -81,7 +81,7 @@ class B {
     }), (s.stop || s.restart) && s.removeNewText) : !1;
   }
 }
-class S {
+class m {
   static changeStateIfNeeded(t, e) {
     e && !t.isCursorAtEnd && (t.endPadding = "", t.scrollingSpan.innerHTML = "&nbsp;");
   }
@@ -97,10 +97,10 @@ class S {
     return t.scrollHeight > t.clientHeight || t.scrollWidth > t.clientWidth;
   }
   static isRequired(t, e) {
-    return t && S.isElementOverflown(e);
+    return t && m.isElementOverflown(e);
   }
 }
-class f {
+class d {
   static isPrimitiveElement(t) {
     return t.tagName === "INPUT" || t.tagName === "TEXTAREA";
   }
@@ -130,22 +130,22 @@ class f {
     return t.getRootNode() instanceof ShadowRoot;
   }
 }
-class d {
+class c {
   static setOffsetForGeneric(t, e, i = 0) {
     let r = 0;
     for (let n = 0; n < t.childNodes.length; n += 1) {
       const s = t.childNodes[n];
       if (s.childNodes.length > 0) {
-        const o = d.setOffsetForGeneric(s, e, i);
-        if (o === -1)
+        const a = c.setOffsetForGeneric(s, e, i);
+        if (a === -1)
           return -1;
-        i += o;
+        i += a;
       } else if (s.textContent !== null) {
         if (i + s.textContent.length > e) {
-          const o = document.createRange();
-          o.setStart(s, e - i), o.collapse(!0);
-          const c = window.getSelection();
-          return c == null || c.removeAllRanges(), c == null || c.addRange(o), t.focus(), -1;
+          const a = document.createRange();
+          a.setStart(s, e - i), a.collapse(!0);
+          const o = window.getSelection();
+          return o == null || o.removeAllRanges(), o == null || o.addRange(a), t.focus(), -1;
         }
         i += s.textContent.length, r += s.textContent.length;
       }
@@ -161,8 +161,8 @@ class d {
   static setOffsetForSafariGeneric(t, e) {
     const i = window.getSelection();
     if (i) {
-      const r = d.getGenericElementCursorOffset(t, i, !0);
-      d.setOffsetForGeneric(t, r + e);
+      const r = c.getGenericElementCursorOffset(t, i, !0);
+      c.setOffsetForGeneric(t, r + e);
     }
   }
   // set to automatically scroll to cursor (scroll does not work in Safari)
@@ -204,15 +204,15 @@ class d {
   //   }
   // }
 }
-class u {
+class l {
   static processCommand(t, e) {
-    return (!e || !e.caseSensitive) && (t = t.toLowerCase()), (e == null ? void 0 : e.substrings) === !1 ? l.breakupIntoWordsArr(t) : t;
+    return (!e || !e.caseSensitive) && (t = t.toLowerCase()), (e == null ? void 0 : e.substrings) === !1 ? u.breakupIntoWordsArr(t) : t;
   }
   static process(t) {
     var i;
     return ((i = t.settings) == null ? void 0 : i.caseSensitive) === !0 ? t : Object.keys(t).reduce((r, n) => {
       const s = t[n];
-      return r[n] = typeof s == "string" ? u.processCommand(s, t.settings) : s, r;
+      return r[n] = typeof s == "string" ? l.processCommand(s, t.settings) : s, r;
     }, {});
   }
   static toggleCommandModeOn(t) {
@@ -224,7 +224,7 @@ class u {
     t.isWaitingForCommand && ((e = t.onCommandModeTrigger) == null || e.call(t, !1), t.isWaitingForCommand = !1);
   }
   static setText(t, e, i, r) {
-    u.toggleCommandModeOff(t), f.isPrimitiveElement(r) ? (r.value = i, t.isTargetInShadow || d.setOffsetForPrimitive(r, i.length, !0), w.IS_SAFARI() && t.autoScroll && S.scrollSafariPrimitiveToEnd(r)) : (r.textContent = i, t.isTargetInShadow || d.focusEndOfGeneric(r), setTimeout(() => S.scrollGeneric(t, r))), t.resetRecording(e);
+    l.toggleCommandModeOff(t), d.isPrimitiveElement(r) ? (r.value = i, t.isTargetInShadow || c.setOffsetForPrimitive(r, i.length, !0), I.IS_SAFARI() && t.autoScroll && m.scrollSafariPrimitiveToEnd(r)) : (r.textContent = i, t.isTargetInShadow || c.focusEndOfGeneric(r), setTimeout(() => m.scrollGeneric(t, r))), t.resetRecording(e);
   }
   static checkIfMatchesSubstring(t, e) {
     return e.includes(t);
@@ -232,37 +232,37 @@ class u {
   static checkIfMatchesWord(t, e, i) {
     const r = t;
     for (let n = i.length - 1; n >= 0; n -= 1) {
-      let s = n, o = r.length - 1;
-      for (; i[s] === r[o] && o >= 0; )
-        s -= 1, o -= 1;
-      if (o < 0)
+      let s = n, a = r.length - 1;
+      for (; i[s] === r[a] && a >= 0; )
+        s -= 1, a -= 1;
+      if (a < 0)
         return !0;
     }
     return !1;
   }
   // prettier-ignore
   static execCommand(t, e, i, r, n) {
-    var C, P, k;
+    var C, x, y;
     const s = t.commands;
     if (!s || !r || !i)
       return;
-    const o = ((C = s.settings) == null ? void 0 : C.caseSensitive) === !0 ? e : e.toLowerCase(), c = l.breakupIntoWordsArr(o), m = ((P = s.settings) == null ? void 0 : P.substrings) === !1 ? u.checkIfMatchesWord : u.checkIfMatchesSubstring;
-    if (s.commandMode && m(s.commandMode, o, c))
-      return t.setInterimColorToFinal(), setTimeout(() => u.toggleCommandModeOn(t)), { doNotProcessTranscription: !1 };
+    const a = ((C = s.settings) == null ? void 0 : C.caseSensitive) === !0 ? e : e.toLowerCase(), o = u.breakupIntoWordsArr(a), f = ((x = s.settings) == null ? void 0 : x.substrings) === !1 ? l.checkIfMatchesWord : l.checkIfMatchesSubstring;
+    if (s.commandMode && f(s.commandMode, a, o))
+      return t.setInterimColorToFinal(), setTimeout(() => l.toggleCommandModeOn(t)), { doNotProcessTranscription: !1 };
     if (!(s.commandMode && !t.isWaitingForCommand)) {
-      if (s.stop && m(s.stop, o, c))
-        return u.toggleCommandModeOff(t), setTimeout(() => t.stop()), { doNotProcessTranscription: !1 };
-      if (s.pause && m(s.pause, o, c))
-        return u.toggleCommandModeOff(t), t.setInterimColorToFinal(), setTimeout(() => {
-          var M;
-          t.isPaused = !0, (M = t.onPauseTrigger) == null || M.call(t, !0);
+      if (s.stop && f(s.stop, a, o))
+        return l.toggleCommandModeOff(t), setTimeout(() => t.stop()), { doNotProcessTranscription: !1 };
+      if (s.pause && f(s.pause, a, o))
+        return l.toggleCommandModeOff(t), t.setInterimColorToFinal(), setTimeout(() => {
+          var k;
+          t.isPaused = !0, (k = t.onPauseTrigger) == null || k.call(t, !0);
         }), { doNotProcessTranscription: !1 };
-      if (s.resume && m(s.resume, o, c))
-        return t.isPaused = !1, (k = t.onPauseTrigger) == null || k.call(t, !1), u.toggleCommandModeOff(t), t.resetRecording(i), { doNotProcessTranscription: !0 };
-      if (s.reset && m(s.reset, o, c))
-        return n !== void 0 && u.setText(t, i, n, r), { doNotProcessTranscription: !0 };
-      if (s.removeAllText && m(s.removeAllText, o, c))
-        return u.setText(t, i, "", r), { doNotProcessTranscription: !0 };
+      if (s.resume && f(s.resume, a, o))
+        return t.isPaused = !1, (y = t.onPauseTrigger) == null || y.call(t, !1), l.toggleCommandModeOff(t), t.resetRecording(i), { doNotProcessTranscription: !0 };
+      if (s.reset && f(s.reset, a, o))
+        return n !== void 0 && l.setText(t, i, n, r), { doNotProcessTranscription: !0 };
+      if (s.removeAllText && f(s.removeAllText, a, o))
+        return l.setText(t, i, "", r), { doNotProcessTranscription: !0 };
     }
   }
 }
@@ -274,25 +274,25 @@ class T {
   static setStateForGeneric(t, e) {
     const i = window.getSelection();
     if (i != null && i.focusNode) {
-      const r = d.getGenericElementCursorOffset(e, i, !0), n = d.getGenericElementCursorOffset(e, i, !1);
+      const r = c.getGenericElementCursorOffset(e, i, !0), n = c.getGenericElementCursorOffset(e, i, !1);
       t.isHighlighted = r !== n;
     }
   }
   static setState(t, e) {
-    document.activeElement === e && (f.isPrimitiveElement(e) ? T.setStateForPrimitive(t, e) : T.setStateForGeneric(t, e));
+    document.activeElement === e && (d.isPrimitiveElement(e) ? T.setStateForPrimitive(t, e) : T.setStateForGeneric(t, e));
   }
   static removeForGeneric(t, e) {
     const i = window.getSelection();
     if (i) {
-      const r = d.getGenericElementCursorOffset(e, i, !0);
-      i.deleteFromDocument(), d.setOffsetForGeneric(e, r), t.isHighlighted = !1;
+      const r = c.getGenericElementCursorOffset(e, i, !0);
+      i.deleteFromDocument(), c.setOffsetForGeneric(e, r), t.isHighlighted = !1;
     }
   }
   static removeForPrimitive(t, e) {
     const i = e.selectionStart, r = e.selectionEnd, n = e.value;
     if (i && r) {
       const s = n.substring(0, i) + n.substring(r);
-      e.value = s, d.setOffsetForPrimitive(e, i, t.autoScroll);
+      e.value = s, c.setOffsetForPrimitive(e, i, t.autoScroll);
     }
     t.isHighlighted = !1;
   }
@@ -300,28 +300,28 @@ class T {
 class E {
   static setStateForPrimitiveElement(t, e) {
     if (document.activeElement === e && e.selectionStart !== null) {
-      const r = e.selectionStart, n = e.value[r - 1], s = e.selectionEnd === null ? r : e.selectionEnd, o = e.value[s];
-      l.isCharDefined(n) && (t.startPadding = " ", t.numberOfSpacesBeforeNewText = 1), l.isCharDefined(o) && (t.endPadding = " ", t.numberOfSpacesAfterNewText = 1), t.isCursorAtEnd = e.value.length === s;
+      const r = e.selectionStart, n = e.value[r - 1], s = e.selectionEnd === null ? r : e.selectionEnd, a = e.value[s];
+      u.isCharDefined(n) && (t.startPadding = " ", t.numberOfSpacesBeforeNewText = 1), u.isCharDefined(a) && (t.endPadding = " ", t.numberOfSpacesAfterNewText = 1), t.isCursorAtEnd = e.value.length === s;
       return;
     }
     const i = e.value[e.value.length - 1];
-    l.isCharDefined(i) && (t.startPadding = " ", t.numberOfSpacesBeforeNewText = 1), t.isCursorAtEnd = !0;
+    u.isCharDefined(i) && (t.startPadding = " ", t.numberOfSpacesBeforeNewText = 1), t.isCursorAtEnd = !0;
   }
   static setStateForGenericElement(t, e) {
     var r, n, s;
     if (document.activeElement === e) {
-      const o = window.getSelection();
-      if (o != null && o.focusNode) {
-        const c = d.getGenericElementCursorOffset(e, o, !0), m = (r = e.textContent) == null ? void 0 : r[c - 1], C = d.getGenericElementCursorOffset(e, o, !1), P = (n = e.textContent) == null ? void 0 : n[C];
-        l.isCharDefined(m) && (t.startPadding = " "), l.isCharDefined(P) && (t.endPadding = " "), t.isCursorAtEnd = ((s = e.textContent) == null ? void 0 : s.length) === C;
+      const a = window.getSelection();
+      if (a != null && a.focusNode) {
+        const o = c.getGenericElementCursorOffset(e, a, !0), f = (r = e.textContent) == null ? void 0 : r[o - 1], C = c.getGenericElementCursorOffset(e, a, !1), x = (n = e.textContent) == null ? void 0 : n[C];
+        u.isCharDefined(f) && (t.startPadding = " "), u.isCharDefined(x) && (t.endPadding = " "), t.isCursorAtEnd = ((s = e.textContent) == null ? void 0 : s.length) === C;
         return;
       }
     }
     const i = e.innerText.charAt(e.innerText.length - 1);
-    l.isCharDefined(i) && (t.startPadding = " "), t.isCursorAtEnd = !0;
+    u.isCharDefined(i) && (t.startPadding = " "), t.isCursorAtEnd = !0;
   }
   static setState(t, e) {
-    f.isPrimitiveElement(e) ? E.setStateForPrimitiveElement(t, e) : E.setStateForGenericElement(t, e);
+    d.isPrimitiveElement(e) ? E.setStateForPrimitiveElement(t, e) : E.setStateForGenericElement(t, e);
   }
   static adjustStateAfterRecodingPrimitiveElement(t, e) {
     if (t.primitiveTextRecorded = !0, t.insertInCursorLocation && document.activeElement === e && (e.selectionEnd !== null && (t.endPadding = t.endPadding + e.value.slice(e.selectionEnd)), e.selectionStart !== null)) {
@@ -334,25 +334,25 @@ class E {
     t.numberOfSpacesBeforeNewText === 1 && (t.startPadding = t.startPadding.substring(0, t.startPadding.length - 1), t.numberOfSpacesBeforeNewText = 0), t.numberOfSpacesAfterNewText === 1 && (t.endPadding = t.endPadding.substring(1), t.numberOfSpacesAfterNewText = 0);
   }
 }
-class W {
+class H {
   // this is mostly used for Azure to prevent user from stopping when it is connecting
   constructor() {
-    this.finalTranscript = "", this.interimSpan = f.createInterimSpan(), this.finalSpan = f.createGenericSpan(), this.scrollingSpan = f.createGenericSpan(), this.isCursorAtEnd = !1, this.spansPopulated = !1, this.startPadding = "", this.endPadding = "", this.numberOfSpacesBeforeNewText = 0, this.numberOfSpacesAfterNewText = 0, this.isHighlighted = !1, this.primitiveTextRecorded = !1, this.recognizing = !1, this._displayInterimResults = !0, this.insertInCursorLocation = !0, this.autoScroll = !0, this.isRestarting = !1, this.isPaused = !1, this.isWaitingForCommand = !1, this.isTargetInShadow = !1, this.cannotBeStopped = !1, this.resetState();
+    this.finalTranscript = "", this.interimSpan = d.createInterimSpan(), this.finalSpan = d.createGenericSpan(), this.scrollingSpan = d.createGenericSpan(), this.isCursorAtEnd = !1, this.spansPopulated = !1, this.startPadding = "", this.endPadding = "", this.numberOfSpacesBeforeNewText = 0, this.numberOfSpacesAfterNewText = 0, this.isHighlighted = !1, this.primitiveTextRecorded = !1, this.recognizing = !1, this._displayInterimResults = !0, this.insertInCursorLocation = !0, this.autoScroll = !0, this.isRestarting = !1, this.isPaused = !1, this.isWaitingForCommand = !1, this.isTargetInShadow = !1, this.cannotBeStopped = !1, this.resetState();
   }
   prepareBeforeStart(t) {
     var e, i;
     if (t != null && t.element)
-      if (N.add(this, t), Array.isArray(t.element)) {
+      if (M.add(this, t), Array.isArray(t.element)) {
         const n = t.element.find((s) => s === document.activeElement) || t.element[0];
         if (!n)
           return;
         this.prepare(n);
       } else
         this.prepare(t.element);
-    (t == null ? void 0 : t.displayInterimResults) !== void 0 && (this._displayInterimResults = t.displayInterimResults), t != null && t.textColor && (this._finalTextColor = (e = t == null ? void 0 : t.textColor) == null ? void 0 : e.final, f.applyCustomColors(this, t.textColor)), (t == null ? void 0 : t.insertInCursorLocation) !== void 0 && (this.insertInCursorLocation = t.insertInCursorLocation), (t == null ? void 0 : t.autoScroll) !== void 0 && (this.autoScroll = t.autoScroll), this._onResult = t == null ? void 0 : t.onResult, this._onPreResult = t == null ? void 0 : t.onPreResult, this._onStart = t == null ? void 0 : t.onStart, this._onStop = t == null ? void 0 : t.onStop, this._onError = t == null ? void 0 : t.onError, this.onCommandModeTrigger = t == null ? void 0 : t.onCommandModeTrigger, this.onPauseTrigger = t == null ? void 0 : t.onPauseTrigger, this._options = t, (i = this._options) != null && i.commands && (this.commands = u.process(this._options.commands));
+    (t == null ? void 0 : t.displayInterimResults) !== void 0 && (this._displayInterimResults = t.displayInterimResults), t != null && t.textColor && (this._finalTextColor = (e = t == null ? void 0 : t.textColor) == null ? void 0 : e.final, d.applyCustomColors(this, t.textColor)), (t == null ? void 0 : t.insertInCursorLocation) !== void 0 && (this.insertInCursorLocation = t.insertInCursorLocation), (t == null ? void 0 : t.autoScroll) !== void 0 && (this.autoScroll = t.autoScroll), this._onResult = t == null ? void 0 : t.onResult, this._onPreResult = t == null ? void 0 : t.onPreResult, this._onStart = t == null ? void 0 : t.onStart, this._onStop = t == null ? void 0 : t.onStop, this._onError = t == null ? void 0 : t.onError, this.onCommandModeTrigger = t == null ? void 0 : t.onCommandModeTrigger, this.onPauseTrigger = t == null ? void 0 : t.onPauseTrigger, this._options = t, (i = this._options) != null && i.commands && (this.commands = l.process(this._options.commands));
   }
   prepare(t) {
-    E.setState(this, t), T.setState(this, t), this.isTargetInShadow = f.isInsideShadowDOM(t), f.isPrimitiveElement(t) ? (this._primitiveElement = t, this._originalText = this._primitiveElement.value) : (this._genericElement = t, this._originalText = this._genericElement.textContent);
+    E.setState(this, t), T.setState(this, t), this.isTargetInShadow = d.isInsideShadowDOM(t), d.isPrimitiveElement(t) ? (this._primitiveElement = t, this._originalText = this._primitiveElement.value) : (this._genericElement = t, this._originalText = this._genericElement.textContent);
   }
   // there was an attempt to optimize this by not having to restart the service and just reset state:
   // unfortunately it did not work because the service would still continue firing the intermediate and final results
@@ -362,12 +362,12 @@ class W {
   }
   // prettier-ignore
   updateElements(t, e, i) {
-    var o;
-    const r = l.capitalize(e);
+    var a;
+    const r = u.capitalize(e);
     if (this.finalTranscript === r && t === "")
       return;
-    B.process(this, i, t === "", this._onPreResult, this._options) && (t = "", i = "");
-    const n = this.commands && u.execCommand(
+    U.process(this, i, t === "", this._onPreResult, this._options) && (t = "", i = "");
+    const n = this.commands && l.execCommand(
       this,
       i,
       this._options,
@@ -381,7 +381,7 @@ class W {
     }
     if (this.isPaused || this.isWaitingForCommand)
       return;
-    (o = this._onResult) == null || o.call(this, i, t === ""), this.finalTranscript = r, this._displayInterimResults || (t = "");
+    (a = this._onResult) == null || a.call(this, i, t === ""), this.finalTranscript = r, this._displayInterimResults || (t = "");
     const s = this.finalTranscript === "" && t === "";
     this._primitiveElement ? this.updatePrimitiveElement(this._primitiveElement, t, s) : this._genericElement && this.updateGenericElement(this._genericElement, t, s);
   }
@@ -392,21 +392,21 @@ class W {
     const r = this.startPadding + this.finalTranscript + e;
     if (t.value = r + this.endPadding, !this.isTargetInShadow) {
       const n = r.length + this.numberOfSpacesAfterNewText;
-      d.setOffsetForPrimitive(t, n, this.autoScroll);
+      c.setOffsetForPrimitive(t, n, this.autoScroll);
     }
-    this.autoScroll && w.IS_SAFARI() && this.isCursorAtEnd && S.scrollSafariPrimitiveToEnd(t);
+    this.autoScroll && I.IS_SAFARI() && this.isCursorAtEnd && m.scrollSafariPrimitiveToEnd(t);
   }
   updateGenericElement(t, e, i) {
-    this.isHighlighted && T.removeForGeneric(this, t), this.spansPopulated || f.appendSpans(this, t);
-    const r = (i ? "" : this.startPadding) + l.lineBreak(this.finalTranscript);
+    this.isHighlighted && T.removeForGeneric(this, t), this.spansPopulated || d.appendSpans(this, t);
+    const r = (i ? "" : this.startPadding) + u.lineBreak(this.finalTranscript);
     this.finalSpan.innerHTML = r;
-    const n = S.isRequired(this.autoScroll, t);
-    S.changeStateIfNeeded(this, n);
-    const s = l.lineBreak(e) + (i ? "" : this.endPadding);
-    this.interimSpan.innerHTML = s, w.IS_SAFARI() && this.insertInCursorLocation && d.setOffsetForSafariGeneric(t, r.length + s.length), n && S.scrollGeneric(this, t), i && (this.scrollingSpan.innerHTML = "");
+    const n = m.isRequired(this.autoScroll, t);
+    m.changeStateIfNeeded(this, n);
+    const s = u.lineBreak(e) + (i ? "" : this.endPadding);
+    this.interimSpan.innerHTML = s, I.IS_SAFARI() && this.insertInCursorLocation && c.setOffsetForSafariGeneric(t, r.length + s.length), n && m.scrollGeneric(this, t), i && (this.scrollingSpan.innerHTML = "");
   }
   finalise(t) {
-    this._genericElement && (t ? (this.finalSpan = f.createGenericSpan(), this.setInterimColorToFinal(), this.interimSpan = f.createInterimSpan(), this.scrollingSpan = f.createGenericSpan()) : this._genericElement.textContent = this._genericElement.textContent, this.spansPopulated = !1), N.remove(this);
+    this._genericElement && (t ? (this.finalSpan = d.createGenericSpan(), this.setInterimColorToFinal(), this.interimSpan = d.createInterimSpan(), this.scrollingSpan = d.createGenericSpan()) : this._genericElement.textContent = this._genericElement.textContent, this.spansPopulated = !1), M.remove(this);
   }
   setInterimColorToFinal() {
     this.interimSpan.style.color = this._finalTextColor || "black";
@@ -427,27 +427,27 @@ class W {
     (e = this._onError) == null || e.call(this, t), this.recognizing = !1;
   }
 }
-class I extends W {
+class P extends H {
   constructor() {
     super();
   }
   start(t) {
     var e;
-    this._extractText === void 0 && (this._extractText = w.IS_SAFARI() ? D.extractSafari : D.extract), this.validate() && (this.prepareBeforeStart(t), this.instantiateService(t), (e = this._service) == null || e.start(), this._translations = t == null ? void 0 : t.translations);
+    this._extractText === void 0 && (this._extractText = I.IS_SAFARI() ? D.extractSafari : D.extract), this.validate() && (this.prepareBeforeStart(t), this.instantiateService(t), (e = this._service) == null || e.start(), this._translations = t == null ? void 0 : t.translations);
   }
   validate() {
-    return I.getAPI() ? !0 : (this.error("Speech Recognition is unsupported"), !1);
+    return P.getAPI() ? !0 : (this.error("Speech Recognition is unsupported"), !1);
   }
   instantiateService(t) {
     var i;
-    const e = I.getAPI();
+    const e = P.getAPI();
     this._service = new e(), this._service.continuous = !0, this._service.interimResults = (t == null ? void 0 : t.displayInterimResults) ?? !0, this._service.lang = ((i = t == null ? void 0 : t.language) == null ? void 0 : i.trim()) || "en-US", this.setEvents();
   }
   setEvents() {
     this._service && (this._service.onstart = () => {
       this.setStateOnStart();
     }, this._service.onerror = (t) => {
-      w.IS_SAFARI() && t.message === "Another request is started" || t.error === "aborted" && this.isRestarting || t.error !== "no-speech" && this.error(t.message || t.error);
+      I.IS_SAFARI() && t.message === "Another request is started" || t.error === "aborted" && this.isRestarting || t.error !== "no-speech" && this.error(t.message || t.error);
     }, this._service.onaudioend = () => {
       this.setStateOnStop();
     }, this._service.onend = () => {
@@ -476,16 +476,16 @@ class I extends W {
     console.error(t), this.setStateOnError(t), this.stop();
   }
 }
-const A = class {
+const z = class O {
   static doubleClickDetector() {
-    return A.doubleClickPending ? !0 : (A.doubleClickPending = !0, setTimeout(() => {
-      A.doubleClickPending = !1;
+    return O.doubleClickPending ? !0 : (O.doubleClickPending = !0, setTimeout(() => {
+      O.doubleClickPending = !1;
     }, 300), !1);
   }
 };
-let g = A;
-g.doubleClickPending = !1;
-class L {
+z.doubleClickPending = !1;
+let g = z;
+class G {
   static applyPrevention(t) {
     clearTimeout(t._manualConnectionStopPrevention), t.cannotBeStopped = !0, t._manualConnectionStopPrevention = setTimeout(() => {
       t.cannotBeStopped = !1;
@@ -495,10 +495,10 @@ class L {
     clearTimeout(t._manualConnectionStopPrevention), t.cannotBeStopped = !1;
   }
 }
-const p = "https://github.com/OvidijusParsiunas/speech-to-element";
+const N = "https://github.com/OvidijusParsiunas/speech-to-element";
 class _ {
   static validateOptions(t, e) {
-    return e ? !e.subscriptionKey && !e.token && !e.retrieveToken ? (t(`Please define a 'subscriptionKey', 'token' or 'retrieveToken' property - more info: ${p}`), !1) : e.region ? !0 : (t(`Please define a 'region' property - more info: ${p}`), !1) : (t(`Please provide subscription details - more info: ${p}`), !1);
+    return e ? !e.subscriptionKey && !e.token && !e.retrieveToken ? (t(`Please define a 'subscriptionKey', 'token' or 'retrieveToken' property - more info: ${N}`), !1) : e.region ? !0 : (t(`Please define a 'region' property - more info: ${N}`), !1) : (t(`Please provide subscription details - more info: ${N}`), !1);
   }
   static async getNewSpeechConfig(t, e) {
     if (e.region)
@@ -512,30 +512,33 @@ class _ {
     return i && _.process(i, e), i;
   }
 }
-const y = class {
+const K = class b {
   // 20s
-  static set(a) {
-    a.stopTimeout = setTimeout(() => a.stop(), a.stopTimeoutMS);
+  static set(t) {
+    t.stopTimeout = setTimeout(() => t.stop(), t.stopTimeoutMS);
   }
-  static reset(a, t) {
-    a.stopTimeoutMS = t || y.DEFAULT_MS, a.stopTimeout && clearTimeout(a.stopTimeout), y.set(a);
+  static reset(t, e) {
+    t.stopTimeoutMS = e || b.DEFAULT_MS, b.stop(t), b.set(t);
+  }
+  static stop(t) {
+    t.stopTimeout && clearTimeout(t.stopTimeout);
   }
 };
-let O = y;
-O.DEFAULT_MS = 2e4;
-class G {
+K.DEFAULT_MS = 2e4;
+let R = K;
+class W {
   // newText is used to only send new text in onResult as finalTranscript is continuously accumulated
   static extract(t, e, i, r) {
-    return r && (t = F.translate(t, r)), i ? { interimTranscript: "", finalTranscript: e + t, newText: t } : { interimTranscript: t, finalTranscript: e, newText: t };
+    return r && (t = L.translate(t, r)), i ? { interimTranscript: "", finalTranscript: e + t, newText: t } : { interimTranscript: t, finalTranscript: e, newText: t };
   }
 }
-class b extends W {
+class p extends H {
   constructor() {
     super(...arguments), this._newTextPadding = "";
   }
   // Unlike webspeech there is no automatic space between final results
   start(t, e) {
-    this._newTextPadding = "", this.stopTimeout === void 0 && O.reset(this, t == null ? void 0 : t.stopAfterSilenceMs), this.prepareBeforeStart(t), this.startAsync(t), e || L.applyPrevention(this);
+    this._newTextPadding = "", this.stopTimeout === void 0 && R.reset(this, t == null ? void 0 : t.stopAfterSilenceMs), this.prepareBeforeStart(t), this.startAsync(t), e || G.applyPrevention(this);
   }
   async startAsync(t) {
     var e;
@@ -543,12 +546,17 @@ class b extends W {
     }, this.error));
   }
   validate(t) {
-    return b.getAPI() ? _.validateOptions(this.error.bind(this), t) : (this.moduleNotFound(), !1);
+    return p.getAPI() ? _.validateOptions(this.error.bind(this), t) : (this.moduleNotFound(), !1);
   }
   async instantiateService(t) {
-    const e = b.getAPI(), i = e.AudioConfig.fromDefaultMicrophoneInput(), r = await _.get(e.SpeechConfig, t);
+    const e = p.getAPI(), i = e.AudioConfig.fromDefaultMicrophoneInput(), r = await _.get(e.SpeechConfig, t);
     if (r) {
-      const n = new e.SpeechRecognizer(r, i);
+      let n;
+      if (t.autoLanguage && t.autoLanguage.languages.length > 0) {
+        const { type: s, languages: a } = t.autoLanguage, o = a.slice(0, s === "Continuous" ? 10 : 4), f = e.AutoDetectSourceLanguageConfig.fromLanguages(o);
+        s === "Continuous" && (f.mode = 1), n = e.SpeechRecognizer.FromConfig(r, f, i);
+      } else
+        n = new e.SpeechRecognizer(r, i);
       this.setEvents(n), this._service = n, t.retrieveToken && this.retrieveTokenInterval(t.retrieveToken);
     } else
       this.error("Unable to contact Azure server");
@@ -560,13 +568,13 @@ class b extends W {
   onRecognizing(t, e) {
     if (this._stopping)
       return;
-    const { interimTranscript: i, finalTranscript: r, newText: n } = G.extract(
+    const { interimTranscript: i, finalTranscript: r, newText: n } = W.extract(
       this._newTextPadding + e.result.text,
       this.finalTranscript,
       !1,
       this._translations
     );
-    O.reset(this, this.stopTimeoutMS), this.updateElements(i, r, n);
+    R.reset(this, this.stopTimeoutMS), this.updateElements(i, r, n);
   }
   // prettier-ignore
   onRecognized(t, e) {
@@ -576,13 +584,13 @@ class b extends W {
         break;
       case window.SpeechSDK.ResultReason.RecognizedSpeech:
         if (i.text && !this._stopping) {
-          const { interimTranscript: r, finalTranscript: n, newText: s } = G.extract(
+          const { interimTranscript: r, finalTranscript: n, newText: s } = W.extract(
             this._newTextPadding + i.text,
             this.finalTranscript,
             !0,
             this._translations
           );
-          O.reset(this, this.stopTimeoutMS), this.updateElements(r, n, s), n !== "" && (this._newTextPadding = " ");
+          R.reset(this, this.stopTimeoutMS), this.updateElements(r, n, s), n !== "" && (this._newTextPadding = " ");
         }
         break;
     }
@@ -591,7 +599,7 @@ class b extends W {
     e.reason === window.SpeechSDK.CancellationReason.Error && this.error(e.errorDetails);
   }
   onSessionStarted() {
-    L.clearPrevention(this), this.setStateOnStart();
+    G.clearPrevention(this), this.setStateOnStart();
   }
   onSessionStopped() {
     this._retrieveTokenInterval || clearInterval(this._retrieveTokenInterval), this._stopping = !1, this.setStateOnStop();
@@ -607,7 +615,7 @@ class b extends W {
   }
   stop(t) {
     var e;
-    !t && this._retrieveTokenInterval && clearInterval(this._retrieveTokenInterval), this._stopping = !0, (e = this._service) == null || e.stopContinuousRecognitionAsync(), this.finalise(t);
+    !t && this._retrieveTokenInterval && clearInterval(this._retrieveTokenInterval), this._stopping = !0, (e = this._service) == null || e.stopContinuousRecognitionAsync(), R.stop(this), this.finalise(t);
   }
   static getAPI() {
     return window.SpeechSDK;
@@ -628,21 +636,21 @@ class v {
     (r = g.service) != null && r.recognizing ? this.stop() : i === "webspeech" ? v.startWebSpeech(e) : i === "azure" ? v.startAzure(e) : (console.error("service not found - must be either 'webspeech' or 'azure'"), (n = e == null ? void 0 : e.onError) == null || n.call(e, "service not found - must be either 'webspeech' or 'azure'"));
   }
   static startWebSpeech(t) {
-    v.stop() || (g.service = new I(), g.service.start(t));
+    v.stop() || (g.service = new P(), g.service.start(t));
   }
   static isWebSpeechSupported() {
-    return !!I.getAPI();
+    return !!P.getAPI();
   }
   static startAzure(t) {
     var e;
-    v.stop() || (e = g.service) != null && e.cannotBeStopped || (g.service = new b(), g.service.start(t));
+    v.stop() || (e = g.service) != null && e.cannotBeStopped || (g.service = new p(), g.service.start(t));
   }
   static stop() {
     var t;
     return g.doubleClickDetector() ? !0 : ((t = g.service) != null && t.recognizing && g.service.stop(), !1);
   }
   static endCommandMode() {
-    g.service && u.toggleCommandModeOff(g.service);
+    g.service && l.toggleCommandModeOff(g.service);
   }
 }
 window.SpeechToElement = v;

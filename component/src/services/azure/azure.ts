@@ -53,18 +53,13 @@ export class Azure extends Speech {
     const speechConfig = await AzureSpeechConfig.get(speechSDK.SpeechConfig, options);
     if (speechConfig) {
       let recognizer: sdk.SpeechRecognizer;
-      if (options.autoLanguages && options.autoLanguages.length > 0) {
-        const autoDetectLanguageConfig = speechSDK.AutoDetectSourceLanguageConfig.fromLanguages(
-          options.autoLanguages
-        );
-        if(options.detectionType === "Continuous") {
-            autoDetectLanguageConfig.mode = 1;
-        }
-        recognizer = speechSDK.SpeechRecognizer.FromConfig(
-          speechConfig,
-          autoDetectLanguageConfig,
-          audioConfig
-        );
+      if (options.autoLanguage && options.autoLanguage.languages.length > 0) {
+        // https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-identification
+        const {type, languages} = options.autoLanguage;
+        const maxLanguages = languages.slice(0, type === 'Continuous' ? 10 : 4);
+        const autoDetectLanguageConfig = speechSDK.AutoDetectSourceLanguageConfig.fromLanguages(maxLanguages);
+        if (type === 'Continuous') autoDetectLanguageConfig.mode = 1;
+        recognizer = speechSDK.SpeechRecognizer.FromConfig(speechConfig, autoDetectLanguageConfig, audioConfig);
       } else {
         recognizer = new speechSDK.SpeechRecognizer(speechConfig, audioConfig);
       }
