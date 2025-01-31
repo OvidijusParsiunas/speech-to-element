@@ -149,6 +149,7 @@ export class Azure extends Speech {
     if (!isDuringReset && this._retrieveTokenInterval) clearInterval(this._retrieveTokenInterval);
     this._stopping = true;
     this._service?.stopContinuousRecognitionAsync();
+    StopTimeout.stop(this);
     this.finalise(isDuringReset);
   }
 

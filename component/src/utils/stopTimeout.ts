@@ -9,7 +9,11 @@ export class StopTimeout {
 
   public static reset(speech: Speech, stopTimeoutMS?: number) {
     speech.stopTimeoutMS = stopTimeoutMS || StopTimeout.DEFAULT_MS;
-    if (speech.stopTimeout) clearTimeout(speech.stopTimeout);
+    StopTimeout.stop(speech);
     StopTimeout.set(speech);
+  }
+
+  public static stop(speech: Speech) {
+    if (speech.stopTimeout) clearTimeout(speech.stopTimeout);
   }
 }
