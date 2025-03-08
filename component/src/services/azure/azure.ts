@@ -4,6 +4,7 @@ import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import {PreventConnectionStop} from './preventConnectionStop';
 import {AzureSpeechConfig} from './azureSpeechConfig';
 import {StopTimeout} from '../../utils/stopTimeout';
+import {AzureAudioConfig} from './azureAudioConfig';
 import {AzureTranscript} from './azureTranscript';
 import {Speech} from '../../speech';
 
@@ -49,7 +50,7 @@ export class Azure extends Speech {
 
   private async instantiateService(options: Options & AzureOptions) {
     const speechSDK = Azure.getAPI();
-    const audioConfig = speechSDK.AudioConfig.fromDefaultMicrophoneInput();
+    const audioConfig = AzureAudioConfig.get(speechSDK.AudioConfig, options.deviceId);
     const speechConfig = await AzureSpeechConfig.get(speechSDK.SpeechConfig, options);
     if (speechConfig) {
       let recognizer: sdk.SpeechRecognizer;

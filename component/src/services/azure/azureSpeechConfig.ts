@@ -44,6 +44,7 @@ export class AzureSpeechConfig {
   }
 
   private static process(sdkSpeechConfig: SpeechConfig, options: AzureOptions) {
+    if (options.endpointId) sdkSpeechConfig.endpointId = options.endpointId.trim();
     if (options.language) sdkSpeechConfig.speechRecognitionLanguage = options.language.trim();
   }
 

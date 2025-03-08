@@ -62,6 +62,10 @@ export interface AzureOptions {
     languages: [string, ...string[]] & {length: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10};
     type?: 'AtStart' | 'Continuous';
   };
+  // https://learn.microsoft.com/en-us/javascript/api/microsoft-cognitiveservices-speech-sdk/speechconfig
+  endpointId?: string;
+  // https://learn.microsoft.com/en-us/azure/ai-services/speech-service/how-to-select-audio-input-devices
+  deviceId?: string;
   // default - 20s
   stopAfterSilenceMs?: number;
 }

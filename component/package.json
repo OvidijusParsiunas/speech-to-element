@@ -1,6 +1,6 @@
 {
   "name": "speech-to-element",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Add real-time speech to text functionality into your website with no effort",
   "main": "dist/index.js",
   "scripts": {
@@ -33,16 +33,16 @@
     "real"
   ],
   "devDependencies": {
-    "@types/dom-speech-recognition": "^0.0.1",
+    "@types/dom-speech-recognition": "^0.0.4",
     "@types/node": "^20.4.4",
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
-    "@typescript-eslint/parser": "^5.25.0",
-    "eslint": "^8.15.0",
-    "prettier": "^2.8.4",
-    "typescript": "^5.1.3",
-    "vite": "^4.1.4",
-    "vite-plugin-dts": "^2.0.2",
-    "microsoft-cognitiveservices-speech-sdk": "^1.30.1"
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "@typescript-eslint/parser": "^8.25.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.42.0",
+    "eslint": "^8.57.1",
+    "prettier": "^3.2.5",
+    "typescript": "^5.7.2",
+    "vite": "^6.2.0",
+    "vite-plugin-dts": "^4.5.3"
   },
   "files": [
     "dist/**/*"
