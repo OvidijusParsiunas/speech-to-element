@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: 'src/index.ts',
-      name: 'iife',
+      formats: ['es'],
       fileName: 'index',
     },
   },
