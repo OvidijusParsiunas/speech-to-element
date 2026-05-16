@@ -48,7 +48,7 @@ $ npm install
 $ npm run start
 
 # Build the component into a module (dist/index.js):
-$ npm run build:module
+$ npm run build
 ```
 
 ### :beginner: API
